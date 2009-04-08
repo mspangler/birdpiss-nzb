@@ -1,0 +1,92 @@
+<html>
+<head>
+	<title>NZB</title>
+	<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.7.1.custom.css" />
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.7.1.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery.layout.min.js"></script>
+	<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript">
+		var myLayout;
+		$(document).ready(function() {
+			myLayout = $('body').layout({
+				west__showOverflowOnHover : true,
+				resizable : false,
+				closable : false
+			});
+			for (i = 0; i < 125; i++) {
+			    $('tbody').append('<tr><td><input type="checkbox" name="download" /><td>Dog Day Afternoon ' + i + '</td><td>Drama</td><td>dogDayAfternoon.avi</td><td>*****</td><td>'+i+'</td></tr>');
+			}
+			$('#content').dataTable({
+			    bPaginate : true,
+		        bLengthChange : false,
+		        bAutoWidth : false,
+		        iDisplayLength : 10,
+		        sPaginationType : 'full_numbers'
+			});
+			$('#content_filter :text:first').attr('size', 50);
+			$('#content_filter').append('&nbsp;<input type="submit" value="Download Selected" class="ui-widget-content" /> - Should zip files so user can select multiple files & have just 1 download');
+			$('.ui-layout-west a').click(function() {
+				var txt = $(this).text();
+				if (txt != 'Upload') {
+					alert('Will load all "' + $(this).text() + '" content in the table.');
+				} else {
+					$('#upload').dialog('open');
+				}
+				return false;
+			});
+			$('#upload').dialog({
+				modal : true,
+				autoOpen : false,
+				width : '400px',
+				buttons : {
+					Close : function() {
+						$(this).dialog('close');
+					}
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<div class="ui-layout-north">
+		<h2>Birdpiss NZB</h2>
+	</div>
+	<div class="ui-layout-west">
+		<strong><a href="">Upload</a><br /><a href="">Movies</a><br /><a href="">Music</a><br /><a href="">Software</a><br /></strong>
+	</div>
+	<div class="ui-layout-center">
+		<table id="content" cellspacing="0">
+			<thead>
+				<tr>
+				    <th>Download</th>
+					<th>Title</th>
+					<th>Genre</th>
+					<th>Filename</th>
+					<th>Rating</th>
+					<th>Days Active</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+		<div class="imdb"><br /><br />
+		    <img src="art/dog-day-afternoon.jpg" class="image" />
+		    <div class="plot">Based upon a real-life story that happened in the early seventies in which the Chase Manhattan Bank in Flatbush, Brooklyn, was held siege by a gay bank robber determined to steal enough money for his male lover to undergo a sex change operation. On a hot summer afternoon, the First Savings Bank of Brooklyn is held up by Sonny and Sal, two down-and-out characters. Although the bank manager and female tellers agree not to interfere with the robbery, Sonny finds that there's actually nothing much to steal, as most of the cash has been picked up for the day. Sonny then gets an unexpected phone call from Police Captain Moretti, who tells him the place is surrounded by the city's entire police force. Having few options under the circumstances, Sonny nervously bargains with Moretti, demanding safe escort to the airport and a plane out of the country in return for the bank employees' safety.</div>
+		    <br /><div class="release"><strong>Release Date:</strong> 21 September 1975 (USA)</div>
+		    <div class="runtime"><strong>Runtime:</strong> 125 min | Finland:131 min (1975) </div>
+		</div>
+	</div>
+	<div id="upload" title="Upload NZB">
+		<form id="uploadForm" action="index.html" method="post">
+			<p>Mock Upload Form</p>
+			NZB File: <input type="textbox" /><br />
+			Title: <input type="textbox" /><br />
+			Genre: <input type="textbox" /><br />
+			<input type="submit" value="Upload" />
+		</form>
+	</div>
+</body>
+</html>
+
