@@ -59,7 +59,7 @@ function setupTable() {
 			nRow.onmouseover = function() { nRow.className = 'hover'; };
 			nRow.onmouseout = function() { nRow.className = cssClass; };
 			nRow.onclick = function() {
-				alert('You click on content id: ' + aData[0]);
+				alert('You click on content id: ' + aData[0] + '\nThe content info below should change once fixed');
 			};
 
 			return nRow;
