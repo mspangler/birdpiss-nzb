@@ -16,6 +16,10 @@ a:visited {
 	text-decoration: none;
 }
 
+.dialogs {
+    display: none;
+}
+
 .ui-layout-pane {
 	border : 1px solid #000000;
 	padding: 10px;
@@ -65,7 +69,7 @@ td {
 }
 
 .hover {
-	background-color: #cfcfcf;
+	background-color: #cfcfcf;	
 }
 
 .dataTables_filter {
