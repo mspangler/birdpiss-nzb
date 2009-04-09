@@ -59,7 +59,12 @@ function setupTable() {
 			nRow.onmouseover = function() { nRow.className = 'hover'; };
 			nRow.onmouseout = function() { nRow.className = cssClass; };
 			nRow.onclick = function() {
-				alert('You click on content id: ' + aData[0]);
+				var checkbox = $('#content-' + aData[0]);
+				if  (checkbox.is(':checked')) {
+					checkbox.attr('checked', false);
+				} else {
+					checkbox.attr('checked', true);
+				}
 			};
 
 			return nRow;
@@ -125,7 +130,7 @@ function getTestJson(type) {
 	for (i = 0; i < 125; i++) {
 		// Data in index 0 is suppose to represent the id of the content
 		var id = 'content-' + i;
-		rows[i] = [ i, '<input type="checkbox" name="download" id="'+id+'" />', title, type, filename, '*****', 25 + i ];
+		rows[i] = [ i, '<input type="checkbox" id="'+id+'" />', title, type, filename, '*****', 25 + i ];
 	}
 	return { 'json' : rows };
 }
