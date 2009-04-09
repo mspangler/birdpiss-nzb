@@ -40,7 +40,7 @@ function setupTable() {
 	    bPaginate : true,
 	    bLengthChange : false,
 		bAutoWidth : false,
-		iDisplayLength : 10,
+		iDisplayLength : 25,
 		sPaginationType : 'full_numbers',
 		bSortClasses : false,
 		aaSorting : [],
@@ -59,7 +59,7 @@ function setupTable() {
 			nRow.onmouseover = function() { nRow.className = 'hover'; };
 			nRow.onmouseout = function() { nRow.className = cssClass; };
 			nRow.onclick = function() {
-				alert('You click on content id: ' + aData[0] + '\nThe content info below should change once fixed');
+				alert('You click on content id: ' + aData[0]);
 			};
 
 			return nRow;
@@ -67,10 +67,10 @@ function setupTable() {
 	});
 
 	// Make the search textbox a little longer
-	$('#contentTbl_filter :text:first').attr('size', 50);
+	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
 
 	// Add a download btn next to search
-	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content" />');
+	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
 
 	$('#downloadBtn').click(function() {
 		$('#downloadDialog').dialog('open');
