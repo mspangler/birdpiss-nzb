@@ -13,18 +13,13 @@ function setupLayout() {
 	});
 
 	$('.ui-layout-west a').click(function() {
+		var txt = $(this).text();
 		switch ($(this).text()) {
 			case 'Upload':
 				$('#uploadDialog').dialog('open');
 				break;
-			case 'Movies':
-				reloadTable(getTestMovieJson());
-				break;
-			case 'Music':
-				reloadTable(getTestMusicJson());
-				break;
-			case 'Software':
-				reloadTable(getTestSoftwareJson());
+			default:
+				reloadTable(getTestJson(txt));
 				break;
 		}
 		return false;
@@ -41,7 +36,7 @@ function reloadTable(data) {
 var contentTbl;
 function setupTable() {
 
-	var test = getTestMovieJson();
+	var test = getTestJson('Movies');
 
 	contentTbl = $('#contentTbl').dataTable({
 	    bPaginate : true,
@@ -80,28 +75,24 @@ function setupUploadDialog() {
 	});
 }
 
-function getTestMovieJson() {
-	var rows = [];
-	for (i = 0; i < 125; i++) {
-		var row = [ '<input type="checkbox" name="download" />', 'Dog Day Afternoon ' + i, 'Drama', 'dogDayAfternoon.avi', '*****', i ];
-		rows[i] = row;
+function getTestJson(type) {
+	var rows = [], title, filename;
+	switch (type) {
+		case 'Movies':
+			title = 'Dog Day Afternoon'
+			filename = 'dogDayAfternoon.avi'
+			break;
+		case 'Music':
+			title = 'Rancid'
+			filename = 'rancid.mp3'
+			break;
+		case 'Software':
+			title = 'Ubuntu'
+			filename = 'ubuntu.tar.gz'
+			break;
 	}
-	return { 'json' : rows };
-}
-
-function getTestMusicJson() {
-	var rows = [];
 	for (i = 0; i < 125; i++) {
-		var row = [ '<input type="checkbox" name="download" />', 'Rancid ' + i, 'Drama', 'rancid.mp3', '*****', i ];
-		rows[i] = row;
-	}
-	return { 'json' : rows };
-}
-
-function getTestSoftwareJson() {
-	var rows = [];
-	for (i = 0; i < 125; i++) {
-		var row = [ '<input type="checkbox" name="download" />', 'Ubuntu ' + i, 'Drama', 'ubuntu.tar.gz', '*****', i ];
+		var row = [ '<input type="checkbox" name="download" />', title, type, filename, '*****', i ];
 		rows[i] = row;
 	}
 	return { 'json' : rows };
