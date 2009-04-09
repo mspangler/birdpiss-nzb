@@ -2,6 +2,7 @@
 function setupUI() {
 	setupLayout();
 	setupTable();
+	setupDownloadDialog();
 	setupUploadDialog();
 }
 
@@ -43,7 +44,7 @@ function setupTable() {
 		sPaginationType : 'full_numbers',
 		aaData : test.json,
 		aoColumns : [
-				{ sTitle : 'Download' },
+				{ bSearchable : false, sTitle : 'Download' },
 		        { sTitle : 'Title' },
 		        { sTitle : 'Genre' },
 		        { sTitle : 'Filename' },
@@ -56,7 +57,24 @@ function setupTable() {
 	$('#contentTbl_filter :text:first').attr('size', 50);
 
 	// Add a download btn next to search
-	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" class="ui-widget-content" />');
+	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content" />');
+
+	$('#downloadBtn').click(function() {
+		$('#downloadDialog').dialog('open');
+	});
+}
+
+function setupDownloadDialog() {
+	$('#downloadDialog').dialog({
+		modal : true,
+		autoOpen : false,
+		width : '350px',
+		buttons : {
+			Close : function() {
+				$(this).dialog('close');
+			}
+		}
+	});
 }
 
 function setupUploadDialog() {

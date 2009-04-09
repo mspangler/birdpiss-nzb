@@ -1,24 +1,4 @@
 
-.ui-layout-pane {
-	border : 1px solid #BBB;
-	padding: 10px;
-	overflow:auto;
-}
-
-.ui-layout-west {
-	max-width: 150px;
-}
-
-.ui-layout-north {
-    max-height: 50px;
-}
-
-.image {
-    float:left;
-    margin:4px;
-    border: 1px solid #BBB;
-}
-
 a {
 	color: darkblue;
 	border:0px;
@@ -31,12 +11,29 @@ a:visited {
 	text-decoration: none;
 }
 
-#contentTbl {
-    width : 100%;
+.ui-layout-pane {
+	border : 1px solid #BBB;
+	padding: 10px;
+	overflow: auto;
 }
 
-table {
-    border : 1px solid #BBB;
+.ui-layout-west {
+	max-width: 150px;
+}
+
+.ui-layout-north {
+    max-height: 50px;
+}
+
+.art {
+    float:left;
+    margin:4px;
+    border: 1px solid #BBB;
+}
+
+#contentTbl {
+    width : 100%;
+	border : 1px solid #BBB;
 }
 
 .odd { background-color: #ffffff; }
