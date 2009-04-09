@@ -14,7 +14,7 @@ function setupLayout() {
 
 	$('.ui-layout-west a').click(function() {
 		var txt = $(this).text();
-		switch ($(this).text()) {
+		switch (txt) {
 			case 'Upload':
 				$('#uploadDialog').dialog('open');
 				break;
