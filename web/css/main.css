@@ -23,7 +23,8 @@ a:visited {
 }
 
 .ui-layout-west {
-	max-width: 150px;
+	max-width: 125px;
+	text-align: center;
 }
 
 .ui-layout-north {
