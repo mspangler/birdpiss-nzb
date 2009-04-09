@@ -125,7 +125,7 @@ function getTestJson(type) {
 	for (i = 0; i < 125; i++) {
 		// Data in index 0 is suppose to represent the id of the content
 		var id = 'content-' + i;
-		rows[i] = [ i, '<input type="checkbox" name="download" id="'+id+'" />', title, type, filename, '*****', i ];
+		rows[i] = [ i, '<input type="checkbox" name="download" id="'+id+'" />', title, type, filename, '*****', 25 + i ];
 	}
 	return { 'json' : rows };
 }
