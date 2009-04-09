@@ -61,10 +61,10 @@ function setupTable() {
 	});
 
 	// Make the search textbox a little longer
-	$('#content_filter :text:first').attr('size', 50);
+	$('#contentTbl_filter :text:first').attr('size', 50);
 
 	// Add a download btn next to search
-	$('#content_filter').append('&nbsp;<input type="submit" value="Download Selected" class="ui-widget-content" />');
+	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" class="ui-widget-content" />');
 }
 
 function setupUploadDialog() {
