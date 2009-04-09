@@ -14,13 +14,10 @@ function setupLayout() {
 
 	$('.ui-layout-west a').click(function() {
 		var txt = $(this).text();
-		switch (txt) {
-			case 'Upload':
-				$('#uploadDialog').dialog('open');
-				break;
-			default:
-				reloadTable(getTestJson(txt));
-				break;
+		if (txt == 'Upload') {
+			$('#uploadDialog').dialog('open');
+		} else {
+			reloadTable(getTestJson(txt));
 		}
 		return false;
 	});
@@ -90,10 +87,12 @@ function getTestJson(type) {
 			title = 'Ubuntu'
 			filename = 'ubuntu.tar.gz'
 			break;
+		default:
+			title = 'Unknown';
+			filename = 'unknown.txt';
 	}
 	for (i = 0; i < 125; i++) {
-		var row = [ '<input type="checkbox" name="download" />', title, type, filename, '*****', i ];
-		rows[i] = row;
+		rows[i] = [ '<input type="checkbox" name="download" />', title, type, filename, '*****', i ];
 	}
 	return { 'json' : rows };
 }
