@@ -43,11 +43,14 @@ th {
 	background-color: #9b9b9b;
 	color: white;
 	font-weight: bold;
-	cursor: pointer;
 }
 
 td {
 	text-align:center;
+}
+
+.hover {
+	background-color: #dddddd;
 }
 
 .dataTables_filter {

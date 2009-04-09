@@ -42,15 +42,28 @@ function setupTable() {
 		bAutoWidth : false,
 		iDisplayLength : 10,
 		sPaginationType : 'full_numbers',
+		bSortClasses : false,
+		aaSorting : [],
 		aaData : test.json,
 		aoColumns : [
+		        { bVisible : false, bSearchable : false },
 				{ bSearchable : false, sTitle : 'Download' },
 		        { sTitle : 'Title' },
 		        { sTitle : 'Genre' },
 		        { sTitle : 'Filename' },
 		        { sTitle : 'Rating' },
 		        { sTitle : 'Days Active' }
-			]
+			],
+		fnRowCallback : function(nRow, aData, iDisplayIndex) {
+			var cssClass = nRow.className;
+			nRow.onmouseover = function() { nRow.className = 'hover'; };
+			nRow.onmouseout = function() { nRow.className = cssClass; };
+			nRow.onclick = function() {
+				alert('You click on content id: ' + aData[0]);
+			};
+
+			return nRow;
+		}
 	});
 
 	// Make the search textbox a little longer
@@ -110,7 +123,9 @@ function getTestJson(type) {
 			filename = 'unknown.txt';
 	}
 	for (i = 0; i < 125; i++) {
-		rows[i] = [ '<input type="checkbox" name="download" />', title, type, filename, '*****', i ];
+		// Data in index 0 is suppose to represent the id of the content
+		var id = 'content-' + i;
+		rows[i] = [ i, '<input type="checkbox" name="download" id="'+id+'" />', title, type, filename, '*****', i ];
 	}
 	return { 'json' : rows };
 }
