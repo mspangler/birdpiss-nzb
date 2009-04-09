@@ -17,7 +17,7 @@ a:visited {
 }
 
 .ui-layout-pane {
-	border : 1px solid #3B6B7E;
+	border : 1px solid #000000;
 	padding: 10px;
 	overflow: auto;
 }
@@ -32,7 +32,7 @@ a:visited {
 }
 
 .nzbBtn {
-	border: 1px solid #3B6B7E;
+	border: 1px solid #000000;
 	padding: 2px 5px;
 	margin: 0 3px;
 	cursor: pointer;
@@ -40,28 +40,22 @@ a:visited {
 }
 
 .nzbSearch {
-	border: 1px solid #3B6B7E;
+	border: 1px solid #000000;
 	padding: 2px 5px;
 	margin: 0 3px;
 	-moz-border-radius: 5px;
 }
 
-.art {
-    float:left;
-    margin:4px;
-    border: 1px solid #BBB;
-}
-
 #contentTbl {
     width : 100%;
-	border : 1px solid #BBB;
+	border : 1px solid #000000;
 }
 
-.odd { background-color: #D5DDE0; }
+.odd { background-color: #E9E9E9; }
 .even { background-color: #ffffff; }
 
 th {
-	background-color: #3B6B7E;
+	background-color: #000000;
 	color: white;
 	font-weight: bold;
 }
@@ -71,7 +65,7 @@ td {
 }
 
 .hover {
-	background-color: #B5BEC2;
+	background-color: #cfcfcf;
 }
 
 .dataTables_filter {
@@ -95,7 +89,7 @@ td {
 .paginate_button,
 .dataTables_paginate
 .paginate_active {
-	border: 1px solid #3B6B7E;
+	border: 1px solid #000000;
 	padding: 2px 5px;
 	margin: 0 3px;
 	cursor: pointer;
@@ -105,7 +99,7 @@ td {
 .dataTables_paginate
 .paginate_active {
 	color: white;
-	background-color: #3B6B7E;
+	background-color: #000000;
 }
 
 .paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {

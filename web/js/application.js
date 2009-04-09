@@ -44,7 +44,13 @@ function setupTable() {
 		sPaginationType : 'full_numbers',
 		bSortClasses : false,
 		aaSorting : [],
-		aaData : test.json,
+		aaData : test.json,		
+		oLanguage: {
+				sSearch : 'Search:',
+				sZeroRecords: 'No files found',
+				sInfo: 'Showing _START_ to _END_ of _TOTAL_ files',
+				sInfoEmpty: ''
+		},
 		aoColumns : [
 		        { bVisible : false, bSearchable : false },
 				{ bSearchable : false, sTitle : 'Download' },
