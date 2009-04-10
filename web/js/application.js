@@ -28,13 +28,6 @@ function setupLayout() {
 	$(".ui-layout-west a:contains('Movies')").addClass('selectedCat');
 }
 
-function reloadTable(data) {
-	if (contentTbl) {
-		contentTbl.fnClearTable();
-		contentTbl.fnAddData(data.json);
-	}
-}
-
 var contentTbl;
 function setupTable() {
 
@@ -47,7 +40,7 @@ function setupTable() {
 		bSortClasses : false,
 		aaSorting : [],
 		bStateSave : true,
-		aaData : [['','','','','','']],
+		sAjaxSource : 'http://media.amarillo.com/specials/paradeofhomes/test/?type=movie',
 		oLanguage: {
 				sSearch : 'Search:',
 				sZeroRecords: 'No files found',
@@ -85,9 +78,6 @@ function setupTable() {
 			return nRow;
 		}
 	});
-
-	// Load movies by default
-	getContent('movies');
 
 	// Make the search textbox a little longer
 	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
@@ -154,7 +144,14 @@ function getTestJson(type) {
 
 function getContent(type) {
 	$.getJSON('controller.url', { type : type.toLowerCase() }, function(data) {
-		console.log(data.json);
+		console.log(data.aaData);
 		reloadTable(data);
 	});
+}
+
+function reloadTable(data) {
+	if (contentTbl) {
+		contentTbl.fnClearTable();
+		contentTbl.fnAddData(data.aaData);
+	}
 }
