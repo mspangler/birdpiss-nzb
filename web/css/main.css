@@ -32,6 +32,7 @@ a:visited {
 
 .ui-layout-north {
     max-height: 50px;
+    overflow: hidden;
 }
 
 .nzbBtn {
