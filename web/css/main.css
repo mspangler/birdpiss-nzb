@@ -36,9 +36,12 @@ a:visited {
 }
 
 .nzbBtn {
+    background-color: #000000;
+    color: #ffffff;
 	border: 1px solid #000000;
 	padding: 2px 5px;
 	margin: 0 3px;
+	font-weight: bold;
 	cursor: pointer;
 	-moz-border-radius: 5px;
 }
