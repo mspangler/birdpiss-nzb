@@ -40,7 +40,7 @@ function setupTable() {
 		bSortClasses : false,
 		aaSorting : [],
 		bStateSave : true,
-		sAjaxSource : 'http://media.amarillo.com/specials/paradeofhomes/test/?type=movie',
+		sAjaxSource : 'controller.url',
 		oLanguage: {
 				sSearch : 'Search:',
 				sZeroRecords: 'No files found',
