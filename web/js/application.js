@@ -20,7 +20,7 @@ function setupLayout() {
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
-			reloadTable(getContent(txt));
+			getContent(txt);
 		}
 		return false;
 	});
@@ -39,7 +39,7 @@ var contentTbl;
 function setupTable() {
 
 	// Load movies by default
-	var data = getContent('movies');
+	getContent('movies');
 
 	contentTbl = $('#contentTbl').dataTable({
 	    bPaginate : true,
@@ -48,7 +48,7 @@ function setupTable() {
 		iDisplayLength : 25,
 		sPaginationType : 'full_numbers',
 		bSortClasses : false,
-		aaSorting : [],
+		aaSorting : [[]],
 		bStateSave : true,
 		aaData : data.json,
 		oLanguage: {
@@ -154,6 +154,7 @@ function getTestJson(type) {
 
 function getContent(type) {
 	$.getJSON('controller.url', { type : type.toLowerCase() }, function(data) {
-		return data;
+		console.log(data.json);
+		reloadTable(data);
 	});
 }
