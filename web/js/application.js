@@ -18,12 +18,13 @@ function setupLayout() {
 		if (txt == 'Upload') {
 			$('#uploadDialog').dialog('open');
 		} else {
-		    $('.ui-layout-west a').removeClass('selectedCat');
-		    $(this).addClass('selectedCat');
-			reloadTable(getTestJson(txt));
+			$('.ui-layout-west a').removeClass('selectedCat');
+			$(this).addClass('selectedCat');
+			reloadTable(getContent(txt.toLowerCase()));
 		}
 		return false;
 	});
+	
 	$(".ui-layout-west a:contains('Movies')").addClass('selectedCat');
 }
 
@@ -37,7 +38,7 @@ function reloadTable(data) {
 var contentTbl;
 function setupTable() {
 
-	var test = getTestJson('Movies');
+	var data = getContent('movies');
 
 	contentTbl = $('#contentTbl').dataTable({
 	    bPaginate : true,
@@ -48,7 +49,7 @@ function setupTable() {
 		bSortClasses : false,
 		aaSorting : [],
 		bStateSave : true,
-		aaData : test.json,		
+		aaData : data.json,
 		oLanguage: {
 				sSearch : 'Search:',
 				sZeroRecords: 'No files found',
@@ -66,14 +67,14 @@ function setupTable() {
 		fnRowCallback : function(nRow, aData, iDisplayIndex) {
 			var cssClass = nRow.className;
 			nRow.onmouseover = function() {
-			    if (!$(nRow).hasClass('selected')) {
-			        nRow.className = 'hover';
-			    }
+				if (!$(nRow).hasClass('selected')) {
+					nRow.className = 'hover';
+				}
 			};
 			nRow.onmouseout = function() {
-			    if (!$(nRow).hasClass('selected')) {
-			        nRow.className = cssClass;
-			    }
+				if (!$(nRow).hasClass('selected')) {
+					nRow.className = cssClass;
+				}
 			};
 			nRow.onclick = function() {
 				if (!$(nRow).hasClass('selected')) {
@@ -148,4 +149,10 @@ function getTestJson(type) {
 		rows[i] = [ i, title, type, filename, '*****', 25 + i ];
 	}
 	return { 'json' : rows };
+}
+
+function getContent(type) {
+	$.getJSON('controller.url', { type : type }, function(data) {
+		return data;
+	});
 }
