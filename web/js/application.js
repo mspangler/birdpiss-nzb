@@ -45,9 +45,9 @@ function setupTable() {
 		iDisplayLength : 25,
 		sPaginationType : 'full_numbers',
 		bSortClasses : false,
-		aaSorting : [[]],
+		aaSorting : [],
 		bStateSave : true,
-		aaData : data.json,
+		aaData : [[]],
 		oLanguage: {
 				sSearch : 'Search:',
 				sZeroRecords: 'No files found',
