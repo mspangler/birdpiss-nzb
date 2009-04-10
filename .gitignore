@@ -1,2 +1,4 @@
 # Ignore all compiled Python files
 *.pyc
+# Stupid mac files
+*.DS_Store
