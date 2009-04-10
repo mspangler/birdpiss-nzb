@@ -47,7 +47,7 @@ function setupTable() {
 		bSortClasses : false,
 		aaSorting : [],
 		bStateSave : true,
-		aaData : [[]],
+		aaData : [['','','','','','']],
 		oLanguage: {
 				sSearch : 'Search:',
 				sZeroRecords: 'No files found',
