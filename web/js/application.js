@@ -18,10 +18,13 @@ function setupLayout() {
 		if (txt == 'Upload') {
 			$('#uploadDialog').dialog('open');
 		} else {
+		    $('.ui-layout-west a').removeClass('selectedCat');
+		    $(this).addClass('selectedCat');
 			reloadTable(getTestJson(txt));
 		}
 		return false;
 	});
+	$(".ui-layout-west a:contains('Movies')").addClass('selectedCat');
 }
 
 function reloadTable(data) {
@@ -44,6 +47,7 @@ function setupTable() {
 		sPaginationType : 'full_numbers',
 		bSortClasses : false,
 		aaSorting : [],
+		bStateSave : true,
 		aaData : test.json,		
 		oLanguage: {
 				sSearch : 'Search:',
@@ -53,7 +57,6 @@ function setupTable() {
 		},
 		aoColumns : [
 		        { bVisible : false, bSearchable : false },
-				{ bSearchable : false, sTitle : 'Download' },
 		        { sTitle : 'Title' },
 		        { sTitle : 'Genre' },
 		        { sTitle : 'Filename' },
@@ -62,14 +65,21 @@ function setupTable() {
 			],
 		fnRowCallback : function(nRow, aData, iDisplayIndex) {
 			var cssClass = nRow.className;
-			nRow.onmouseover = function() { nRow.className = 'hover'; };
-			nRow.onmouseout = function() { nRow.className = cssClass; };
+			nRow.onmouseover = function() {
+			    if (!$(nRow).hasClass('selected')) {
+			        nRow.className = 'hover';
+			    }
+			};
+			nRow.onmouseout = function() {
+			    if (!$(nRow).hasClass('selected')) {
+			        nRow.className = cssClass;
+			    }
+			};
 			nRow.onclick = function() {
-				var checkbox = $('#content-' + aData[0]);
-				if  (checkbox.is(':checked')) {
-					checkbox.attr('checked', false);
+				if (!$(nRow).hasClass('selected')) {
+					nRow.className = 'selected';
 				} else {
-					checkbox.attr('checked', true);
+					nRow.className = cssClass;
 				}
 			};
 
@@ -136,7 +146,7 @@ function getTestJson(type) {
 	for (i = 0; i < 125; i++) {
 		// Data in index 0 is suppose to represent the id of the content
 		var id = 'content-' + i;
-		rows[i] = [ i, '<input type="checkbox" id="'+id+'" />', title, type, filename, '*****', 25 + i ];
+		rows[i] = [ i, title, type, filename, '*****', 25 + i ];
 	}
 	return { 'json' : rows };
 }

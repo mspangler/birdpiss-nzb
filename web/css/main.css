@@ -72,6 +72,15 @@ td {
 	background-color: #cfcfcf;	
 }
 
+.selected {
+    background-color: green;
+    color: #ffffff;
+}
+
+.selectedCat {
+    color: green;
+}
+
 .dataTables_filter {
     padding:10px;
 }
