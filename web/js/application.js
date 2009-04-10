@@ -145,7 +145,6 @@ function getTestJson(type) {
 	}
 	for (i = 0; i < 125; i++) {
 		// Data in index 0 is suppose to represent the id of the content
-		var id = 'content-' + i;
 		rows[i] = [ i, title, type, filename, '*****', 25 + i ];
 	}
 	return { 'json' : rows };
