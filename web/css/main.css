@@ -11,7 +11,6 @@ a {
 }
 
 a:visited {
-	color: #000000;
 	border:0px;
 	text-decoration: none;
 }
@@ -72,7 +71,7 @@ td {
 }
 
 .hover {
-	background-color: #cfcfcf;	
+	background-color: #cfcfcf;
 }
 
 .selected {
