@@ -20,11 +20,11 @@ function setupLayout() {
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
-			reloadTable(getContent(txt.toLowerCase()));
+			reloadTable(getContent(txt));
 		}
 		return false;
 	});
-	
+
 	$(".ui-layout-west a:contains('Movies')").addClass('selectedCat');
 }
 
@@ -38,6 +38,7 @@ function reloadTable(data) {
 var contentTbl;
 function setupTable() {
 
+	// Load movies by default
 	var data = getContent('movies');
 
 	contentTbl = $('#contentTbl').dataTable({
@@ -152,7 +153,7 @@ function getTestJson(type) {
 }
 
 function getContent(type) {
-	$.getJSON('controller.url', { type : type }, function(data) {
+	$.getJSON('controller.url', { type : type.toLowerCase() }, function(data) {
 		return data;
 	});
 }
