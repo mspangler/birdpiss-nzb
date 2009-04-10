@@ -116,32 +116,6 @@ function setupUploadDialog() {
 	});
 }
 
-function getTestJson(type) {
-	var rows = [], title, filename;
-	switch (type) {
-		case 'Movies':
-			title = 'Dog Day Afternoon'
-			filename = 'dogDayAfternoon.avi'
-			break;
-		case 'Music':
-			title = 'Rancid'
-			filename = 'rancid.mp3'
-			break;
-		case 'Software':
-			title = 'Ubuntu'
-			filename = 'ubuntu.tar.gz'
-			break;
-		default:
-			title = 'Unknown';
-			filename = 'unknown.txt';
-	}
-	for (i = 0; i < 125; i++) {
-		// Data in index 0 is suppose to represent the id of the content
-		rows[i] = [ i, title, type, filename, '*****', 25 + i ];
-	}
-	return { 'json' : rows };
-}
-
 function getContent(type) {
 	$.getJSON('controller.url', { type : type.toLowerCase() }, function(data) {
 		console.log(data.aaData);
