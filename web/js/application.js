@@ -38,9 +38,6 @@ function reloadTable(data) {
 var contentTbl;
 function setupTable() {
 
-	// Load movies by default
-	getContent('movies');
-
 	contentTbl = $('#contentTbl').dataTable({
 	    bPaginate : true,
 	    bLengthChange : false,
@@ -88,6 +85,9 @@ function setupTable() {
 			return nRow;
 		}
 	});
+
+	// Load movies by default
+	getContent('movies');
 
 	// Make the search textbox a little longer
 	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
