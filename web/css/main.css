@@ -19,6 +19,10 @@ a:visited {
     display: none;
 }
 
+.important {
+    color: red;
+}
+
 .ui-layout-pane {
 	border : 1px solid #000000;
 	padding: 10px;

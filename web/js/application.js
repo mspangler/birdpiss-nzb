@@ -17,6 +17,7 @@ function setupLayout() {
 		var txt = $(this).text();
 		if (txt == 'Upload') {
 			$('#uploadDialog').dialog('open');
+			$('#uploadForm :input').val('');
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
@@ -51,7 +52,7 @@ function setupTable() {
 		},
 		aoColumns : [
 		        { bVisible : false, bSearchable : false },
-		        { sTitle : 'Subject' },
+		        { sTitle : 'Title' },
 		        { sTitle : 'Newsgroup' },
 		        { sTitle : 'Size' },
 		        { sTitle : 'Age' }
@@ -116,9 +117,27 @@ function setupUploadDialog() {
 		width : '450px',
 		buttons : {
 			Upload : function() {
-		        $(this).dialog('close');
+		        $('#upload').submit();
 		    }
 		}
+	});
+
+	$('#uploadForm').validate({
+	    errorClass : 'important',
+	    errorLabelContainer : '#errorBox',
+	    wrapper : 'li',
+	    rules : {
+	        upload : 'required',
+	        title : 'required',
+	        newsgroup : 'required',
+	        size : 'required'
+	    },
+	    messages : {
+	        upload : 'You forgot to upload the file',
+	        title : 'Please enter a title',
+	        newsgroup : 'Please enter a newsgroup',
+	        size : 'Please enter the final size of the file'
+	    }
 	});
 }
 
