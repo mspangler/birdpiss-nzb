@@ -18,6 +18,7 @@ function setupLayout() {
 		if (txt == 'Upload') {
 			$('#uploadDialog').dialog('open');
 			$('#uploadForm :input').val('');
+			$('#errorBox').html('');
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
