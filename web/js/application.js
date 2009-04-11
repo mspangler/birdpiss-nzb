@@ -162,7 +162,7 @@ function reloadTable(data) {
 }
 
 function showAjaxLoader() {
-    $('#contentTbl_processing').attr('style', 'visibility:visible;').html('<img src="css/images/ajax-loader.gif" alt="Shovelling coal in the server" />');
+    $('#contentTbl_processing').attr('style', 'visibility:visible;').html('<img src="css/images/ajax-loader.gif" alt="Shovelling coal into the server..." />');
 }
 
 function hideAjaxLoader() {
