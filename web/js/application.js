@@ -33,7 +33,7 @@ function setupLayout() {
 var contentTbl;
 function setupTable() {
 
-    $('tbody').html('');
+    $('tbody').html('');    
 
 	contentTbl = $('#contentTbl').dataTable({
 	    bPaginate : true,
@@ -46,12 +46,11 @@ function setupTable() {
 		aaSorting : [],
 		bStateSave : false,
 		sAjaxSource : 'server/process.php?type=movies',
+		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
 				sSearch : 'Search:',
 				sZeroRecords : 'No files found',
-				sInfo : 'Showing _START_ to _END_ of _TOTAL_ files',
-				sProcessing : 'Shovelling coal into the server...',
-				sInfoEmpty : ''
+				sInfo : 'Showing _START_ to _END_ of _TOTAL_ files'
 		},
 		aoColumns : [
 		        { bVisible : false, bSearchable : false },
@@ -85,6 +84,8 @@ function setupTable() {
 			return nRow;
 		}
 	});
+	
+	showAjaxLoader();
 
 	// Make the search textbox a little longer
 	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
