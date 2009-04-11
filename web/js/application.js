@@ -77,7 +77,7 @@ function setupTable() {
 				} else {
 					nRow.className = cssClass;
 				}
-				console.log('Id: ' + iDisplayIndex);
+				console.log('Content Id: ' + aData[0]);
 			};
 
 			return nRow;
