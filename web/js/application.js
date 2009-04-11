@@ -31,6 +31,8 @@ function setupLayout() {
 var contentTbl;
 function setupTable() {
 
+    $('tbody').html('');
+
 	contentTbl = $('#contentTbl').dataTable({
 	    bPaginate : true,
 	    bLengthChange : false,
@@ -40,7 +42,7 @@ function setupTable() {
 		bSortClasses : false,
 		aaSorting : [],
 		bStateSave : true,
-		sAjaxSource : 'controller.url',
+		sAjaxSource : 'server/process.php?type=movies',
 		oLanguage: {
 				sSearch : 'Search:',
 				sZeroRecords: 'No files found',
@@ -49,11 +51,10 @@ function setupTable() {
 		},
 		aoColumns : [
 		        { bVisible : false, bSearchable : false },
-		        { sTitle : 'Title' },
-		        { sTitle : 'Genre' },
-		        { sTitle : 'Filename' },
-		        { sTitle : 'Rating' },
-		        { sTitle : 'Days Active' }
+		        { sTitle : 'Subject' },
+		        { sTitle : 'Newsgroup' },
+		        { sTitle : 'Size' },
+		        { sTitle : 'Age' }
 			],
 		fnRowCallback : function(nRow, aData, iDisplayIndex) {
 			var cssClass = nRow.className;
@@ -73,6 +74,7 @@ function setupTable() {
 				} else {
 					nRow.className = cssClass;
 				}
+				console.log('Id: ' + iDisplayIndex);
 			};
 
 			return nRow;
@@ -95,8 +97,9 @@ function setupDownloadDialog() {
 		modal : true,
 		autoOpen : false,
 		width : '350px',
+		title : 'Please enjoy this tasty file',
 		buttons : {
-			Close : function() {
+			Download : function() {
 				$(this).dialog('close');
 			}
 		}
@@ -104,21 +107,23 @@ function setupDownloadDialog() {
 }
 
 function setupUploadDialog() {
+    $('#uploadForm :input').val('');
+    $('#size').numeric({ allow:'.' });
 	$('#uploadDialog').dialog({
 		modal : true,
 		autoOpen : false,
-		width : '400px',
+		title : 'Thanks for sharing',
+		width : '450px',
 		buttons : {
-			Close : function() {
-				$(this).dialog('close');
-			}
+			Upload : function() {
+		        $(this).dialog('close');
+		    }
 		}
 	});
 }
 
 function getContent(type) {
-	$.getJSON('controller.url', { type : type.toLowerCase() }, function(data) {
-		console.log(data.aaData);
+	$.getJSON('server/process.php', { type : type.toLowerCase() }, function(data) {
 		reloadTable(data);
 	});
 }

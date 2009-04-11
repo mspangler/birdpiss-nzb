@@ -1,6 +1,8 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>birdpiss-nzb</title>
+	<meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
+	<title>nzbnlbc</title>
 	<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.7.1.custom.css" />
 	<link rel="stylesheet" type="text/css" href="css/main.css" />
 	<script type="text/javascript" src="js/jquery/jquery-1.3.2.min.js"></script>
@@ -8,6 +10,7 @@
 	<script type="text/javascript" src="js/jquery/jquery.layout.min.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery.alphanumeric.min.js"></script>
 	<script type="text/javascript" src="js/application.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -17,40 +20,50 @@
 </head>
 <body>
 	<div class="ui-layout-north">
-		<h2>birdpiss-nzb</h2>
+		<h2>nzbnlbc</h2>
 	</div>
 	<div class="ui-layout-west">
-		<strong>
-			<a href="">Upload</a><br /><hr /><a href="">Movies</a><br /><a href="">Music</a><br /><a href="">Software</a><br />
-		</strong>
+		<strong><a href="">Upload</a></strong><br />
+		<hr />
+		<strong><a href="">Movies</a></strong><br />
+		<strong><a href="">Music</a></strong><br />
+		<strong><a href="">Software</a></strong><br />
 	</div>
 	<div class="ui-layout-center">
 		<table id="contentTbl" cellspacing="0">
 			<thead>
 				<tr>
-					<th>Id</th>
-					<th>Title</th>
-					<th>Genre</th>
-					<th>Filename</th>
-					<th>Rating</th>
-					<th>Days Active</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
 				</tr>
 			</thead>
-			<tbody></tbody>
+			<tbody><tr><td></td></tr></tbody>
 		</table>
 	</div>
 	<div class="dialogs">
-	    <div id="uploadDialog" title="Upload NZB">
-		    <form id="uploadForm" action="index.html" method="post">
-			    <p>NZB Upload Form</p>
-			    NZB File: <input type="textbox" /><br />
-			    Title: <input type="textbox" /><br />
-			    Genre: <input type="textbox" /><br />
-			    <input type="submit" value="Upload" />
+	    <div id="uploadDialog">
+		    <form id="uploadForm" action="index.html" method="post" enctype="multipart/form-data">
+		        <p>
+			        <label for="upload">NZB File</label><br />
+			        <input type="file" name="upload" id="upload" /><br /><br />
+			        <label for="title">Title</label><br />
+			        <input type="text" name="title" id="title" size="30" /><br /><br />
+			        <label for="newsgroup">Newsgroup</label><br />
+			        <input type="text" name="newsgroup" id="newsgroup" size="30" /><br /><br />
+			        <label for="size">Size</label><br />
+			        <input type="text" name="size" id="size" size="5" />&nbsp;
+			        <select>
+			            <option value="GB">GB</option>
+			            <option value="MB">MB</option>
+			        </select>
+			    </p>
 		    </form>
 	    </div>
-	    <div id="downloadDialog" title="Download NZB">
-		    <img src="css/images/zip.png" />&nbsp;&nbsp;&nbsp;<img src="css/images/tar.png" />
+	    <div id="downloadDialog">
+		    <img src="css/images/zip.png" alt="zip image" />&nbsp;&nbsp;&nbsp;<img src="css/images/tar.png" alt="tar image" />
 	    </div>
     </div>
 </body>
