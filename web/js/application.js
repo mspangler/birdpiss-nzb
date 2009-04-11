@@ -59,32 +59,32 @@ function setupTable() {
 		        { sTitle : 'Submitted By' },
 		        { sTitle : 'Size' },
 		        { sTitle : 'Age' }
-			],
-		fnRowCallback : function(nRow, aData, iDisplayIndex) {
-			var cssClass = nRow.className;
-			nRow.onmouseover = function() {
-				if (!$(nRow).hasClass('selected')) {
-					nRow.className = 'hover';
-				}
-			};
-			nRow.onmouseout = function() {
-				if (!$(nRow).hasClass('selected')) {
-					nRow.className = cssClass;
-				}
-			};
-			nRow.onclick = function() {
-				if (!$(nRow).hasClass('selected')) {
-					nRow.className = 'selected';
-				} else {
-					nRow.className = cssClass;
-				}
-				console.log('Content Id: ' + aData[0]);
-			};
-
-			return nRow;
-		}
+			]
 	});
-	
+
+	$('#contentTbl tbody tr').live('mouseover', (function() {
+	    if (!$(this).hasClass('selected')) {
+	        $(this).addClass('hover');
+	    }
+	}));
+
+	$('#contentTbl tbody tr').live('mouseout', (function() {
+	    if (!$(this).hasClass('selected')) {
+	        $(this).removeClass('hover');
+	    }
+	}));
+
+	$('#contentTbl tbody tr').live('click', (function() {
+	    if (!$(this).hasClass('selected')) {
+	        $(this).addClass('selected');
+	    } else {
+	        $(this).removeClass('selected');
+	    }
+	    var pos = contentTbl.fnGetPosition(this),
+	        data = contentTbl.fnGetData(pos);
+	    console.log('Content Id: ' + data[0]);
+	}));
+
 	showAjaxLoader();
 
 	// Make the search textbox a little longer
