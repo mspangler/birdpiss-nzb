@@ -62,6 +62,24 @@ function setupTable() {
 			]
 	});
 
+	setupRowEvents();
+	showAjaxLoader();
+
+	// Make the search textbox a little longer and add focus
+	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
+
+	// Add a download btn next to search
+	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
+
+	$('#downloadBtn').click(function() {
+		$('#downloadDialog').dialog('open');
+	});
+}
+
+function setupRowEvents() {
+    // We use the 'live' methods cause we want to bind the events
+	// to the future data from the ajax call 'sAjaxSource'
+
 	$('#contentTbl tbody tr').live('mouseover', (function() {
 	    if (!$(this).hasClass('selected')) {
 	        $(this).addClass('hover');
@@ -77,25 +95,37 @@ function setupTable() {
 	$('#contentTbl tbody tr').live('click', (function() {
 	    if (!$(this).hasClass('selected')) {
 	        $(this).addClass('selected');
+	        $(this).removeClass('hover');
 	    } else {
 	        $(this).removeClass('selected');
 	    }
 	    var pos = contentTbl.fnGetPosition(this),
 	        data = contentTbl.fnGetData(pos);
-	    console.log('Content Id: ' + data[0]);
 	}));
+}
 
-	showAjaxLoader();
+function getSelectedRows() {
+    var selectedRows = [],
+        tblData = contentTbl.fnGetNodes(),
+        data,
+        j = 0;
+    for (var i = 0; i < tblData.length; i++) {
+        if ($(tblData[i]).hasClass('selected')) {
+            data = contentTbl.fnGetData(i);
+            selectedRows[j] = data[0];
+            j++;
+        }
+    }
+    return selectedRows;
+}
 
-	// Make the search textbox a little longer
-	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
-
-	// Add a download btn next to search
-	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
-
-	$('#downloadBtn').click(function() {
-		$('#downloadDialog').dialog('open');
-	});
+function clearSelectedRows() {
+    var tblData = contentTbl.fnGetNodes();
+    for (var i = 0; i < tblData.length; i++) {
+        if ($(tblData[i]).hasClass('selected')) {
+            $(tblData[i]).removeClass('selected');
+        }
+    }
 }
 
 function setupDownloadDialog() {
@@ -105,8 +135,10 @@ function setupDownloadDialog() {
 		width : '350px',
 		title : 'Please enjoy this tasty file',
 		buttons : {
-			Download : function() {
+			Download : function() {			    
 				$(this).dialog('close');
+				alert("You would've downloaded the following ids: " + getSelectedRows());
+				clearSelectedRows();
 			}
 		}
 	});
