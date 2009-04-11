@@ -42,14 +42,16 @@ function setupTable() {
 		iDisplayLength : 25,
 		sPaginationType : 'full_numbers',
 		bSortClasses : false,
+		bProcessing : true,
 		aaSorting : [],
 		bStateSave : false,
 		sAjaxSource : 'server/process.php?type=movies',
 		oLanguage: {
 				sSearch : 'Search:',
-				sZeroRecords: 'No files found',
-				sInfo: 'Showing _START_ to _END_ of _TOTAL_ files',
-				sInfoEmpty: ''
+				sZeroRecords : 'No files found',
+				sInfo : 'Showing _START_ to _END_ of _TOTAL_ files',
+				sProcessing : 'Shovelling coal into the server...',
+				sInfoEmpty : ''
 		},
 		aoColumns : [
 		        { bVisible : false, bSearchable : false },
