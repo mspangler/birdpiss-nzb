@@ -50,7 +50,7 @@ function setupTable() {
 				sSearch : 'Search:',
 				sZeroRecords : 'No files found',
 				sInfo : 'Showing _START_ to _END_ of _TOTAL_ files',
-				sProcessing : 'Shovelling coal into the server...',
+				sProcessing : 'Shovelling coal in the server...',
 				sInfoEmpty : ''
 		},
 		aoColumns : [
@@ -146,14 +146,25 @@ function setupUploadDialog() {
 }
 
 function getContent(type) {
+    showAjaxLoader();
+    contentTbl.fnClearTable();
 	$.getJSON('server/process.php', { type : type.toLowerCase() }, function(data) {
 		reloadTable(data);
+		hideAjaxLoader();
 	});
 }
 
 function reloadTable(data) {
-	if (contentTbl) {
-		contentTbl.fnClearTable();
+	if (contentTbl) {		
 		contentTbl.fnAddData(data.aaData);
 	}
 }
+
+function showAjaxLoader() {
+    $('#contentTbl_processing').attr('style', 'visibility:visible;').html('<img src="css/images/ajax-loader.gif" alt="Shovelling coal in the server" />');
+}
+
+function hideAjaxLoader() {
+    $('#contentTbl_processing').attr('style', 'visibility:hidden;');
+}
+
