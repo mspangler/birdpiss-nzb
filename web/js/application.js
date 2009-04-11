@@ -16,9 +16,9 @@ function setupLayout() {
 	$('.ui-layout-west a').click(function() {
 		var txt = $(this).text();
 		if (txt == 'Upload') {
-			$('#uploadDialog').dialog('open');
-			$('#uploadForm :input').val('');
+		    $('#uploadForm :input').val('');
 			$('#errorBox').html('');
+			$('#uploadDialog').dialog('open');			
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
@@ -43,7 +43,7 @@ function setupTable() {
 		sPaginationType : 'full_numbers',
 		bSortClasses : false,
 		aaSorting : [],
-		bStateSave : true,
+		bStateSave : false,
 		sAjaxSource : 'server/process.php?type=movies',
 		oLanguage: {
 				sSearch : 'Search:',
@@ -55,6 +55,7 @@ function setupTable() {
 		        { bVisible : false, bSearchable : false },
 		        { sTitle : 'Title' },
 		        { sTitle : 'Newsgroup' },
+		        { sTitle : 'Submitted By' },
 		        { sTitle : 'Size' },
 		        { sTitle : 'Age' }
 			],
