@@ -104,11 +104,11 @@ function setupRowEvents() {
 
 function getSelectedRows() {
     var selectedRows = [],
-        tblData = contentTbl.fnGetNodes(),
+        tblRows = contentTbl.fnGetNodes(),
         data,
         j = 0;
-    for (var i = 0; i < tblData.length; i++) {
-        if ($(tblData[i]).hasClass('selected')) {
+    for (var i = 0; i < tblRows.length; i++) {
+        if ($(tblRows[i]).hasClass('selected')) {
             data = contentTbl.fnGetData(i);
             selectedRows[j] = data[0];
             j++;
@@ -118,10 +118,10 @@ function getSelectedRows() {
 }
 
 function clearSelectedRows() {
-    var tblData = contentTbl.fnGetNodes();
-    for (var i = 0; i < tblData.length; i++) {
-        if ($(tblData[i]).hasClass('selected')) {
-            $(tblData[i]).removeClass('selected');
+    var tblRows = contentTbl.fnGetNodes();
+    for (var i = 0; i < tblRows.length; i++) {
+        if ($(tblRows[i]).hasClass('selected')) {
+            $(tblRows[i]).removeClass('selected');
         }
     }
 }
@@ -180,15 +180,9 @@ function getContent(type) {
     showAjaxLoader();
     contentTbl.fnClearTable();
 	$.getJSON('server/process.php', { type : type.toLowerCase() }, function(data) {
-		reloadTable(data);
+		contentTbl.fnAddData(data.aaData);
 		hideAjaxLoader();
 	});
-}
-
-function reloadTable(data) {
-	if (contentTbl) {		
-		contentTbl.fnAddData(data.aaData);
-	}
 }
 
 function showAjaxLoader() {
