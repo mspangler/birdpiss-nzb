@@ -99,8 +99,6 @@ function setupRowEvents() {
 	    } else {
 	        $(this).removeClass('selected');
 	    }
-	    var pos = contentTbl.fnGetPosition(this),
-	        data = contentTbl.fnGetData(pos);
 	}));
 }
 
