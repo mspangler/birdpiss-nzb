@@ -50,7 +50,7 @@ function setupTable() {
 				sSearch : 'Search:',
 				sZeroRecords : 'No files found',
 				sInfo : 'Showing _START_ to _END_ of _TOTAL_ files',
-				sProcessing : 'Shovelling coal in the server...',
+				sProcessing : 'Shovelling coal into the server...',
 				sInfoEmpty : ''
 		},
 		aoColumns : [
