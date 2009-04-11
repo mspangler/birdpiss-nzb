@@ -72,7 +72,13 @@ function setupTable() {
 	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
 
 	$('#downloadBtn').click(function() {
-		$('#downloadDialog').dialog('open');
+	    var selectedRows = getSelectedRows();
+	    if (selectedRows.length > 0) {
+    		$('#downloadDialog').dialog('open');
+    		
+    	} else {
+    	    alert("Can't give you something you didn't ask for");
+    	}
 	});
 }
 
