@@ -8,6 +8,7 @@ def upload_nzb(request):
         if form.is_valid():
             title = form.cleaned_data['title']
             newsgroup = form.cleaned_data['newsgroup']
+            media = form.cleaned_data['media']
             fsize = form.cleaned_data['size']
             unit = form.cleaned_data['unit']
             # put the two above together to stick in one field
@@ -22,7 +23,7 @@ def upload_nzb(request):
             nzb_data = usenet_file.read()
 
             # save it
-            nzb = Nzb(title=title, newsgroup=newsgroup, size=size, xml_data=nzb_data)
+            nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data)
             nzb.save()
 
             # return some form of success message here or something
