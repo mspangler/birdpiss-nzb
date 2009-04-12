@@ -19,3 +19,8 @@ def upload_nzb(request):
             usenet_file = form.cleaned_data.['usenet_file']
             nzb_data = usenet_file.read()
 
+            # still need to save to db but i'm tired...
+    else:
+        form = NzbUpload()
+
+    return render_to_response('upload.html', {'form', form})
