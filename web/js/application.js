@@ -77,7 +77,7 @@ function setupTable() {
     		$('#downloadDialog').dialog('open');
     		
     	} else {
-    	    alert("Can't give you something you didn't ask for");
+    	    $('#invalidDownloadDialog').dialog('open');
     	}
 	});
 }
@@ -145,6 +145,12 @@ function setupDownloadDialog() {
 				clearSelectedRows();
 			}
 		}
+	});
+	
+	$('#invalidDownloadDialog').dialog({
+	    autoOpen : false,
+	    modal : true,
+	    title : 'Nothing to download'
 	});
 }
 
