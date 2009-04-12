@@ -164,7 +164,7 @@ function setupUploadDialog() {
 		width : '450px',
 		buttons : {
 			Upload : function() {
-		        $('#upload').submit();
+		        $('#uploadForm').submit();
 		    }
 		}
 	});
@@ -174,14 +174,14 @@ function setupUploadDialog() {
 	    errorLabelContainer : '#errorBox',
 	    wrapper : 'li',
 	    rules : {
-	        upload : 'required',
+	        usenet_file : 'required',
 	        title : 'required',
 	        media : 'required',
 	        newsgroup : 'required',
 	        size : 'required'
 	    },
 	    messages : {
-	        upload : 'You forgot to upload the file',
+	        usenet_file : 'You forgot to upload the file',
 	        title : 'Please enter a title',
 	        media : 'Please select a media',
 	        newsgroup : 'Please enter a newsgroup',
