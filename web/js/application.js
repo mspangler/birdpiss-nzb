@@ -170,12 +170,14 @@ function setupUploadDialog() {
 	    rules : {
 	        upload : 'required',
 	        title : 'required',
+	        media : 'required',
 	        newsgroup : 'required',
 	        size : 'required'
 	    },
 	    messages : {
 	        upload : 'You forgot to upload the file',
 	        title : 'Please enter a title',
+	        media : 'Please select a media',
 	        newsgroup : 'Please enter a newsgroup',
 	        size : 'Please enter the final size of the file'
 	    }
