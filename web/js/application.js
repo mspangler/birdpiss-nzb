@@ -77,7 +77,7 @@ function setupTable() {
     		$('#downloadDialog').dialog('open');
     		
     	} else {
-    	    alert("Can't give you something you didn't ask for");
+    	    $('#invalidDownloadDialog').dialog('open');
     	}
 	});
 }
@@ -146,6 +146,12 @@ function setupDownloadDialog() {
 			}
 		}
 	});
+	
+	$('#invalidDownloadDialog').dialog({
+	    autoOpen : false,
+	    modal : true,
+	    title : 'Nothing to download'
+	});
 }
 
 function setupUploadDialog() {
@@ -170,12 +176,14 @@ function setupUploadDialog() {
 	    rules : {
 	        upload : 'required',
 	        title : 'required',
+	        media : 'required',
 	        newsgroup : 'required',
 	        size : 'required'
 	    },
 	    messages : {
 	        upload : 'You forgot to upload the file',
 	        title : 'Please enter a title',
+	        media : 'Please select a media',
 	        newsgroup : 'Please enter a newsgroup',
 	        size : 'Please enter the final size of the file'
 	    }
