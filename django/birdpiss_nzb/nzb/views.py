@@ -1,4 +1,6 @@
+from django.shortcuts import render_to_response
 from nzb.forms import NzbUpload
+from nzb.models import Nzb
 
 def upload_nzb(request):
     if request.method == 'POST':
@@ -19,7 +21,12 @@ def upload_nzb(request):
             usenet_file = form.cleaned_data.['usenet_file']
             nzb_data = usenet_file.read()
 
-            # still need to save to db but i'm tired...
+            # save it
+            nzb = Nzb(title=title, newsgroup=newsgroup, size=size, xml_data=nzb_data)
+            nzb.save()
+
+            # return some form of success message here or something
+            return render_to_response('sucess.html')
     else:
         form = NzbUpload()
 
