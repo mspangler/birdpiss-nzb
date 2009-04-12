@@ -150,7 +150,7 @@ function setupDownloadDialog() {
 	$('#invalidDownloadDialog').dialog({
 	    autoOpen : false,
 	    modal : true,
-	    title : 'Nothing to download'
+	    title : 'Download Fail'
 	});
 }
 
@@ -181,11 +181,11 @@ function setupUploadDialog() {
 	        size : 'required'
 	    },
 	    messages : {
-	        usenet_file : 'You forgot to upload the file',
-	        title : 'Please enter a title',
-	        media : 'Please select a media',
-	        newsgroup : 'Please enter a newsgroup',
-	        size : 'Please enter the final size of the file'
+	        usenet_file : 'File fail',
+	        title : 'Title fail',
+	        media : 'Media fail',
+	        newsgroup : 'Newsgroup fail',
+	        size : 'Size fail'
 	    }
 	});
 }
