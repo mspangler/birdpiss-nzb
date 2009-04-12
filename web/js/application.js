@@ -1,4 +1,12 @@
+/**
+ * Some globals used throughout the script.
+ */
+var contentTbl,
+    mediaUrl = 'server/process.php';
 
+/**
+ * Main method that delegates setting up the page.
+ */
 function setupUI() {
 	setupLayout();
 	setupTable();
@@ -6,6 +14,10 @@ function setupUI() {
 	setupUploadDialog();
 }
 
+/**
+ * Uses the fancy jquery.layout plugin to layout the
+ * main sections of the page and handles the media events.
+ */
 function setupLayout() {
 	$('body').layout({
 		west__showOverflowOnHover : true,
@@ -27,12 +39,16 @@ function setupLayout() {
 		return false;
 	});
 
+    // Select 'Movies' by default
 	$(".ui-layout-west a:contains('Movies')").addClass('selectedCat');
 }
 
-var contentTbl;
+/**
+ * Creates & populates the table as well as wiring the table row events.
+ */
 function setupTable() {
 
+    // Clear out the empty rows
     $('tbody').html('');    
 
 	contentTbl = $('#contentTbl').dataTable({
@@ -45,7 +61,7 @@ function setupTable() {
 		bProcessing : true,
 		aaSorting : [],
 		bStateSave : false,
-		sAjaxSource : 'server/process.php?type=movies',
+		sAjaxSource : mediaUrl + '?type=movies',
 		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
 				sSearch : 'Search:',
@@ -71,6 +87,7 @@ function setupTable() {
 	// Add a download btn next to search
 	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
 
+    // Add an event to our download btn
 	$('#downloadBtn').click(function() {
 	    var selectedRows = getSelectedRows();
 	    if (selectedRows.length > 0) {
@@ -82,9 +99,11 @@ function setupTable() {
 	});
 }
 
+/**
+ * We use the 'live' methods cause we want to bind the events
+ * to the future rows or data.
+ */
 function setupRowEvents() {
-    // We use the 'live' methods cause we want to bind the events
-	// to the future data from the ajax call 'sAjaxSource'
 
 	$('#contentTbl tbody tr').live('mouseover', (function() {
 	    if (!$(this).hasClass('selected')) {
@@ -108,6 +127,11 @@ function setupRowEvents() {
 	}));
 }
 
+/**
+ * Returns an array containing all the selected media ids.
+ *
+ * @return array - array of primary keys of the selected content
+ */
 function getSelectedRows() {
     var selectedRows = [],
         tblRows = contentTbl.fnGetNodes(),
@@ -123,6 +147,9 @@ function getSelectedRows() {
     return selectedRows;
 }
 
+/**
+ * Clears out any selected rows. Called after a download.
+ */
 function clearSelectedRows() {
     var tblRows = contentTbl.fnGetNodes();
     for (var i = 0; i < tblRows.length; i++) {
@@ -132,6 +159,9 @@ function clearSelectedRows() {
     }
 }
 
+/**
+ * Setups our download dialogs.
+ */
 function setupDownloadDialog() {
 	$('#downloadDialog').dialog({
 		modal : true,
@@ -141,12 +171,14 @@ function setupDownloadDialog() {
 		buttons : {
 			Download : function() {			    
 				$(this).dialog('close');
+				// TODO: remove the following test alert
+				// TODO: pass the server the selected ids
 				alert("You would've downloaded the following ids: " + getSelectedRows());
 				clearSelectedRows();
 			}
 		}
 	});
-	
+
 	$('#invalidDownloadDialog').dialog({
 	    autoOpen : false,
 	    modal : true,
@@ -154,9 +186,14 @@ function setupDownloadDialog() {
 	});
 }
 
+/**
+ * Setups our upload form dialog and it's validator.
+ */
 function setupUploadDialog() {
+
     $('#uploadForm :input').val('');
     $('#size').numeric({ allow:'.' });
+
 	$('#uploadDialog').dialog({
 		modal : true,
 		autoOpen : false,
@@ -190,19 +227,31 @@ function setupUploadDialog() {
 	});
 }
 
+/**
+ * Calls the server for the selected media content & clears
+ * the table data & replaces it with the new media data.
+ *
+ * @param type - Movies, Music or Software
+ */
 function getContent(type) {
     showAjaxLoader();
     contentTbl.fnClearTable();
-	$.getJSON('server/process.php', { type : type.toLowerCase() }, function(data) {
+	$.getJSON(mediaUrl, { type : type.toLowerCase() }, function(data) {
 		contentTbl.fnAddData(data.aaData);
 		hideAjaxLoader();
 	});
 }
 
+/**
+ * Displays our animated ajax loader image.
+ */
 function showAjaxLoader() {
     $('#contentTbl_processing').attr('style', 'visibility:visible;').html('<img src="css/images/ajax-loader.gif" alt="Shovelling coal into the server..." />');
 }
 
+/**
+ * Hides our animated ajax loader image.
+ */
 function hideAjaxLoader() {
     $('#contentTbl_processing').attr('style', 'visibility:hidden;');
 }
