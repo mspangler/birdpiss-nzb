@@ -16,5 +16,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
      (r'^admin/(.*)', admin.site.root),
      
+     url(r'^json/(?P<media>\w+)/$', dummy_json, name="dummy_json"),
+     
      (r'^$', index),
 )
