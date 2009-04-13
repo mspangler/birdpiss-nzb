@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response
-from nzb.forms import NzbUpload
+from django.template import RequestContext
 from nzb.models import Nzb
 
 def upload_nzb(request):
@@ -11,7 +11,7 @@ def upload_nzb(request):
         unit = request.POST['unit']
         # put the two above together to stick in one field
         size = "%s %s" % (fsize, unit)
-
+        
         # get file contents to save with out saving file.
         # in theory....
         # i'm going to go ahead and guess that this is going
@@ -19,14 +19,17 @@ def upload_nzb(request):
         # rethink this...
         usenet_file = request.FILES['usenet_file']
         nzb_data = usenet_file.read()
-
+        
         # save it
         nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data)
         nzb.save()
-
+        
         # return some form of success message here or something
         return render_to_response('sucess.html')
     else:
         form = NzbUpload()
+        
+    return False #render_to_response('upload.html', {'form', form })
 
-    return render_to_response('upload.html', {'form', form})
+def index(request):
+    return render_to_response('index.html',{}, context_instance=RequestContext(request))

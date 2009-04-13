@@ -5,3 +5,6 @@
 
 # ignore my local settings files
 *tosh_work_settings.py
+
+# tosh's local manage
+*local_manage.sh
