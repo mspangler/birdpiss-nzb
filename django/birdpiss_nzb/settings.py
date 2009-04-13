@@ -78,3 +78,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
 	'django.contrib.admin'
 )
+
+# this is so i can over ride settings in this file
+# allows me to develop locally on my work machine
+from tosh_work_settings import *
