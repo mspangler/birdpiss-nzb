@@ -29,7 +29,7 @@ def upload_nzb(request):
     else:
         pass
         
-    return return render_to_response('json/success.json',{'message':'neah'})
+    return render_to_response('json/success.json',{'message':'neah'})
 
 def index(request):
     return render_to_response('index.html',{}, context_instance=RequestContext(request))
