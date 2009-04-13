@@ -192,7 +192,7 @@ function setupDownloadDialog() {
 function setupUploadDialog() {
 
     $('#uploadForm :input').val('');
-    $('#size').numeric({ allow:'.' });
+    $('#size').numeric({ allow : '.' });
 
 	$('#uploadDialog').dialog({
 		modal : true,

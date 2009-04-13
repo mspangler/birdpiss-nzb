@@ -24,11 +24,11 @@
 		<h2>nzbnlbc</h2>
 	</div>
 	<div class="ui-layout-west">
-		<strong><a href="">Upload</a></strong><br />
+		<a href="index.html" class="category">Upload</a>
 		<hr />
-		<strong><a href="">Movies</a></strong><br />
-		<strong><a href="">Music</a></strong><br />
-		<strong><a href="">Software</a></strong><br />
+		<a href="index.html" class="category">Movies</a>
+		<a href="index.html" class="category">Music</a>
+		<a href="index.html" class="category">Software</a>
 	</div>
 	<div class="ui-layout-center">
 		<table id="contentTbl" cellspacing="0">
@@ -49,27 +49,27 @@
 	    <div id="uploadDialog">
 		    <form id="uploadForm" action="index.html" method="post" enctype="multipart/form-data">
 		        <p>
-			        <label for="usenet_file">Usenet File</label><br />
-			        <input type="file" name="usenet_file" id="usenet_file" /><br /><br />
-			        <label for="title">Title</label><br />
-			        <input type="text" name="title" id="title" size="30" /><br /><br />			        
-			        <label for="newsgroup">Newsgroup</label><br />
-			        <input type="text" name="newsgroup" id="newsgroup" size="30" /><br /><br />
-			        <label for="media">Media</label><br />
-			        <select id="media" name="media">
-			            <option></option>
+			        <label for="usenet_file">Usenet File</label>
+			        <input type="file" name="usenet_file" id="usenet_file" class="formInput" />
+			        <label for="title">Title</label>
+			        <input type="text" name="title" id="title" size="30" class="formInput" />
+			        <label for="newsgroup">Newsgroup</label>
+			        <input type="text" name="newsgroup" id="newsgroup" size="30" class="formInput" />
+			        <label for="media">Media</label>
+			        <select id="media" name="media" class="formInput">
+			            <option value="">&nbsp;</option>
 			            <option value="movie">Movie</option>
 			            <option value="music">Music</option>
 			            <option value="software">Software</option>
-			        </select><br /><br />
-			        <label for="size">Size</label><br />
+			        </select>
+			        <label for="size">Size</label>
 			        <input type="text" name="size" id="size" size="5" />&nbsp;
 			        <select id="unit" name="unit">
 			            <option value="GB" selected="selected">GB</option>
 			            <option value="MB">MB</option>
 			        </select>			        
 			    </p>
-			    <ul id="errorBox"><li></li></ul>
+			    <ul id="errorBox"><li>&nbsp;</li></ul>
 		    </form>
 	    </div>
 	    <div id="downloadDialog">

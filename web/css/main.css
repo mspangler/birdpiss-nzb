@@ -84,6 +84,19 @@ td {
     color: #ffffff;
 }
 
+.category {
+	font-weight: bold;
+	display: block;
+}
+
+label {
+	display: block;
+}
+
+.formInput {
+	display: block;
+}
+
 .selectedCat {
     color: green;
 }
@@ -127,4 +140,8 @@ td {
 	width: 19px;
 	margin-left: 3px;
 	float: left;
+}
+
+.dataTables_filter {
+    padding: 5px;
 }
