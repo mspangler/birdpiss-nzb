@@ -1,0 +1,147 @@
+
+body {
+	background-color: #ffffff;
+	font-family: helvetica,arial,sans-serif;
+}
+
+a {
+	color: #000000;
+	border:0px;
+	text-decoration: none;
+}
+
+a:visited {
+	border:0px;
+	text-decoration: none;
+}
+
+.dialogs {
+    display: none;
+}
+
+.important {
+    color: red;
+}
+
+.ui-layout-pane {
+	border : 1px solid #000000;
+	padding: 10px;
+	overflow: auto;
+}
+
+.ui-layout-west {
+	max-width: 125px;
+	text-align: center;
+}
+
+.ui-layout-north {
+    max-height: 50px;
+    overflow: hidden;
+}
+
+.nzbBtn {
+    background-color: #000000;
+    color: #ffffff;
+	border: 1px solid #000000;
+	padding: 2px 5px;
+	margin: 0 3px;
+	font-weight: bold;
+	cursor: pointer;
+	-moz-border-radius: 5px;
+}
+
+.nzbSearch {
+	border: 1px solid #000000;
+	padding: 2px 5px;
+	margin: 0 3px;
+	-moz-border-radius: 5px;
+}
+
+#contentTbl {
+    width : 100%;
+	border : 1px solid #000000;
+}
+
+.odd { background-color: #E9E9E9; }
+.even { background-color: #ffffff; }
+
+th {
+	background-color: #000000;
+	color: white;
+	font-weight: bold;
+}
+
+td {
+	text-align:center;
+}
+
+.hover {
+	background-color: #cfcfcf;
+}
+
+.selected {
+    background-color: green;
+    color: #ffffff;
+}
+
+.category {
+	font-weight: bold;
+	display: block;
+}
+
+label {
+	display: block;
+}
+
+.formInput {
+	display: block;
+}
+
+.selectedCat {
+    color: green;
+}
+
+.dataTables_filter {
+    padding:10px;
+}
+
+.dataTables_info {
+	padding: 5px;
+	float: left;
+	width: 40%;
+}
+
+.dataTables_paginate {
+	width: 400px;
+	float: right;
+	text-align: right;
+	margin-top: 10px;
+}
+
+.dataTables_paginate
+.paginate_button,
+.dataTables_paginate
+.paginate_active {
+	border: 1px solid #000000;
+	padding: 2px 5px;
+	margin: 0 3px;
+	cursor: pointer;
+	-moz-border-radius: 5px;
+}
+
+.dataTables_paginate
+.paginate_active {
+	color: white;
+	background-color: #000000;
+}
+
+.paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {
+	height: 19px;
+	width: 19px;
+	margin-left: 3px;
+	float: left;
+}
+
+.dataTables_filter {
+    padding: 5px;
+}
