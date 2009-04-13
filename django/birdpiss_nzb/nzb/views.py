@@ -25,14 +25,15 @@ def upload_nzb(request):
         nzb.save()
         
         # return some form of success message here or something
-        return render_to_response('sucess.html')
+        return render_to_response('json/success.json',{'message':'yeah'})
     else:
-        form = NzbUpload()
+        pass
         
-    return False #render_to_response('upload.html', {'form', form })
+    return return render_to_response('json/success.json',{'message':'neah'})
 
 def index(request):
     return render_to_response('index.html',{}, context_instance=RequestContext(request))
+
 
 def dummy_json(request, media):
     return render_to_response('json/test.json',{'media':media},mimetype="application/json")

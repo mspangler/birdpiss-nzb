@@ -17,6 +17,7 @@ urlpatterns = patterns('',
      (r'^admin/(.*)', admin.site.root),
      
      url(r'^json/(?P<media>\w+)/$', dummy_json, name="dummy_json"),
+     url(r'^upload/$', upload_nzb, name="upload_nzb"),
      
      (r'^$', index),
 )
