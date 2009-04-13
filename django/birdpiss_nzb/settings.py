@@ -77,7 +77,8 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-	'django.contrib.admin'
+	'django.contrib.admin',
+	'nzb',
 )
 
 # this is so i can over ride settings in this file
