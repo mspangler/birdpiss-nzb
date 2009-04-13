@@ -34,6 +34,10 @@ def upload_nzb(request):
 def index(request):
     return render_to_response('index.html',{}, context_instance=RequestContext(request))
 
+def get_json(request, media):
+    nzbs = Nzb.objects.filter(media=media)
+    return render_to_response('json/media.json',{'nzbs':nzbs},mimetype="application/json")
 
 def dummy_json(request, media):
+    
     return render_to_response('json/test.json',{'media':media},mimetype="application/json")

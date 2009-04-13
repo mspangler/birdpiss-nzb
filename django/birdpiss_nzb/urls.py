@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
      (r'^admin/(.*)', admin.site.root),
      
-     url(r'^json/(?P<media>\w+)/$', dummy_json, name="dummy_json"),
+     url(r'^json/(?P<media>\w+)/$', get_json, name="get_json"),
      url(r'^upload/$', upload_nzb, name="upload_nzb"),
      
      (r'^$', index),
