@@ -2,7 +2,7 @@
  * Some globals used throughout the script.
  */
 var contentTbl,
-    mediaUrl = 'server/process.php';
+    mediaUrl = 'json/';
 
 /**
  * Main method that delegates setting up the page.
@@ -61,7 +61,7 @@ function setupTable() {
 		bProcessing : true,
 		aaSorting : [],
 		bStateSave : false,
-		sAjaxSource : mediaUrl + '?type=movies',
+		sAjaxSource : mediaUrl + 'movies/',
 		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
 				sSearch : 'Search:',
@@ -236,7 +236,7 @@ function setupUploadDialog() {
 function getContent(type) {
     showAjaxLoader();
     contentTbl.fnClearTable();
-	$.getJSON(mediaUrl, { type : type.toLowerCase() }, function(data) {
+	$.getJSON(mediaUrl + type.toLowerCase() + '/', function(data) {
 		contentTbl.fnAddData(data.aaData);
 		hideAjaxLoader();
 	});
@@ -255,4 +255,3 @@ function showAjaxLoader() {
 function hideAjaxLoader() {
     $('#contentTbl_processing').attr('style', 'visibility:hidden;');
 }
-
