@@ -24,17 +24,18 @@ def date_diff(d):
     if days == 0:
         if hours == 0:
             if minutes > 0:
-                return ungettext('1 minute ago', \
-                    '%(minutes)d minutes ago', minutes) % \
+                return ungettext('1 minute', \
+                    '%(minutes)d minutes', minutes) % \
                     {'minutes': minutes}
             else:
-                return _("less than 1 minute ago")
+                return _("1 minute")
         else:
-            return ungettext('1 hour ago', '%(hours)d hours ago', hours) \
+            return ungettext('1 hour', '%(hours)d hours', hours) \
             % {'hours':hours}
 
     if delta_midnight.days == 0:
-        return _("yesterday at %s") % d.strftime("%H:%M")
+        #return _("yesterday at %s") % d.strftime("%H:%M")
+        return _("1 day")
 
     count = 0
     for i, (chunk, name) in enumerate(chunks):
@@ -42,5 +43,5 @@ def date_diff(d):
             count = round((delta_midnight.days + 1)/chunk, 0)
             break
 
-    return _('%(number)d %(type)s ago') % \
+    return _('%(number)d %(type)s') % \
         {'number': count, 'type': name(count)}
