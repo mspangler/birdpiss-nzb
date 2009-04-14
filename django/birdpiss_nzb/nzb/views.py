@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 from nzb.models import Nzb
 
 def _get_newsgroup(n):
@@ -11,6 +12,9 @@ def _get_newsgroup(n):
     return node.childNodes[0].data
 
 def upload_nzb(request):
+    if not request.user.is_authenticated():
+        return render_to_response('json/success.json',{'message':'fail', 'url': 'login'})
+    
     if request.method == 'POST':
         title = request.POST['title']
         media = request.POST['media']
@@ -31,20 +35,21 @@ def upload_nzb(request):
         
         # save it
         nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data)
-        nzb.save()
-
+        try:
+            nzb.save()
+            return render_to_response('json/success.json',{'message':'success'})
+        except:
+            # something failed on the save, return teh_fail
+            return render_to_response('json/success.json',{'message':'fail', 'url': 'error' })
         
-        # return success
-        return render_to_response('json/success.json',{'message':'yeah'})
-    else:
-        pass
-        
-    return render_to_response('json/success.json',{'message':'neah'})
 
+@login_required
 def index(request):
     return render_to_response('index.html',{}, context_instance=RequestContext(request))
 
 def get_json(request, media):
+    if not request.user.is_authenticated():
+        return render_to_response('json/success.json',{'message':'fail', 'url': 'login'})
     nzbs = Nzb.objects.filter(media=media)
     return render_to_response('json/media.json',{'nzbs':nzbs},mimetype="application/json")
 
