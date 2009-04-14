@@ -129,9 +129,9 @@ function setupRowEvents() {
 }
 
 /**
- * Returns an comma separated string containing all the selected media ids.
+ * Returns an slash separated string containing all the selected media ids.
  *
- * @return string - comma separated string of primary keys of the selected content
+ * @return string - slash separated string of primary keys of the selected content
  */
 function getSelectedRows() {
     var selectedRows = '',
@@ -140,11 +140,10 @@ function getSelectedRows() {
     for (var i = 0; i < tblRows.length; i++) {
         if ($(tblRows[i]).hasClass('selected')) {
             data = contentTbl.fnGetData(i);
-            selectedRows += data[0] + ',';
+            selectedRows += data[0] + '/';
 		}
     }
-	// Remove the trailing comma & return
-    return selectedRows.substr(0, (selectedRows.length - 1));
+    return selectedRows;
 }
 
 /**
@@ -229,9 +228,13 @@ function setupUploadDialog() {
 				},
 				success : function(data) {
 					console.log('Upload Response: ' + data.response);
-					$('#uploadDialog').dialog('close');
-					$('#uploadingMsg').attr('style', 'display:none;');
-					getContent(defaultContent);
+					if (data.response == 'success') {
+						$('#uploadDialog').dialog('close');
+						$('#uploadingMsg').attr('style', 'display:none;');
+						getContent(defaultContent);
+					} else {
+						handleFail(data);
+					}
 				}
 			});
 		}
@@ -260,8 +263,12 @@ function getContent(type) {
 	$('#contentTbl_filter :text:first').val('');
 	contentTbl.fnFilter('');
 	$.getJSON(contentUrl + type.toLowerCase() + '/', function(data) {
-		contentTbl.fnAddData(data.aaData);
-		hideAjaxLoader();
+		if (data.response == 'success') {
+			contentTbl.fnAddData(data.aaData);
+			hideAjaxLoader();
+		} else {
+			handleFail(data);
+		}
 	});
 }
 
@@ -279,3 +286,10 @@ function hideAjaxLoader() {
     $('#contentTbl_processing').attr('style', 'visibility:hidden;');
 }
 
+/**
+ * Something bad happened so we're gonna redirect the user
+ */
+function handleFail(data) {
+	console.log('Fail Response Url: ' + data.url);
+	window.location = data.url;
+}
