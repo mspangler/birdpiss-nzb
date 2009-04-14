@@ -2,6 +2,8 @@ from django import template
 from django.utils.translation import ungettext, ugettext as _
 import datetime
 
+register = template.Library()
+
 @register.filter
 def date_diff(d):
 
