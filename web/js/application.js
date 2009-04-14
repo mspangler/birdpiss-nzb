@@ -41,8 +41,8 @@ function setupLayout() {
 		return false;
 	});
 
-    // Select 'Movies' by default
-	$(".ui-layout-west a:contains('Movies')").addClass('selectedCat');
+    // Select default content
+	$(".ui-layout-west a[id='" + defaultContent + "']").addClass('selectedCat');
 }
 
 /**
@@ -238,7 +238,7 @@ function setupUploadDialog() {
 	});
 
 	// Wire the 'enter' key to submit the form if hit on the last input element
-	$('#uploadForm :input[name="size"]').keypress(function(e) {
+	$('#uploadForm :input[id="size"]').keypress(function(e) {
 	    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 	        $('#uploadForm').submit();
 	        return false;
