@@ -28,15 +28,15 @@ function setupLayout() {
 	});
 
 	$('.ui-layout-west a').click(function() {
-		var txt = $(this).text();
-		if (txt == 'Upload') {
+		var id = $(this).attr('id');
+		if (id == 'upload') {
 		    $('#uploadForm :input').val('');
 			$('#errorBox').html('');
 			$('#uploadDialog').dialog('open');
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
-			getContent(txt);
+			getContent(id);
 		}
 		return false;
 	});
