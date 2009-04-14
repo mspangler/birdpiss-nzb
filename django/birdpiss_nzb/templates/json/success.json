@@ -1,1 +1,1 @@
-{ 'response' : '{{message}}' }
+{ 'response' : '{{message}}' {% ifequal message "fail" %}, 'url' : '{{url}}'{% endifequal %}}
