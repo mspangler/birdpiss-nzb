@@ -227,7 +227,6 @@ function setupUploadDialog() {
 	                $('#uploadingMsg').attr('style', 'display:inline;');
 				},
 				success : function(data) {
-					console.log('Upload Response: ' + data.response);
 					if (data.response == 'success') {
 						$('#uploadDialog').dialog('close');
 						$('#uploadingMsg').attr('style', 'display:none;');
@@ -290,6 +289,6 @@ function hideAjaxLoader() {
  * Something bad happened so we're gonna redirect the user
  */
 function handleFail(data) {
-	console.log('Fail Response Url: ' + data.url);
+	console.log('Failed Response - Code: ' + data.response + ' - Url: ' + data.url);
 	window.location = data.url;
 }
