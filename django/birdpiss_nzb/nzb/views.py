@@ -2,6 +2,13 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from nzb.models import Nzb
 
+def _get_newsgroup(n):
+    from xml.dom import minidom
+    
+    dom = minidom.parse(n)
+    node = dom.getElementsByTagName('group')[0]
+    return node.childNodes[0].data
+
 def upload_nzb(request):
     if request.method == 'POST':
         title = request.POST['title']
@@ -42,11 +49,3 @@ def get_json(request, media):
 def dummy_json(request, media):
     
     return render_to_response('json/test.json',{'media':media},mimetype="application/json")
-
-
-def _get_newsgroup(n):
-    from xml.dom import minidom
-    
-    dom = minidom.parse(n)
-    node = dom.getElementsByTagName('group')[0]
-    return node.childNodes[0].data

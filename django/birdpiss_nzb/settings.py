@@ -79,6 +79,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
 	'django.contrib.admin',
 	'nzb',
+	'date_diff',
 )
 
 # this is so i can over ride settings in this file
