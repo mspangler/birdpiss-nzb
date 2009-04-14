@@ -3,7 +3,8 @@
  */
 var contentTbl,
 	mediaUrl = 'http://media.birdpiss.com/',
-    contentUrl = 'json/';
+    contentUrl = 'json/',
+    defaultMedia = 'movies';
 
 /**
  * Main method that delegates setting up the page.
@@ -62,7 +63,7 @@ function setupTable() {
 		bProcessing : true,
 		aaSorting : [],
 		bStateSave : false,
-		sAjaxSource : contentUrl + 'movies/',
+		sAjaxSource : contentUrl + defaultMedia + '/',
 		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
 				sSearch : 'Search:',
@@ -215,16 +216,35 @@ function setupUploadDialog() {
 	        usenet_file : 'required',
 	        title : 'required',
 	        media : 'required',
-	        newsgroup : 'required',
 	        size : 'required'
 	    },
 	    messages : {
 	        usenet_file : 'File fail',
 	        title : 'Title fail',
 	        media : 'Media fail',
-	        newsgroup : 'Newsgroup fail',
 	        size : 'Size fail'
+	    },
+		submitHandler : function(form) {
+			$(form).ajaxSubmit({
+				beforeSubmit : function(formData, jqForm, options) {
+	                $('#uploadingMsg').html('Spinning up the hamster... <img src="' + mediaUrl + 'css/images/ajax-uploader.gif" alt="" />');
+				},
+				success : function() {
+					$('#uploadDialog').dialog('close');
+					$('#uploadingMsg').html('');
+					getContent(defaultMedia);
+				}
+			});
+		}
+	});
+	
+	// Wire the 'enter' key to submit the form if hit on an input element
+	$('#uploadForm :input').keypress(function(e) {
+	    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+	        $('#uploadForm').submit();
+	        return false;
 	    }
+	    return true;
 	});
 }
 
@@ -256,3 +276,4 @@ function showAjaxLoader() {
 function hideAjaxLoader() {
     $('#contentTbl_processing').attr('style', 'visibility:hidden;');
 }
+

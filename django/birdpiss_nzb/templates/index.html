@@ -12,6 +12,7 @@
 	<script type="text/javascript" src="{{MEDIA_URL}}/js/jquery/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}/js/jquery/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}/js/jquery/jquery.alphanumeric.min.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}/js/jquery/jquery.form.min.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}/js/application.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -53,8 +54,6 @@
 			        <input type="file" name="usenet_file" id="usenet_file" class="formInput" />
 			        <label for="title">Title</label>
 			        <input type="text" name="title" id="title" size="30" class="formInput" />
-			        <label for="newsgroup">Newsgroup</label>
-			        <input type="text" name="newsgroup" id="newsgroup" size="30" class="formInput" />
 			        <label for="media">Media</label>
 			        <select id="media" name="media" class="formInput">
 			            <option value="">&nbsp;</option>
@@ -67,9 +66,10 @@
 			        <select id="unit" name="unit">
 			            <option value="GB" selected="selected">GB</option>
 			            <option value="MB">MB</option>
-			        </select>			        
-			    </p>
+			        </select>
+			    </p>			    
 			    <ul id="errorBox"><li>&nbsp;</li></ul>
+			    <span id="uploadingMsg">&nbsp;</span>
 		    </form>
 	    </div>
 	    <div id="downloadDialog">
