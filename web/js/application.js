@@ -129,9 +129,9 @@ function setupRowEvents() {
 }
 
 /**
- * Returns an comma separated string containing all the selected media ids.
+ * Returns an slash separated string containing all the selected media ids.
  *
- * @return string - comma separated string of primary keys of the selected content
+ * @return string - slash separated string of primary keys of the selected content
  */
 function getSelectedRows() {
     var selectedRows = '',
@@ -140,11 +140,10 @@ function getSelectedRows() {
     for (var i = 0; i < tblRows.length; i++) {
         if ($(tblRows[i]).hasClass('selected')) {
             data = contentTbl.fnGetData(i);
-            selectedRows += data[0] + ',';
+            selectedRows += data[0] + '/';
 		}
     }
-	// Remove the trailing comma & return
-    return selectedRows.substr(0, (selectedRows.length - 1));
+    return selectedRows;
 }
 
 /**
@@ -228,17 +227,20 @@ function setupUploadDialog() {
 	                $('#uploadingMsg').attr('style', 'display:inline;');
 				},
 				success : function(data) {
-					console.log('Upload Response: ' + data.response);
-					$('#uploadDialog').dialog('close');
-					$('#uploadingMsg').attr('style', 'display:none;');
-					getContent(defaultContent);
+					if (data.response == 'success') {
+						$('#uploadDialog').dialog('close');
+						$('#uploadingMsg').attr('style', 'display:none;');
+						getContent(defaultContent);
+					} else {
+						handleFail(data);
+					}
 				}
 			});
 		}
 	});
 
-	// Wire the 'enter' key to submit the form if hit on the last input element
-	$('#uploadForm :input[id="size"]').keypress(function(e) {
+	// Wire the 'enter' key to submit the form if hit on the last input elements
+	$('#uploadForm :input[class!="formInput"]').keypress(function(e) {
 	    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 	        $('#uploadForm').submit();
 	        return false;
@@ -256,9 +258,16 @@ function setupUploadDialog() {
 function getContent(type) {
     showAjaxLoader();
     contentTbl.fnClearTable();
+	// Clear the search when switching to a new category
+	$('#contentTbl_filter :text:first').val('');
+	contentTbl.fnFilter('');
 	$.getJSON(contentUrl + type.toLowerCase() + '/', function(data) {
-		contentTbl.fnAddData(data.aaData);
-		hideAjaxLoader();
+		if (data.response == 'success') {
+			contentTbl.fnAddData(data.aaData);
+			hideAjaxLoader();
+		} else {
+			handleFail(data);
+		}
 	});
 }
 
@@ -276,3 +285,10 @@ function hideAjaxLoader() {
     $('#contentTbl_processing').attr('style', 'visibility:hidden;');
 }
 
+/**
+ * Something bad happened so we're gonna redirect the user
+ */
+function handleFail(data) {
+	console.log('Failed Response - Code: ' + data.response + ' - Url: ' + data.url);
+	window.location = data.url;
+}
