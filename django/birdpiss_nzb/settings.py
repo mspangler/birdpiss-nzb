@@ -83,6 +83,10 @@ INSTALLED_APPS = (
 	'date_diff',
 )
 
+EMAIL_HOST = 'mail.birdpiss.com'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = ''
+DEFAULT_FROM_EMAIL = ''
 # this is so i can over ride settings in this file
 # allows me to develop locally on my work machine
 try:
