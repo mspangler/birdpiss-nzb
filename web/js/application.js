@@ -129,23 +129,22 @@ function setupRowEvents() {
 }
 
 /**
- * Returns an array containing all the selected media ids.
+ * Returns an comma separated string containing all the selected media ids.
  *
- * @return array - array of primary keys of the selected content
+ * @return string - comma separated string of primary keys of the selected content
  */
 function getSelectedRows() {
-    var selectedRows = [],
+    var selectedRows = '',
         tblRows = contentTbl.fnGetNodes(),
-        data,
-        j = 0;
+        data;
     for (var i = 0; i < tblRows.length; i++) {
         if ($(tblRows[i]).hasClass('selected')) {
             data = contentTbl.fnGetData(i);
-            selectedRows[j] = data[0];
-            j++;
-        }
+            selectedRows += data[0] + ',';
+		}
     }
-    return selectedRows;
+	// Remove the trailing comma & return
+    return selectedRows.substr(0, (selectedRows.length - 1));
 }
 
 /**
