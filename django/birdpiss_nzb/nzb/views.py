@@ -3,10 +3,11 @@ from django.template import RequestContext
 from nzb.models import Nzb
 
 def _get_newsgroup(n):
-    from xml.dom import minidom
+    import xml.dom.minidom
     
-    dom = minidom.parse(n)
+    dom = xml.dom.minidom.parseString(n)
     node = dom.getElementsByTagName('group')[0]
+    
     return node.childNodes[0].data
 
 def upload_nzb(request):
@@ -31,8 +32,9 @@ def upload_nzb(request):
         # save it
         nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data)
         nzb.save()
+
         
-        # return some form of success message here or something
+        # return success
         return render_to_response('json/success.json',{'message':'yeah'})
     else:
         pass
