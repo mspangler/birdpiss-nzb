@@ -2,7 +2,7 @@ from django.db import models
 
 class Nzb(models.Model):
     title = models.CharField(blank=False, max_length=50)
-    newsgroup = models.CharField(blank=True, max_length=25)
+    newsgroup = models.CharField(blank=True, max_length=50)
     size = models.CharField(blank=True, max_length=10)
     xml_data = models.TextField(blank=False)
     # this media field should probably be a foreignkey
