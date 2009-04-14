@@ -4,7 +4,7 @@
 var contentTbl,
 	mediaUrl = 'http://media.birdpiss.com/',
     contentUrl = 'json/',
-    defaultContent = 'movies';
+    defaultContent = 'tv';
 
 /**
  * Main method that delegates setting up the page.
