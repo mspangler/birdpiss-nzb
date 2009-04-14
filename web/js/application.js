@@ -4,7 +4,7 @@
 var contentTbl,
 	mediaUrl = 'http://media.birdpiss.com/',
     contentUrl = 'json/',
-    defaultMedia = 'movies';
+    defaultContent = 'movies';
 
 /**
  * Main method that delegates setting up the page.
@@ -62,7 +62,7 @@ function setupTable() {
 		bSortClasses : false,
 		bProcessing : true,
 		aaSorting : [],
-		sAjaxSource : contentUrl + defaultMedia + '/',
+		sAjaxSource : contentUrl + defaultContent + '/',
 		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
 				sSearch : 'Search:',
@@ -233,7 +233,7 @@ function setupUploadDialog() {
 					console.log('Upload Response: ' + data.response);
 					$('#uploadDialog').dialog('close');
 					$('#uploadingMsg').attr('style', 'display:none;');
-					getContent(defaultMedia);
+					getContent(defaultContent);
 				}
 			});
 		}
