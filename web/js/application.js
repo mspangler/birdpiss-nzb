@@ -192,7 +192,6 @@ function setupDownloadDialog() {
  */
 function setupUploadDialog() {
 
-    $('#uploadForm :input').val('');
     $('#size').numeric({ allow : '.' });
 
 	$('#uploadDialog').dialog({
@@ -215,13 +214,13 @@ function setupUploadDialog() {
 	        usenet_file : 'required',
 	        title : 'required',
 	        media : 'required',
-	        size : 'required'
+	        size : { required : true, number : true, min : 1 }
 	    },
 	    messages : {
 	        usenet_file : 'File fail',
 	        title : 'Title fail',
 	        media : 'Media fail',
-	        size : 'Size fail'
+	        size : { required : 'Size fail', number : 'Size must be a number', min : 'Size is too small' }
 	    },
 		submitHandler : function(form) {
 			$(form).ajaxSubmit({
