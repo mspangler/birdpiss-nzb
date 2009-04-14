@@ -237,8 +237,8 @@ function setupUploadDialog() {
 		}
 	});
 
-	// Wire the 'enter' key to submit the form if hit on the last input element
-	$('#uploadForm :input[id="size"]').keypress(function(e) {
+	// Wire the 'enter' key to submit the form if hit on the last input elements
+	$('#uploadForm :input[class!="formInput"]').keypress(function(e) {
 	    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 	        $('#uploadForm').submit();
 	        return false;
