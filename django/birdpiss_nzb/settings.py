@@ -1,10 +1,11 @@
 # Django settings for birdpiss_nzb project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+    ('tosh', 'toshism@gmail.com'),
+    ('mark', 'mspangler@gmail')
 )
 
 MANAGERS = ADMINS
