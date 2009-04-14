@@ -36,6 +36,10 @@ function setupLayout() {
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
+
+			// Clear the search when switching to a new category
+			$('#contentTbl_filter :text:first').val('');
+
 			getContent(id);
 		}
 		return false;
