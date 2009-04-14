@@ -48,6 +48,8 @@ def index(request):
     return render_to_response('index.html',{}, context_instance=RequestContext(request))
 
 def get_json(request, media):
+    if not request.user.is_authenticated():
+        return render_to_response('json/success.json',{'message':'fail', 'url': 'login'})
     nzbs = Nzb.objects.filter(media=media)
     return render_to_response('json/media.json',{'nzbs':nzbs},mimetype="application/json")
 
