@@ -32,7 +32,7 @@ function setupLayout() {
 		if (txt == 'Upload') {
 		    $('#uploadForm :input').val('');
 			$('#errorBox').html('');
-			$('#uploadDialog').dialog('open');			
+			$('#uploadDialog').dialog('open');
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
@@ -51,7 +51,7 @@ function setupLayout() {
 function setupTable() {
 
     // Clear out the empty rows
-    $('tbody').html('');    
+    $('tbody').html('');
 
 	contentTbl = $('#contentTbl').dataTable({
 	    bPaginate : true,
@@ -62,7 +62,6 @@ function setupTable() {
 		bSortClasses : false,
 		bProcessing : true,
 		aaSorting : [],
-		bStateSave : false,
 		sAjaxSource : contentUrl + defaultMedia + '/',
 		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
@@ -94,7 +93,7 @@ function setupTable() {
 	    var selectedRows = getSelectedRows();
 	    if (selectedRows.length > 0) {
     		$('#downloadDialog').dialog('open');
-    		
+
     	} else {
     	    $('#invalidDownloadDialog').dialog('open');
     	}
@@ -171,7 +170,7 @@ function setupDownloadDialog() {
 		width : '350px',
 		title : 'Please enjoy this tasty file',
 		buttons : {
-			Download : function() {			    
+			Download : function() {
 				$(this).dialog('close');
 				// TODO: remove the following test alert
 				// TODO: pass the server the selected ids
@@ -226,20 +225,22 @@ function setupUploadDialog() {
 	    },
 		submitHandler : function(form) {
 			$(form).ajaxSubmit({
+				dataType : 'json',
 				beforeSubmit : function(formData, jqForm, options) {
-	                $('#uploadingMsg').html('Spinning up the hamster... <img src="' + mediaUrl + 'css/images/ajax-uploader.gif" alt="" />');
+	                $('#uploadingMsg').attr('style', 'display:inline;');
 				},
-				success : function() {
+				success : function(data) {
+					console.log('Upload Response: ' + data.response);
 					$('#uploadDialog').dialog('close');
-					$('#uploadingMsg').html('');
+					$('#uploadingMsg').attr('style', 'display:none;');
 					getContent(defaultMedia);
 				}
 			});
 		}
 	});
-	
-	// Wire the 'enter' key to submit the form if hit on an input element
-	$('#uploadForm :input').keypress(function(e) {
+
+	// Wire the 'enter' key to submit the form if hit on the last input element
+	$('#uploadForm :input[name="size"]').keypress(function(e) {
 	    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 	        $('#uploadForm').submit();
 	        return false;
