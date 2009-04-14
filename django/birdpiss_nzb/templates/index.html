@@ -25,11 +25,12 @@
 		<h2>nzbnlbc</h2>
 	</div>
 	<div class="ui-layout-west">
-		<a href="index.html" class="category">Upload</a>
+		<a href="index.html" class="category" id="upload">Upload</a>
 		<hr />
-		<a href="index.html" class="category">Movies</a>
-		<a href="index.html" class="category">Music</a>
-		<a href="index.html" class="category">Software</a>
+		<a href="index.html" class="category" id="movies">Movies</a>
+		<a href="index.html" class="category" id="tv">TV Shows</a>
+		<a href="index.html" class="category" id="music">Music</a>
+		<a href="index.html" class="category" id="software">Software</a>
 	</div>
 	<div class="ui-layout-center">
 		<table id="contentTbl" cellspacing="0">
@@ -58,6 +59,7 @@
 			        <select id="media" name="media" class="formInput">
 			            <option value="">&nbsp;</option>
 			            <option value="movies">Movie</option>
+						<option value="tv">TV Show</option>
 			            <option value="music">Music</option>
 			            <option value="software">Software</option>
 			        </select>
