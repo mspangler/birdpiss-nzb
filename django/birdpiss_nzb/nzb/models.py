@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Nzb(models.Model):
     title = models.CharField(blank=False, max_length=50)
@@ -8,6 +9,7 @@ class Nzb(models.Model):
     # this media field should probably be a foreignkey
     # but as simple as it is right now meh....
     media = models.CharField(blank=False, max_length=25)
+    user = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
