@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from nzb.models import Nzb
 
 def _get_newsgroup(n):
@@ -13,7 +14,7 @@ def _get_newsgroup(n):
 
 def upload_nzb(request):
     if not request.user.is_authenticated():
-        return render_to_response('json/success.json',{'message':'fail', 'url': 'login'})
+        return render_to_response('json/success.json',{'message':'fail', 'url': reverse('login')}, mimetype="application/json")
     
     if request.method == 'POST':
         title = request.POST['title']
@@ -37,10 +38,10 @@ def upload_nzb(request):
         nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data)
         try:
             nzb.save()
-            return render_to_response('json/success.json',{'message':'success'})
+            return render_to_response('json/success.json',{'message':'success'}, mimetype="application/json")
         except:
             # something failed on the save, return teh_fail
-            return render_to_response('json/success.json',{'message':'fail', 'url': 'error' })
+            return render_to_response('json/success.json',{'message':'fail', 'url': 'error' }, mimetype="application/json")
         
 
 @login_required
@@ -49,9 +50,9 @@ def index(request):
 
 def get_json(request, media):
     if not request.user.is_authenticated():
-        return render_to_response('json/success.json',{'message':'fail', 'url': 'login'})
+        return render_to_response('json/success.json',{'message':'fail', 'url': reverse('login')}, mimetype="application/json")
     nzbs = Nzb.objects.filter(media=media)
-    return render_to_response('json/media.json',{'message':'success', 'nzbs':nzbs},mimetype="application/json")
+    return render_to_response('json/media.json',{'message':'success', 'nzbs':nzbs}, mimetype="application/json")
 
 def download(request, ids):
     import memzip
@@ -86,4 +87,4 @@ def download(request, ids):
 
 def dummy_json(request, media):
     
-    return render_to_response('json/test.json',{'media':media},mimetype="application/json")
+    return render_to_response('json/test.json',{'media':media}, mimetype="application/json")
