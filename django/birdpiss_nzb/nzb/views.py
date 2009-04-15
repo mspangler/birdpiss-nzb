@@ -61,6 +61,7 @@ def get_json(request, media):
     nzbs = Nzb.objects.filter(media=media)
     return render_to_response('json/media.json',{'message':'success', 'nzbs':nzbs}, mimetype="application/json")
 
+@login_required
 def download(request, ids):
     import memzip
     import StringIO
