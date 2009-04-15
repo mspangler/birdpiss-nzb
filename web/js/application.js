@@ -84,7 +84,7 @@ function setupTable() {
 	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
 
 	// Add a download btn next to search
-	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
+	$('#contentTbl_filter').append('&nbsp;<input type="button" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
 
     // Add an event to our download btn
 	$('#downloadBtn').click(function() {
@@ -214,9 +214,9 @@ function setupUploadDialog() {
 	                $('#uploadingMsg').attr('style', 'display:inline;');
 				},
 				success : function(data) {
+					$('#uploadingMsg').attr('style', 'display:none;');
+					$('#uploadDialog').dialog('close');
 					if (data.response == 'success') {
-						$('#uploadDialog').dialog('close');
-						$('#uploadingMsg').attr('style', 'display:none;');
 						getContent(defaultContent);
 					} else {
 						handleFail(data);
@@ -246,9 +246,9 @@ function getContent(type) {
     showAjaxLoader();
     clearTable();
 	$.getJSON('json/' + type.toLowerCase() + '/', function(data) {
+		hideAjaxLoader();
 		if (data.response == 'success') {
 			contentTbl.fnAddData(data.aaData);
-			hideAjaxLoader();
 		} else {
 			handleFail(data);
 		}
