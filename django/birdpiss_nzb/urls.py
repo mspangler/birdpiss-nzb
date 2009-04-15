@@ -18,6 +18,7 @@ urlpatterns = patterns('',
      
      url(r'^json/(?P<media>\w+)/$', get_json, name="get_json"),
      url(r'^upload/$', upload_nzb, name="upload_nzb"),
+     url(r'^download/(?P<ids>.*)/$', download, name="download"),
      
      (r'^$', index),
 )

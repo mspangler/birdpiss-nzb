@@ -53,6 +53,37 @@ def get_json(request, media):
     nzbs = Nzb.objects.filter(media=media)
     return render_to_response('json/media.json',{'message':'success', 'nzbs':nzbs},mimetype="application/json")
 
+def download(request, ids):
+    import memzip
+    import StringIO
+    from django.http import HttpResponse
+    
+    # parse url to get list of ids
+    idlist = ids.split('/')
+    
+    # get nzbs for id list
+    nzbs = Nzb.objects.filter(pk__in=idlist)
+    
+    # create in memory zip
+    imz = memzip.InMemoryZip()
+    
+    # append each nzb to in memory zip
+    for nzb in nzbs:
+        fname = "%s.nzb" % nzb.title
+        content = nzb.xml_data
+        imz.append(fname.encode('utf-8'), content.encode('utf-8'))
+    
+    # create string object and add zip to it
+    tzip = StringIO.StringIO()
+    tzip = imz.read()
+    
+    # create response object of type x-zip-compressed
+    response = HttpResponse(tzip, mimetype='application/x-zip-compressed')
+    response['Content-Disposition'] = 'attachment; filename=birdpiss.zip'
+    
+    return response
+
+
 def dummy_json(request, media):
     
     return render_to_response('json/test.json',{'media':media},mimetype="application/json")
