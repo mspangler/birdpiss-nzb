@@ -90,13 +90,8 @@ function setupTable() {
 	$('#downloadBtn').click(function() {
 	    var selectedRows = getSelectedRows();
 	    if (selectedRows.length > 0) {
-    		$.getJSON('download/' + selectedRows, function(data) {
-				if (data.response == 'success') {
-					clearSelectedRows();
-				} else {
-					handleFail(data);
-				}
-			});
+    		window.location = 'download/' + selectedRows;
+			clearSelectedRows();
     	} else {
     	    $('#msgDialog').dialog('open').html("<span style='color:red;'>Download Fail:</span> Can't give you something you didn't ask for");
     	}
@@ -212,7 +207,7 @@ function setupUploadDialog() {
 				dataType : 'json',
 				timeout : 12000,
 				error : function(XMLHttpRequest, textStatus, errorThrown) {
-					$('#msgDialog').dialog('open').html("<span style='color:red;'>Upload Fail:</span> " + errorThrown);
+					$('#msgDialog').dialog('open').html('<span style="color:red;">Upload Fail:</span> ' + errorThrown);
 				},
 				beforeSubmit : function(formData, jqForm, options) {
 	                $('#uploadingMsg').attr('style', 'display:inline;');
