@@ -1,0 +1,14 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
+	<title>{% block title %}Birdpiss Nzb{% endblock %}</title>
+	<link href="{{MEDIA_URL}}/css/images/favicon.ico" rel="icon" type="image/x-icon" />
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/jquery-ui-1.7.1.custom.css" />
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/main.css" />
+    {% block extra_headers %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>
