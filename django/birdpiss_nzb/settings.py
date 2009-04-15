@@ -84,6 +84,7 @@ INSTALLED_APPS = (
 )
 
 LOGIN_REDIRECT_URL = "https://birdpiss.com/nzb"
+LOGIN_URL = "https://birdpiss.com/nzb/login"
 
 EMAIL_HOST = 'mail.birdpiss.com'
 EMAIL_HOST_PASSWORD = ''
