@@ -288,6 +288,6 @@ function hideAjaxLoader() {
  * Something bad happened so we're gonna redirect the user
  */
 function handleFail(data) {
-	$('#msgDialog').dialog('open').html("<span style='color:red;'>Failed Response -</span> Code: " + data.response + " - Url: " + data.url);
+	alert('Failed Response - Code: ' + data.response + ' - Url: ' + data.url);
 	window.location = data.url;
 }
