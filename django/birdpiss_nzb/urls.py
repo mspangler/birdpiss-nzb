@@ -19,8 +19,12 @@ urlpatterns = patterns('',
      url(r'^json/(?P<media>\w+)/$', get_json, name="get_json"),
      url(r'^upload/$', upload_nzb, name="upload_nzb"),
      url(r'^download/(?P<ids>.*)/$', download, name="download"),
-     url(r'^accounts/login/$', 'django.contrib.auth.views.login', name="login"),
+     url(r'^login/$', 'django.contrib.auth.views.login', name="login"),
+     url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'registration/logout.html'}, name="logout"),
+     url(r'^accounts/login/$', 'django.contrib.auth.views.login', name="account_login"),
+     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'registration/logout.html'}, name="account_logout"),
+     url(r'^accounts/$', 'django.contrib.auth.views.login', name="accounts_root"),
      
      
-     (r'^$', index),
+     url(r'^$', index, name="root_url"),
 )
