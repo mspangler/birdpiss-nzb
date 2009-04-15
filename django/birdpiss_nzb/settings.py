@@ -83,6 +83,8 @@ INSTALLED_APPS = (
 	'date_diff',
 )
 
+LOGIN_REDIRECT_URL = "https://birdpiss.com/nzb"
+
 EMAIL_HOST = 'mail.birdpiss.com'
 EMAIL_HOST_PASSWORD = ''
 EMAIL_HOST_USER = ''
