@@ -10,7 +10,7 @@ var contentTbl,
 function setupUI() {
 	setupLayout();
 	setupTable();
-	setupDownloadDialog();
+	setupMsgDialog();
 	setupUploadDialog();
 }
 
@@ -98,7 +98,7 @@ function setupTable() {
 				}
 			});
     	} else {
-    	    $('#invalidDownloadDialog').dialog('open');
+    	    $('#msgDialog').dialog('open').html("<span style='color:red;'>Download Fail:</span> Can't give you something you didn't ask for");
     	}
 	});
 }
@@ -164,11 +164,11 @@ function clearSelectedRows() {
 /**
  * Setups our download dialogs.
  */
-function setupDownloadDialog() {
-	$('#invalidDownloadDialog').dialog({
+function setupMsgDialog() {
+	$('#msgDialog').dialog({
 	    autoOpen : false,
 	    modal : true,
-	    title : 'Download Fail'
+	    title : 'Message'
 	});
 }
 
@@ -210,17 +210,23 @@ function setupUploadDialog() {
 		submitHandler : function(form) {
 			$(form).ajaxSubmit({
 				dataType : 'json',
+				timeout : 12000,
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					$('#msgDialog').dialog('open').html("<span style='color:red;'>Upload Fail:</span> " + errorThrown);
+				},
 				beforeSubmit : function(formData, jqForm, options) {
 	                $('#uploadingMsg').attr('style', 'display:inline;');
 				},
 				success : function(data) {
-					$('#uploadingMsg').attr('style', 'display:none;');
-					$('#uploadDialog').dialog('close');
 					if (data.response == 'success') {
 						getContent(defaultContent);
 					} else {
 						handleFail(data);
 					}
+				},
+				complete : function(XMLHttpRequest, textStatus) {
+					$('#uploadDialog').dialog('close');
+					$('#uploadingMsg').attr('style', 'display:none;');
 				}
 			});
 		}
@@ -282,6 +288,6 @@ function hideAjaxLoader() {
  * Something bad happened so we're gonna redirect the user
  */
 function handleFail(data) {
-	alert('Failed Response - Code: ' + data.response + ' - Url: ' + data.url);
+	$('#msgDialog').dialog('open').html("<span style='color:red;'>Failed Response -</span> Code: " + data.response + " - Url: " + data.url);
 	window.location = data.url;
 }
