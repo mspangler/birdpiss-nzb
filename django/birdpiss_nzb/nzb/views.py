@@ -27,6 +27,7 @@ def upload_nzb(request):
         media = request.POST['media']
         fsize = request.POST['size']
         unit = request.POST['unit']
+        user = request.user
         # put the two above together to stick in one field
         size = "%s %s" % (fsize, unit)
         
@@ -41,7 +42,7 @@ def upload_nzb(request):
         newsgroup = _get_newsgroup(nzb_data)
         
         # save it
-        nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data)
+        nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data, user=user)
         try:
             nzb.save()
             return render_to_response('json/success.json',{'message':'success'}, mimetype="application/json")
