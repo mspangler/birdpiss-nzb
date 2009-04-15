@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 from nzb.models import Nzb
 
 def _get_newsgroup(n):
@@ -12,9 +13,14 @@ def _get_newsgroup(n):
     
     return node.childNodes[0].data
 
+def _get_current_site_url():
+    current_site = Site.objects.get_current()
+    return current_site.domain
+
 def upload_nzb(request):
+    
     if not request.user.is_authenticated():
-        return render_to_response('json/success.json',{'message':'fail', 'url': reverse('login')}, mimetype="application/json")
+        return render_to_response('json/success.json',{'message':'fail', 'url': "%s%s" % (_get_current_site_url(), reverse('login')) }, mimetype="application/json")
     
     if request.method == 'POST':
         title = request.POST['title']
@@ -50,7 +56,7 @@ def index(request):
 
 def get_json(request, media):
     if not request.user.is_authenticated():
-        return render_to_response('json/success.json',{'message':'fail', 'url': reverse('login')}, mimetype="application/json")
+        return render_to_response('json/success.json',{'message':'fail', 'url': "%s%s" % (_get_current_site_url(), reverse('login')) }, mimetype="application/json")
     nzbs = Nzb.objects.filter(media=media)
     return render_to_response('json/media.json',{'message':'success', 'nzbs':nzbs}, mimetype="application/json")
 
