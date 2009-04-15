@@ -95,4 +95,4 @@ DEFAULT_FROM_EMAIL = ''
 try:
     from tosh_work_settings import *
 except:
-	pass:
+	pass
