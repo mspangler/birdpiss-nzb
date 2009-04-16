@@ -78,7 +78,9 @@ function setupTable() {
 	});
 
 	setupRowEvents();
-	showAjaxLoader();
+
+	// Create the ajax loader for table processing
+	$('#contentTbl_processing').attr('style', 'visibility:visible;').html('<img src="http://media.birdpiss.com/css/images/ajax-loader.gif" alt="Shovelling coal into the server..." />');
 
 	// Make the search textbox a little longer and add focus
 	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
@@ -272,7 +274,7 @@ function clearTable() {
  * Displays our animated ajax loader image.
  */
 function showAjaxLoader() {
-    $('#contentTbl_processing').attr('style', 'visibility:visible;').html('<img src="http://media.birdpiss.com/css/images/ajax-loader.gif" alt="Shovelling coal into the server..." />');
+    $('#contentTbl_processing').attr('style', 'visibility:visible;');
 }
 
 /**
