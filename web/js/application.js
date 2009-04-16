@@ -175,7 +175,7 @@ function setupMsgDialog() {
 /**
  * Custom validator for the size/unit selection.
  */
-jQuery.validator.addMethod("confirmUnit", function(value, element) {
+jQuery.validator.addMethod("requireUnit", function(value, element) {
 	if ($('#size').val() != '' && $('#unit option:selected').text() == '') {
 		return false;
 	}
@@ -209,7 +209,7 @@ function setupUploadDialog() {
 	        usenet_file : 'required',
 	        title : 'required',
 	        media : 'required',
-	        size : { number : true, min : 1, confirmUnit : true }
+	        size : { number : true, min : 1, requireUnit : true }
 	    },
 	    messages : {
 	        usenet_file : 'File fail',
