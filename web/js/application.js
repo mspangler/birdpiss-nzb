@@ -175,12 +175,12 @@ function setupMsgDialog() {
 /**
  * Custom validator for the size/unit selection.
  */
-jQuery.validator.addMethod("requireUnit", function(value, element) {
+jQuery.validator.addMethod('requireUnit', function(value, element) {
 	if ($('#size').val() != '' && $('#unit option:selected').text() == '') {
 		return false;
 	}
 	return true;
-}, "Must select MB/GB Unit");
+}, 'Must select MB/GB Unit');
 
 /**
  * Setups our upload form dialog and it's validator.
