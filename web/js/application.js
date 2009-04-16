@@ -255,6 +255,7 @@ function getContent(type) {
 		hideAjaxLoader();
 		if (data.response == 'success') {
 			contentTbl.fnAddData(data.aaData);
+			$('#contentTbl_filter :text:first').focus();
 		} else {
 			handleFail(data);
 		}
