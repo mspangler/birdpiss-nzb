@@ -22,7 +22,8 @@
 </head>
 <body>
 	<div class="ui-layout-north">
-		<h2>birdpiss-nzb</h2>
+		<div class="left-element"><p><h2>birdpiss-nzb</h2></p></div>
+		<div class="right-element"><p>logged in as <strong>{{ user.username }}</strong> | <a href="password_change/">change pass</a> | <a href="logout/">logout</a></p></div>
 	</div>
 	<div class="ui-layout-west">
 		<a href="index.html" class="category" id="upload">Upload</a>
@@ -66,8 +67,9 @@
 			        <label for="size">Size</label>
 			        <input type="text" name="size" id="size" size="5" />&nbsp;
 			        <select id="unit" name="unit">
-			            <option value="GB" selected="selected">GB</option>
-			            <option value="MB">MB</option>
+						<option value="Unknown" selected="selected"></option>
+						<option value="MB">MB</option>
+			            <option value="GB">GB</option>
 			        </select>
 			    </p>
 			    <ul id="errorBox"><li>&nbsp;</li></ul>

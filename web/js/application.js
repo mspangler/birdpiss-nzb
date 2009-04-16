@@ -173,6 +173,16 @@ function setupMsgDialog() {
 }
 
 /**
+ * Custom validator for the size/unit selection.
+ */
+jQuery.validator.addMethod("confirmUnit", function(value, element) {
+	if ($('#size').val() != '' && $('#unit option:selected').text() == '') {
+		return false;
+	}
+	return true;
+}, "Must select MB/GB Unit");
+
+/**
  * Setups our upload form dialog and it's validator.
  */
 function setupUploadDialog() {
@@ -199,18 +209,17 @@ function setupUploadDialog() {
 	        usenet_file : 'required',
 	        title : 'required',
 	        media : 'required',
-	        size : { required : true, number : true, min : 1 }
+	        size : { number : true, min : 1, confirmUnit : true }
 	    },
 	    messages : {
 	        usenet_file : 'File fail',
 	        title : 'Title fail',
 	        media : 'Media fail',
-	        size : { required : 'Size fail', number : 'Size must be a number', min : 'Size is too small' }
+	        size : { number : 'Size must be a number', min : 'Size is too small' }
 	    },
 		submitHandler : function(form) {
 			$(form).ajaxSubmit({
 				dataType : 'json',
-				timeout : 12000,
 				error : function(XMLHttpRequest, textStatus, errorThrown) {
 					$('#msgDialog').dialog('open').html('<span style="color:red;">Upload Fail:</span> ' + errorThrown);
 				},
