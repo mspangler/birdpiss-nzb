@@ -176,7 +176,7 @@ function setupMsgDialog() {
  * Custom validator for the size/unit selection.
  */
 jQuery.validator.addMethod('requireUnit', function(value, element) {
-	if ($('#size').val() != '' && $('#unit option:selected').text() == '') {
+	if ($('#size').val().length > 0 && $('#unit option:selected').val() == 'Unknown') {
 		return false;
 	}
 	return true;
