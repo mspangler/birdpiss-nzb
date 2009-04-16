@@ -105,21 +105,20 @@ function setupTable() {
 function setupRowEvents() {
 
 	$('#contentTbl tbody tr').live('mouseover', (function() {
-	    if (!$(this).hasClass('selected')) {
+	    if (! $(this).hasClass('selected')) {
 	        $(this).addClass('hover');
 	    }
 	}));
 
 	$('#contentTbl tbody tr').live('mouseout', (function() {
-	    if (!$(this).hasClass('selected')) {
+	    if (! $(this).hasClass('selected')) {
 	        $(this).removeClass('hover');
 	    }
 	}));
 
 	$('#contentTbl tbody tr').live('click', (function() {
-	    if (!$(this).hasClass('selected')) {
-	        $(this).addClass('selected');
-	        $(this).removeClass('hover');
+	    if (! $(this).hasClass('selected')) {
+	        $(this).removeClass('hover').addClass('selected');
 	    } else {
 	        $(this).removeClass('selected');
 	    }
@@ -134,8 +133,9 @@ function setupRowEvents() {
 function getSelectedRows() {
     var selectedRows = '',
         tblRows = contentTbl.fnGetNodes(),
-        data;
-    for (var i = 0; i < tblRows.length; i++) {
+        data,
+		numRows = tblRows.length;
+    for (var i = 0; i < numRows; i++) {
         if ($(tblRows[i]).hasClass('selected')) {
             data = contentTbl.fnGetData(i);
             selectedRows += data[0] + '/';
@@ -148,10 +148,13 @@ function getSelectedRows() {
  * Clears out any selected rows. Called after a download.
  */
 function clearSelectedRows() {
-    var tblRows = contentTbl.fnGetNodes();
-    for (var i = 0; i < tblRows.length; i++) {
-        if ($(tblRows[i]).hasClass('selected')) {
-            $(tblRows[i]).removeClass('selected');
+    var tblRows = contentTbl.fnGetNodes(),
+		tblRow,
+		numRows = tblRows.length;
+    for (var i = 0; i < numRows; i++) {
+		tblRow = $(tblRows[i]);
+        if ($(tblRow).hasClass('selected')) {
+            $(tblRow).removeClass('selected');
         }
     }
 }
