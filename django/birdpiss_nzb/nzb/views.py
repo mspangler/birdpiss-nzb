@@ -88,7 +88,7 @@ def download(request, ids):
     
     # create response object of type x-zip-compressed
     response = HttpResponse(tzip, mimetype='application/x-zip-compressed')
-    response['Content-Disposition'] = 'attachment; filename=birdpiss.zip'
+    response['Content-Disposition'] = 'attachment; filename=birdpiss.nzb.zip'
     
     return response
 
