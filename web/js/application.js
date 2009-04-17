@@ -2,7 +2,7 @@
  * Some globals used throughout the script.
  */
 var contentTbl,
-    defaultContent = 'tv';
+	currentContent = 'tv';
 
 /**
  * Main method that delegates setting up the page.
@@ -34,13 +34,14 @@ function setupLayout() {
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
+			currentContent = id;
 			getContent(id);
 		}
 		return false;
 	});
 
     // Select default content
-	$(".ui-layout-west a[id='" + defaultContent + "']").addClass('selectedCat');
+	$(".ui-layout-west a[id='" + currentContent + "']").addClass('selectedCat');
 }
 
 /**
@@ -60,7 +61,7 @@ function setupTable() {
 		bSortClasses : false,
 		bProcessing : true,
 		aaSorting : [],
-		sAjaxSource : 'json/' + defaultContent + '/',
+		sAjaxSource : 'json/' + currentContent + '/',
 		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
 				sSearch : 'Search:',
@@ -214,8 +215,7 @@ function setupUploadDialog() {
 				},
 				success : function(data) {
 					if (data.response == 'success') {
-						$(".ui-layout-west a[id='" + defaultContent + "']").addClass('selectedCat');
-						getContent(defaultContent);
+						getContent(currentContent);
 					} else {
 						handleFail(data);
 					}
