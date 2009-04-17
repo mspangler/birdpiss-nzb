@@ -173,21 +173,9 @@ function setupMsgDialog() {
 }
 
 /**
- * Custom validator for the size/unit selection.
- */
-jQuery.validator.addMethod('requireUnit', function(value, element) {
-	if ($('#size').val().length > 0 && $('#unit option:selected').val() == 'Unknown') {
-		return false;
-	}
-	return true;
-}, 'Must select MB/GB Unit');
-
-/**
  * Setups our upload form dialog and it's validator.
  */
 function setupUploadDialog() {
-
-    $('#size').numeric({ allow : '.' });
 
 	$('#uploadDialog').dialog({
 		modal : true,
@@ -208,14 +196,12 @@ function setupUploadDialog() {
 	    rules : {
 	        usenet_file : 'required',
 	        title : 'required',
-	        media : 'required',
-	        size : { number : true, min : 1, requireUnit : true }
+	        media : 'required'
 	    },
 	    messages : {
 	        usenet_file : 'File fail',
 	        title : 'Title fail',
-	        media : 'Media fail',
-	        size : { number : 'Size must be a number', min : 'Size is too small' }
+	        media : 'Media fail'
 	    },
 		submitHandler : function(form) {
 			$(form).ajaxSubmit({
@@ -228,6 +214,7 @@ function setupUploadDialog() {
 				},
 				success : function(data) {
 					if (data.response == 'success') {
+						$(".ui-layout-west a[id='" + defaultContent + "']").addClass('selectedCat');
 						getContent(defaultContent);
 					} else {
 						handleFail(data);
