@@ -4,8 +4,8 @@ import datetime
 
 register = template.Library()
 
-@register.filter
-def date_diff(d):
+
+def _date_diff_human(d):
 
     now = datetime.datetime.now()
     today = datetime.datetime(now.year, now.month, now.day)
@@ -45,3 +45,15 @@ def date_diff(d):
 
     return _('%(number)d %(type)s') % \
         {'number': count, 'type': name(count)}
+
+def _date_diff_days(d):
+    now = datetime.datetime.now()
+    delta = now - d
+    return "%s days" % delta.days
+
+@register.filter
+def date_diff(d, format='human'):
+    if format == 'days':
+        return _date_diff_days(d)
+    else:
+        return _date_diff_human(d)
