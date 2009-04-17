@@ -2,7 +2,7 @@
  * Some globals used throughout the script.
  */
 var contentTbl,
-    defaultContent = 'tv';
+	currentContent = 'tv';
 
 /**
  * Main method that delegates setting up the page.
@@ -34,13 +34,14 @@ function setupLayout() {
 		} else {
 			$('.ui-layout-west a').removeClass('selectedCat');
 			$(this).addClass('selectedCat');
+			currentContent = id;
 			getContent(id);
 		}
 		return false;
 	});
 
     // Select default content
-	$(".ui-layout-west a[id='" + defaultContent + "']").addClass('selectedCat');
+	$(".ui-layout-west a[id='" + currentContent + "']").addClass('selectedCat');
 }
 
 /**
@@ -60,7 +61,7 @@ function setupTable() {
 		bSortClasses : false,
 		bProcessing : true,
 		aaSorting : [],
-		sAjaxSource : 'json/' + defaultContent + '/',
+		sAjaxSource : 'json/' + currentContent + '/',
 		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
 				sSearch : 'Search:',
@@ -173,21 +174,9 @@ function setupMsgDialog() {
 }
 
 /**
- * Custom validator for the size/unit selection.
- */
-jQuery.validator.addMethod('requireUnit', function(value, element) {
-	if ($('#size').val().length > 0 && $('#unit option:selected').val() == 'Unknown') {
-		return false;
-	}
-	return true;
-}, 'Must select MB/GB Unit');
-
-/**
  * Setups our upload form dialog and it's validator.
  */
 function setupUploadDialog() {
-
-    $('#size').numeric({ allow : '.' });
 
 	$('#uploadDialog').dialog({
 		modal : true,
@@ -208,14 +197,12 @@ function setupUploadDialog() {
 	    rules : {
 	        usenet_file : 'required',
 	        title : 'required',
-	        media : 'required',
-	        size : { number : true, min : 1, requireUnit : true }
+	        media : 'required'
 	    },
 	    messages : {
 	        usenet_file : 'File fail',
 	        title : 'Title fail',
-	        media : 'Media fail',
-	        size : { number : 'Size must be a number', min : 'Size is too small' }
+	        media : 'Media fail'
 	    },
 		submitHandler : function(form) {
 			$(form).ajaxSubmit({
@@ -228,7 +215,7 @@ function setupUploadDialog() {
 				},
 				success : function(data) {
 					if (data.response == 'success') {
-						getContent(defaultContent);
+						getContent(currentContent);
 					} else {
 						handleFail(data);
 					}
