@@ -32,9 +32,10 @@ def upload_nzb(request):
         nzbparser = NzbParser(nzb_data)
         newsgroup = nzbparser.get_first_newsgroup()
         size = nzbparser.get_size_formatted()
+        file_age = nzbparser.get_oldest_age()
         
         # save it
-        nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data, user=user)
+        nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data, file_age=file_age, user=user)
         try:
             nzb.save()
             return render_to_response('json/success.json',{'message':'success'})

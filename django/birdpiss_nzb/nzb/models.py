@@ -10,6 +10,7 @@ class Nzb(models.Model):
     # but as simple as it is right now meh....
     media = models.CharField(blank=False, max_length=25)
     user = models.ForeignKey(User)
+    file_age = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
