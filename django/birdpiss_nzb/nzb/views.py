@@ -3,15 +3,9 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
+from nzbparser import NzbParser
 from nzb.models import Nzb
 
-def _get_newsgroup(n):
-    import xml.dom.minidom
-    
-    dom = xml.dom.minidom.parseString(n)
-    node = dom.getElementsByTagName('group')[0]
-    
-    return node.childNodes[0].data
 
 def _get_current_site_url():
     current_site = Site.objects.get_current()
@@ -25,11 +19,7 @@ def upload_nzb(request):
     if request.method == 'POST':
         title = request.POST['title']
         media = request.POST['media']
-        fsize = request.POST['size']
-        unit = request.POST['unit']
         user = request.user
-        # put the two above together to stick in one field
-        size = "%s %s" % (fsize, unit)
         
         # get file contents to save with out saving file.
         # in theory....
@@ -39,7 +29,9 @@ def upload_nzb(request):
         usenet_file = request.FILES['usenet_file']
         nzb_data = usenet_file.read()
         
-        newsgroup = _get_newsgroup(nzb_data)
+        nzbparser = NzbParser(nzb_data)
+        newsgroup = nzbparser.get_first_newsgroup()
+        size = nzbparser.get_size_formatted()
         
         # save it
         nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data, user=user)
