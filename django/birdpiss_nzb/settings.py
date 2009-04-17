@@ -5,7 +5,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('tosh', 'toshism@gmail.com'),
-    ('mark', 'mspangler@gmail')
+    ('mark', 'mspangler@gmail.com')
 )
 
 MANAGERS = ADMINS
@@ -95,4 +95,4 @@ DEFAULT_FROM_EMAIL = ''
 try:
     from tosh_work_settings import *
 except:
-    pass
+	pass

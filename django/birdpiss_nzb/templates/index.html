@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
-	<title>nzbnlbc</title>
+	<title>birdpiss-nzb</title>
 	<link href="{{MEDIA_URL}}/css/images/favicon.ico" rel="icon" type="image/x-icon" />
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/jquery-ui-1.7.1.custom.css" />
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/main.css" />
@@ -22,13 +22,14 @@
 </head>
 <body>
 	<div class="ui-layout-north">
-		<h2>nzbnlbc</h2>
+		<div class="left-element"><h2>birdpiss-nzb</h2></div>
+		<div class="right-element"><p>logged in as <strong>{{ user.username }}</strong> | <a href="password_change/">change pass</a> | <a href="logout/">logout</a></p></div>
 	</div>
 	<div class="ui-layout-west">
 		<a href="index.html" class="category" id="upload">Upload</a>
 		<hr />
-		<a href="index.html" class="category" id="movies">Movies</a>
 		<a href="index.html" class="category" id="tv">TV Shows</a>
+		<a href="index.html" class="category" id="movies">Movies</a>
 		<a href="index.html" class="category" id="music">Music</a>
 		<a href="index.html" class="category" id="software">Software</a>
 	</div>
@@ -58,27 +59,25 @@
 			        <label for="media">Media</label>
 			        <select id="media" name="media" class="formInput">
 			            <option value="">&nbsp;</option>
-			            <option value="movies">Movie</option>
 						<option value="tv">TV Show</option>
+			            <option value="movies">Movie</option>
 			            <option value="music">Music</option>
 			            <option value="software">Software</option>
 			        </select>
 			        <label for="size">Size</label>
 			        <input type="text" name="size" id="size" size="5" />&nbsp;
 			        <select id="unit" name="unit">
-			            <option value="GB" selected="selected">GB</option>
-			            <option value="MB">MB</option>
+						<option value="Unknown" selected="selected">&nbsp;</option>
+						<option value="MB">MB</option>
+			            <option value="GB">GB</option>
 			        </select>
-			    </p>			    
+			    </p>
 			    <ul id="errorBox"><li>&nbsp;</li></ul>
 			    <p><span id="uploadingMsg" style="display:none;">Spinning up the hamster... <img src="{{MEDIA_URL}}/css/images/ajax-uploader.gif" alt="" /></span></p>
 		    </form>
 	    </div>
-	    <div id="downloadDialog">
-		    <img src="{{MEDIA_URL}}/css/images/zip.png" alt="zip image" />&nbsp;&nbsp;&nbsp;<img src="{{MEDIA_URL}}/css/images/tar.png" alt="tar image" />
-	    </div>
-	    <div id="invalidDownloadDialog">
-	        <p>Can't give you something you didn't ask for</p>
+	    <div id="msgDialog">
+	        <p>&nbsp;</p>
 	    </div>
     </div>
 </body>

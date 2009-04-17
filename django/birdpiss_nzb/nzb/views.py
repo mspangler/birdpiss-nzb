@@ -37,10 +37,10 @@ def upload_nzb(request):
         nzb = Nzb(title=title, newsgroup=newsgroup, media=media, size=size, xml_data=nzb_data, user=user)
         try:
             nzb.save()
-            return render_to_response('json/success.json',{'message':'success'}, mimetype="application/json")
+            return render_to_response('json/success.json',{'message':'success'})
         except:
             # something failed on the save, return teh_fail
-            return render_to_response('json/success.json',{'message':'fail', 'url': 'error' }, mimetype="application/json")
+            return render_to_response('json/success.json',{'message':'fail', 'url': 'error' })
         
 
 @login_required
@@ -80,7 +80,7 @@ def download(request, ids):
     
     # create response object of type x-zip-compressed
     response = HttpResponse(tzip, mimetype='application/x-zip-compressed')
-    response['Content-Disposition'] = 'attachment; filename=birdpiss.zip'
+    response['Content-Disposition'] = 'attachment; filename=birdpiss.nzb.zip'
     
     return response
 

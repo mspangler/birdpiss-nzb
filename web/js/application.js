@@ -2,9 +2,7 @@
  * Some globals used throughout the script.
  */
 var contentTbl,
-	mediaUrl = 'http://media.birdpiss.com/',
-    contentUrl = 'json/',
-    defaultContent = 'movies';
+    defaultContent = 'tv';
 
 /**
  * Main method that delegates setting up the page.
@@ -12,7 +10,7 @@ var contentTbl,
 function setupUI() {
 	setupLayout();
 	setupTable();
-	setupDownloadDialog();
+	setupMsgDialog();
 	setupUploadDialog();
 }
 
@@ -62,7 +60,7 @@ function setupTable() {
 		bSortClasses : false,
 		bProcessing : true,
 		aaSorting : [],
-		sAjaxSource : contentUrl + defaultContent + '/',
+		sAjaxSource : 'json/' + defaultContent + '/',
 		fnInitComplete : function() { hideAjaxLoader(); },
 		oLanguage: {
 				sSearch : 'Search:',
@@ -80,22 +78,24 @@ function setupTable() {
 	});
 
 	setupRowEvents();
-	showAjaxLoader();
+
+	// Create the ajax loader for table processing
+	$('#contentTbl_processing').html('<img src="http://media.birdpiss.com/css/images/ajax-loader.gif" alt="Shovelling coal into the server..." />');
 
 	// Make the search textbox a little longer and add focus
 	$('#contentTbl_filter :text:first').addClass('ui-widget input nzbSearch').attr('size', 50).focus();
 
 	// Add a download btn next to search
-	$('#contentTbl_filter').append('&nbsp;<input type="submit" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
+	$('#contentTbl_filter').append('&nbsp;<input type="button" value="Download Selected" id="downloadBtn" class="ui-widget-content nzbBtn" />');
 
     // Add an event to our download btn
 	$('#downloadBtn').click(function() {
 	    var selectedRows = getSelectedRows();
 	    if (selectedRows.length > 0) {
-    		$('#downloadDialog').dialog('open');
-
+    		window.location = 'download/' + selectedRows;
+			clearSelectedRows();
     	} else {
-    	    $('#invalidDownloadDialog').dialog('open');
+    	    $('#msgDialog').dialog('open').html("<span style='color:red;'>Download Fail:</span> Can't give you something you didn't ask for");
     	}
 	});
 }
@@ -107,21 +107,20 @@ function setupTable() {
 function setupRowEvents() {
 
 	$('#contentTbl tbody tr').live('mouseover', (function() {
-	    if (!$(this).hasClass('selected')) {
+	    if (! $(this).hasClass('selected')) {
 	        $(this).addClass('hover');
 	    }
 	}));
 
 	$('#contentTbl tbody tr').live('mouseout', (function() {
-	    if (!$(this).hasClass('selected')) {
+	    if (! $(this).hasClass('selected')) {
 	        $(this).removeClass('hover');
 	    }
 	}));
 
 	$('#contentTbl tbody tr').live('click', (function() {
-	    if (!$(this).hasClass('selected')) {
-	        $(this).addClass('selected');
-	        $(this).removeClass('hover');
+	    if (! $(this).hasClass('selected')) {
+	        $(this).removeClass('hover').addClass('selected');
 	    } else {
 	        $(this).removeClass('selected');
 	    }
@@ -129,32 +128,35 @@ function setupRowEvents() {
 }
 
 /**
- * Returns an comma separated string containing all the selected media ids.
+ * Returns an slash separated string containing all the selected media ids.
  *
- * @return string - comma separated string of primary keys of the selected content
+ * @return string - slash separated string of primary keys of the selected content
  */
 function getSelectedRows() {
     var selectedRows = '',
         tblRows = contentTbl.fnGetNodes(),
-        data;
-    for (var i = 0; i < tblRows.length; i++) {
+        data,
+		numRows = tblRows.length;
+    for (var i = 0; i < numRows; i++) {
         if ($(tblRows[i]).hasClass('selected')) {
             data = contentTbl.fnGetData(i);
-            selectedRows += data[0] + ',';
+            selectedRows += data[0] + '/';
 		}
     }
-	// Remove the trailing comma & return
-    return selectedRows.substr(0, (selectedRows.length - 1));
+    return selectedRows;
 }
 
 /**
  * Clears out any selected rows. Called after a download.
  */
 function clearSelectedRows() {
-    var tblRows = contentTbl.fnGetNodes();
-    for (var i = 0; i < tblRows.length; i++) {
-        if ($(tblRows[i]).hasClass('selected')) {
-            $(tblRows[i]).removeClass('selected');
+    var tblRows = contentTbl.fnGetNodes(),
+		tblRow,
+		numRows = tblRows.length;
+    for (var i = 0; i < numRows; i++) {
+		tblRow = $(tblRows[i]);
+        if ($(tblRow).hasClass('selected')) {
+            $(tblRow).removeClass('selected');
         }
     }
 }
@@ -162,29 +164,23 @@ function clearSelectedRows() {
 /**
  * Setups our download dialogs.
  */
-function setupDownloadDialog() {
-	$('#downloadDialog').dialog({
-		modal : true,
-		autoOpen : false,
-		width : '350px',
-		title : 'Please enjoy this tasty file',
-		buttons : {
-			Download : function() {
-				$(this).dialog('close');
-				// TODO: remove the following test alert
-				// TODO: pass the server the selected ids
-				alert("You would've downloaded the following ids: " + getSelectedRows());
-				clearSelectedRows();
-			}
-		}
-	});
-
-	$('#invalidDownloadDialog').dialog({
+function setupMsgDialog() {
+	$('#msgDialog').dialog({
 	    autoOpen : false,
 	    modal : true,
-	    title : 'Download Fail'
+	    title : 'Message'
 	});
 }
+
+/**
+ * Custom validator for the size/unit selection.
+ */
+jQuery.validator.addMethod('requireUnit', function(value, element) {
+	if ($('#size').val().length > 0 && $('#unit option:selected').val() == 'Unknown') {
+		return false;
+	}
+	return true;
+}, 'Must select MB/GB Unit');
 
 /**
  * Setups our upload form dialog and it's validator.
@@ -213,32 +209,40 @@ function setupUploadDialog() {
 	        usenet_file : 'required',
 	        title : 'required',
 	        media : 'required',
-	        size : { required : true, number : true, min : 1 }
+	        size : { number : true, min : 1, requireUnit : true }
 	    },
 	    messages : {
 	        usenet_file : 'File fail',
 	        title : 'Title fail',
 	        media : 'Media fail',
-	        size : { required : 'Size fail', number : 'Size must be a number', min : 'Size is too small' }
+	        size : { number : 'Size must be a number', min : 'Size is too small' }
 	    },
 		submitHandler : function(form) {
 			$(form).ajaxSubmit({
 				dataType : 'json',
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					$('#msgDialog').dialog('open').html('<span style="color:red;">Upload Fail:</span> ' + errorThrown);
+				},
 				beforeSubmit : function(formData, jqForm, options) {
 	                $('#uploadingMsg').attr('style', 'display:inline;');
 				},
 				success : function(data) {
-					console.log('Upload Response: ' + data.response);
+					if (data.response == 'success') {
+						getContent(defaultContent);
+					} else {
+						handleFail(data);
+					}
+				},
+				complete : function(XMLHttpRequest, textStatus) {
 					$('#uploadDialog').dialog('close');
 					$('#uploadingMsg').attr('style', 'display:none;');
-					getContent(defaultContent);
 				}
 			});
 		}
 	});
 
-	// Wire the 'enter' key to submit the form if hit on the last input element
-	$('#uploadForm :input[id="size"]').keypress(function(e) {
+	// Wire the 'enter' key to submit the form if hit on the last input elements
+	$('#uploadForm :input[class!="formInput"]').keypress(function(e) {
 	    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
 	        $('#uploadForm').submit();
 	        return false;
@@ -251,22 +255,36 @@ function setupUploadDialog() {
  * Calls the server for the selected media content & clears
  * the table data & replaces it with the new media data.
  *
- * @param type - Movies, Music or Software
+ * @param type - tv, movies, music, software, etc...
  */
 function getContent(type) {
     showAjaxLoader();
-    contentTbl.fnClearTable();
-	$.getJSON(contentUrl + type.toLowerCase() + '/', function(data) {
-		contentTbl.fnAddData(data.aaData);
+    clearTable();
+	$.getJSON('json/' + type.toLowerCase() + '/', function(data) {
 		hideAjaxLoader();
+		if (data.response == 'success') {
+			contentTbl.fnAddData(data.aaData);
+			$('#contentTbl_filter :text:first').focus();
+		} else {
+			handleFail(data);
+		}
 	});
+}
+
+/**
+ * Clears the data in the table and the search field.
+ */
+function clearTable() {
+	contentTbl.fnClearTable();
+	$('#contentTbl_filter :text:first').val('');
+	contentTbl.fnFilter('');
 }
 
 /**
  * Displays our animated ajax loader image.
  */
 function showAjaxLoader() {
-    $('#contentTbl_processing').attr('style', 'visibility:visible;').html('<img src="' + mediaUrl + 'css/images/ajax-loader.gif" alt="Shovelling coal into the server..." />');
+    $('#contentTbl_processing').attr('style', 'visibility:visible;');
 }
 
 /**
@@ -276,3 +294,10 @@ function hideAjaxLoader() {
     $('#contentTbl_processing').attr('style', 'visibility:hidden;');
 }
 
+/**
+ * Something bad happened so we're gonna redirect the user
+ */
+function handleFail(data) {
+	alert('Failed Response - Code: ' + data.response + ' - Url: ' + data.url);
+	window.location = data.url;
+}
