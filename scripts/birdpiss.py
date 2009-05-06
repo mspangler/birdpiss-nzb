@@ -53,7 +53,7 @@ class MediaScanner:
                     for content in root[2]:
                         self.addFile(content, os.path.join(root[0], content))
                         if self.media_type == MediaType.MUSIC:
-                           break
+                            break
             elif self.scan_type == ScanType.DIRS:
                 for root in os.walk(self.path):
                     for content in root[1]:
