@@ -2,14 +2,14 @@
 
 import getopt
 import os
-import sys
 import string
+import sys
 
 __version__ = 0.1
 
 class MediaType:
-    TV = 0
-    MOVIE = 1
+    MOVIE = 0
+    TV = 1
     MUSIC = 2
 
 class ScanType:
@@ -63,8 +63,6 @@ class MediaScanner:
                     if os.path.isdir(self.path + "/" + content):
                         self.media.append(Content(self.media_type, content))
 
-        print "\nAdded a total of " + str(len(self.media)) + " file(s)."
-
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def add_file(self, content):
         file_type = string.lower(os.path.splitext(content)[1][1:])
@@ -75,7 +73,7 @@ class MediaScanner:
 
 # Helpful function to show how to use the script
 def usage():
-    print "birdpiss version " + str(__version__)
+    print "birdpiss version {0}".format(__version__)
     print ""
     print "usage: python birdpiss.py [options]"
     print ""
@@ -99,6 +97,19 @@ def usage():
     print "Source available at http://github.com/mspangler/birdpiss-nzb/tree/master"
     print ""
     sys.exit(0)
+
+def summary(mediaScanner):
+    i = 1
+    for content in mediaScanner.media:
+        print "{0}. {1}".format(i, content.name)
+        i += 1
+    print "\nFound a total of {0} file(s).\n".format(len(mediaScanner.media))
+
+    doUpload = raw_input("Would you like to continue and upload the file information? (y/n): ")
+    if doUpload == 'y':
+        print "You selected to upload these files."
+    else:
+        print "You selected not to upload these files."
 
 # Start of program
 try:
@@ -133,7 +144,4 @@ for opt, arg in opts:
         user.password = arg
 
 mediaScanner.scan()
-
-# Test to show what the scanner picked up
-for content in mediaScanner.media:
-    print ">> added " + content.name
+summary(mediaScanner)
