@@ -23,7 +23,6 @@ class Content:
 
 class MediaScanner:
 
-    # Default constructor
     def __init__(self):
         self.media = []
         self.video_extensions = [ "avi", "mpg", "mpeg", "mkv", "m4v" ]
