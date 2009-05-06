@@ -98,7 +98,7 @@ def usage():
     print ""
     sys.exit(0)
 
-def summary(mediaScanner):
+def confirmation(mediaScanner):
     i = 1
     for content in mediaScanner.media:
         print "{0}. {1}".format(i, content.name)
@@ -110,6 +110,7 @@ def summary(mediaScanner):
         print "You selected to upload these files."
     else:
         print "You selected not to upload these files."
+        sys.exit(0)
 
 # Start of program
 try:
@@ -144,4 +145,4 @@ for opt, arg in opts:
         user.password = arg
 
 mediaScanner.scan()
-summary(mediaScanner)
+confirmation(mediaScanner)
