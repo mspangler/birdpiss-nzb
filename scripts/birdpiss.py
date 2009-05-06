@@ -13,8 +13,8 @@ class MediaType:
     MUSIC = 2
 
 class ScanType:
-    DIRS = 0
-    FILES = 1
+    FILES = 0
+    DIRS = 1
 
 class User:
     def __init__(self):
@@ -94,7 +94,8 @@ def usage():
     print "Examples:"
     print "         python birdpiss.py -afr /home/user/music -u username -p password"
     print "         python birdpiss.py -mfRr /home/user/movies -u username -p password"
-    print '         python birdpiss.py -tdr "/home/user/tv shows" -u username -p password\n'
+    print '         python birdpiss.py -tdr "/home/user/tv shows" -u username -p password'
+    print ""
     print "Source available at http://github.com/mspangler/birdpiss-nzb/tree/master"
     print ""
     sys.exit(0)
