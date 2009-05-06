@@ -6,7 +6,6 @@ import os
 import re
 import string
 import sys
-import time
 
 __version__ = 0.1
 __twirl_state__ = 0
