@@ -16,13 +16,17 @@ class ScanType:
     DIRS = 0
     FILES = 1
 
+class User:
+    def __init__(self):
+        self.username = ''
+        self.password = ''
+
 class Content:
     def __init__(self, mediaType, name):
         self.mediaType = mediaType
         self.name = name
 
 class MediaScanner:
-
     def __init__(self):
         self.media = []
         self.video_extensions = [ "avi", "mpg", "mpeg", "mkv", "m4v" ]
@@ -32,34 +36,6 @@ class MediaScanner:
         self.scan_type = 0
         self.recursive = False
         self.path = ''
-        self.user = ''
-        self.password = ''
-
-    # Helpful function to show how to use the script
-    def usage(self):
-        print "birdpiss version " + str(__version__)
-        print ""
-        print "usage: python birdpiss.py [options]"
-        print ""
-        print "options:"
-        print "-h, --help       view help and usage"
-        print "-t, --tv         scan for tv show files"
-        print "-m, --movies     scan for movie files"
-        print "-a, --audio      scan for audio files"
-        print "-d, --dirs       scan only directories - will use directory name for media name"
-        print "-f, --files      scan only files - will use filename for media name"
-        print "-R, --recursive  recursively search for content under the root path"
-        print "-r, --root       specify the root path"
-        print "-u, --user       specify your username"
-        print "-p, --password   specify your password"
-        print ""
-        print "Examples:"
-        print "         python birdpiss.py -afr /home/user/music -u username -p password"
-        print "         python birdpiss.py -mfRr /home/user/movies -u username -p password"
-        print '         python birdpiss.py -tdr "/home/user/tv shows" -u username -p password\n'
-        print "Source available at http://github.com/mspangler/birdpiss-nzb/tree/master"
-        print ""
-        sys.exit(0)
 
     # Scans the root path looking for media content
     def scan(self):
@@ -97,17 +73,46 @@ class MediaScanner:
                 self.media.append(Content(self.media_type, content))
                 break
 
+# Helpful function to show how to use the script
+def usage():
+    print "birdpiss version " + str(__version__)
+    print ""
+    print "usage: python birdpiss.py [options]"
+    print ""
+    print "options:"
+    print "-h, --help       view help and usage"
+    print "-t, --tv         scan for tv show files"
+    print "-m, --movies     scan for movie files"
+    print "-a, --audio      scan for audio files"
+    print "-d, --dirs       scan only directories - will use directory name for media name"
+    print "-f, --files      scan only files - will use filename for media name"
+    print "-R, --recursive  recursively search for content under the root path"
+    print "-r, --root       specify the root path"
+    print "-u, --user       specify your username"
+    print "-p, --password   specify your password"
+    print ""
+    print "Examples:"
+    print "         python birdpiss.py -afr /home/user/music -u username -p password"
+    print "         python birdpiss.py -mfRr /home/user/movies -u username -p password"
+    print '         python birdpiss.py -tdr "/home/user/tv shows" -u username -p password\n'
+    print "Source available at http://github.com/mspangler/birdpiss-nzb/tree/master"
+    print ""
+    sys.exit(0)
+
 # Start of program
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "htmadfRr:u:", ["help", "tv", "movies", "audio", "dirs", "files", "recursive", "root=", "user=", "password=" ])
+    opts, args = getopt.getopt(sys.argv[1:], "htmadfRr:u:p:", ["help", "tv", "movies", "audio", "dirs", "files", "recursive", "root=", "username=", "password=" ])
 except getopt.GetoptError:
+    print "USAGE ERROR: Please enter valid options\n"
+    usage()
     sys.exit(2)
 
+user = User()
 mediaScanner = MediaScanner()
 
 for opt, arg in opts:
     if opt in ("-h", "--help"):
-        mediaScanner.usage()
+        usage()
     elif opt in ("-t", "--tv"):
         mediaScanner.media_type = MediaType.TV
     elif opt in ("-m", "--movies"):
@@ -122,14 +127,13 @@ for opt, arg in opts:
         mediaScanner.recursive = True
     elif opt in ("-r", "--root"):
         mediaScanner.path = arg
-    elif opt in ("-u", "--user"):
-        mediaScanner.user = arg
+    elif opt in ("-u", "--username"):
+        user.username = arg
     elif opt in ("-p", "--password"):
-        mediaScanner.password = arg
+        user.password = arg
 
 mediaScanner.scan()
 
 # Test to show what the scanner picked up
 for content in mediaScanner.media:
     print ">> added " + content.name
-
