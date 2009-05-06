@@ -105,7 +105,6 @@ try:
 except getopt.GetoptError:
     print "USAGE ERROR: Please enter valid options\n"
     usage()
-    sys.exit(2)
 
 user = User()
 mediaScanner = MediaScanner()
