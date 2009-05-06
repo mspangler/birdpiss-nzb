@@ -23,6 +23,7 @@ class Content:
 
 class MediaScanner:
 
+    # Default constructor
     def __init__(self):
         self.media = []
         self.video_extensions = [ "avi", "mpg", "mpeg", "mkv", "m4v" ]
@@ -63,10 +64,11 @@ class MediaScanner:
 
     # Scans the root path looking for media content
     def scan(self):
-        if self.media_type == MediaType.TV or self.media_type == MediaType.MOVIE:
-            self.current_extensions = self.video_extensions
-        elif self.media_type == MediaType.MUSIC:
-            self.current_extensions = self.audio_extensions
+        if self.scan_type == ScanType.FILES:
+            if self.media_type == MediaType.TV or self.media_type == MediaType.MOVIE:
+                self.current_extensions = self.video_extensions
+            elif self.media_type == MediaType.MUSIC:
+                self.current_extensions = self.audio_extensions
 
         if self.recursive:
             for root, dirs, files in os.walk(self.path):
@@ -131,3 +133,4 @@ mediaScanner.scan()
 # Test to show what the scanner picked up
 for content in mediaScanner.media:
     print ">> added " + content.name
+
