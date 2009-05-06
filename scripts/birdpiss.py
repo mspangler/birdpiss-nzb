@@ -150,6 +150,7 @@ def twirl():
     global __twirl_state__
     symbols = ('|', '/', '-', '\\')
     sys.stdout.write('Scanning media... ' + symbols[__twirl_state__] + '\r')
+    sys.stdout.flush()
     if __twirl_state__ == len(symbols) - 1:
         __twirl_state__ = -1
     __twirl_state__ += 1
