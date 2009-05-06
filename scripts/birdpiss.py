@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import getopt
+import id3reader
 import os
+import re
 import string
 import sys
 
@@ -46,30 +48,48 @@ class MediaScanner:
                 self.current_extensions = self.audio_extensions
 
         if self.recursive:
-            for root, dirs, files in os.walk(self.path):
+            for root in os.walk(self.path):
                 if self.scan_type == ScanType.FILES:
-                    for content in files:
-                        self.add_file(content)
+                    for content in root[2]:
+                        absolutePath = os.path.join(root[0], content)
+                        if os.path.isfile(absolutePath):
+                            self.add_file(content, absolutePath)
+                            break
                 elif self.scan_type == ScanType.DIRS:
-                    for content in dirs:
-                        self.media.append(Content(self.media_type, content))
+                    for content in root[1]:
+                        if os.path.isdir(os.path.join(root[0], content)):
+                            self.media.append(Content(self.media_type, content))
         else:
             if self.scan_type == ScanType.FILES:
                 for content in os.listdir(self.path):
-                    if os.path.isfile(self.path + "/" + content):
-                        self.add_file(content)
+                    absolutePath = os.path.join(self.path, content)
+                    if os.path.isfile(absolutePath):
+                        self.add_file(content, absolutePath)
             elif self.scan_type == ScanType.DIRS:
                 for content in os.listdir(self.path):
-                    if os.path.isdir(self.path + "/" + content):
+                    if os.path.isdir(os.path.join(self.path, content)):
                         self.media.append(Content(self.media_type, content))
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
-    def add_file(self, content):
+    def add_file(self, content, absolutePath):
         file_type = string.lower(os.path.splitext(content)[1][1:])
         for type in self.current_extensions:
             if file_type == type:
-                self.media.append(Content(self.media_type, content))
+                if self.media_type != MediaType.MUSIC:
+                    self.media.append(Content(self.media_type, content))
+                else:
+                    self.media.append(Content(self.media_type, self.getId3Info(content, absolutePath, type)))
                 break
+
+    # Grabs the Id3 information from the file
+    def getId3Info(self, content, absolutePath, type):
+        if absolutePath != None and type == 'mp3':
+            id3r = id3reader.Reader(absolutePath)
+            artist = id3r.getValue('performer')
+            album = id3r.getValue('album')
+            if artist != None and album != None:
+                return artist + ' - ' + album
+        return content
 
 # Helpful function to show how to use the script
 def usage():
@@ -103,8 +123,13 @@ def confirmation(mediaScanner):
     if numFound > 0:
         i = 1
         for content in mediaScanner.media:
-            print "{0}. {1}".format(i, content.name)
-            i += 1
+            try:
+                print "{0}. {1}".format(i, content.name)
+                i += 1
+            except UnicodeEncodeError:
+                print "UnicodeEncodeError exception was thrown " + str(content)
+                continue
+
         print "\nFound a total of {0} file(s).\n".format(numFound)
 
         doUpload = raw_input("Would you like to continue and upload the file information? (y/n): ")
