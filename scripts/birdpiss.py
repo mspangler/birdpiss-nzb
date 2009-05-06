@@ -53,7 +53,7 @@ class MediaScanner:
                     for content in root[2]:
                         absolutePath = os.path.join(root[0], content)
                         if os.path.isfile(absolutePath):
-                            self.add_file(content, absolutePath)
+                            self.addFile(content, absolutePath)
                             if self.media_type == MediaType.MUSIC:
                                 break
                 elif self.scan_type == ScanType.DIRS:
@@ -65,14 +65,14 @@ class MediaScanner:
                 for content in os.listdir(self.path):
                     absolutePath = os.path.join(self.path, content)
                     if os.path.isfile(absolutePath):
-                        self.add_file(content, absolutePath)
+                        self.addFile(content, absolutePath)
             elif self.scan_type == ScanType.DIRS:
                 for content in os.listdir(self.path):
                     if os.path.isdir(os.path.join(self.path, content)):
                         self.media.append(Content(self.media_type, content))
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
-    def add_file(self, content, absolutePath):
+    def addFile(self, content, absolutePath):
         file_type = string.lower(os.path.splitext(content)[1][1:])
         for type in self.current_extensions:
             if file_type == type:
