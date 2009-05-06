@@ -54,7 +54,8 @@ class MediaScanner:
                         absolutePath = os.path.join(root[0], content)
                         if os.path.isfile(absolutePath):
                             self.add_file(content, absolutePath)
-                            break
+                            if self.media_type == MediaType.MUSIC:
+                                break
                 elif self.scan_type == ScanType.DIRS:
                     for content in root[1]:
                         if os.path.isdir(os.path.join(root[0], content)):
