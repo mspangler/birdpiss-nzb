@@ -6,8 +6,10 @@ import os
 import re
 import string
 import sys
+import time
 
 __version__ = 0.1
+__twirl_state__ = 0
 
 class MediaType:
     MOVIE = 0
@@ -57,6 +59,7 @@ class MediaScanner:
             elif self.scan_type == ScanType.DIRS:
                 for root in os.walk(self.path):
                     for content in root[1]:
+                        twirl()
                         self.media.append(Content(self.media_type, content))
         else:
             if self.scan_type == ScanType.FILES:
@@ -67,10 +70,12 @@ class MediaScanner:
             elif self.scan_type == ScanType.DIRS:
                 for content in os.listdir(self.path):
                     if os.path.isdir(os.path.join(self.path, content)):
+                        twirl()
                         self.media.append(Content(self.media_type, content))
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def addFile(self, content, absolutePath):
+        twirl()
         file_type = string.lower(os.path.splitext(content)[1][1:])
         for type in self.current_extensions:
             if file_type == type:
@@ -140,6 +145,15 @@ def confirmation(mediaScanner):
     else:
         print "\nFound a total of {0} file(s).  Please refine your search options.".format(numFound)
         sys.exit(0)
+
+# Little processing indicator to show the user work is being done
+def twirl():
+    global __twirl_state__
+    symbols = ('|', '/', '-', '\\')
+    sys.stdout.write('Scanning media... ' + symbols[__twirl_state__] + '\r')
+    if __twirl_state__ == len(symbols) - 1:
+        __twirl_state__ = -1
+    __twirl_state__ += 1
 
 # Start of program
 try:
