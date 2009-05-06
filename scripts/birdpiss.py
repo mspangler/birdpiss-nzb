@@ -5,22 +5,29 @@ import os
 import sys
 import string
 
-# globals
 __version__ = 0.1
-TV = 0
-MOVIES = 1
-MUSIC = 2
-DIRS = 0
-FILES = 1
 
-# This class scans the users media folder looking for media to upload.
+class MediaType:
+    TV = 0
+    MOVIE = 1
+    MUSIC = 2
+
+class ScanType:
+    DIRS = 0
+    FILES = 1
+
+class Content:
+    def __init__(self, mediaType, name):
+        self.mediaType = mediaType
+        self.name = name
+
 class MediaScanner:
 
     # Default constructor
-    def __init__(self):    
+    def __init__(self):
         self.media = []
         self.video_extensions = [ "avi", "mpg", "mpeg", "mkv", "m4v" ]
-        self.music_extensions = [ "mp3", "ogg" ]
+        self.audio_extensions = [ "mp3", "ogg" ]
         self.current_extensions = []
         self.media_type = 0
         self.scan_type = 0
@@ -28,11 +35,13 @@ class MediaScanner:
         self.path = ''
         self.user = ''
         self.password = ''
-    
+
     # Helpful function to show how to use the script
     def usage(self):
-        print "birdpiss version " + str(__version__) + "\n"
-        print "usage: python birdpiss.py [options]\n"
+        print "birdpiss version " + str(__version__)
+        print ""
+        print "usage: python birdpiss.py [options]"
+        print ""
         print "options:"
         print "-h, --help       view help and usage"
         print "-t, --tv         scan for tv show files"
@@ -43,49 +52,49 @@ class MediaScanner:
         print "-R, --recursive  recursively search for content under the root path"
         print "-r, --root       specify the root path"
         print "-u, --user       specify your username"
-        print "-p, --password   specify your password\n"
+        print "-p, --password   specify your password"
+        print ""
         print "Examples:"
         print "         python birdpiss.py -afr /home/user/music -u username -p password"
         print "         python birdpiss.py -mfRr /home/user/movies -u username -p password"
         print '         python birdpiss.py -tdr "/home/user/tv shows" -u username -p password\n'
-        print "Source available at http://github.com/mspangler/birdpiss-nzb/tree/master\n"
+        print "Source available at http://github.com/mspangler/birdpiss-nzb/tree/master"
+        print ""
         sys.exit(0)
 
     # Scans the root path looking for media content
     def scan(self):
-        if self.media_type == TV or self.media_type == MOVIES:
+        if self.media_type == MediaType.TV or self.media_type == MediaType.MOVIE:
             self.current_extensions = self.video_extensions
-        elif self.media_type == MUSIC:
-            self.current_extensions = self.music_extensions
+        elif self.media_type == MediaType.MUSIC:
+            self.current_extensions = self.audio_extensions
 
         if self.recursive:
-            for root, dirs, files in os.walk(self.path):                
-                if self.scan_type == FILES:
-                    # TODO: find a better way to add a list to another list
+            for root, dirs, files in os.walk(self.path):
+                if self.scan_type == ScanType.FILES:
                     for content in files:
                         self.add_file(content)
-                elif self.scan_type == DIRS:
-                    # TODO: find a better way to add a list to another list
+                elif self.scan_type == ScanType.DIRS:
                     for content in dirs:
-                        self.media.append(content)
+                        self.media.append(Content(self.media_type, content))
         else:
-            if self.scan_type == FILES:
+            if self.scan_type == ScanType.FILES:
                 for content in os.listdir(self.path):
                     if os.path.isfile(self.path + "/" + content):
                         self.add_file(content)
-            elif self.scan_type == DIRS:
+            elif self.scan_type == ScanType.DIRS:
                 for content in os.listdir(self.path):
                     if os.path.isdir(self.path + "/" + content):
-                        self.media.append(content)
-                
-        print "\nAdded a total of " + str(len(self.media)) + " file(s)."        
+                        self.media.append(Content(self.media_type, content))
+
+        print "\nAdded a total of " + str(len(self.media)) + " file(s)."
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def add_file(self, content):
         file_type = string.lower(os.path.splitext(content)[1][1:])
         for type in self.current_extensions:
             if file_type == type:
-                self.media.append(content)
+                self.media.append(Content(self.media_type, content))
                 break
 
 # Start of program
@@ -100,15 +109,15 @@ for opt, arg in opts:
     if opt in ("-h", "--help"):
         mediaScanner.usage()
     elif opt in ("-t", "--tv"):
-        mediaScanner.media_type = TV
+        mediaScanner.media_type = MediaType.TV
     elif opt in ("-m", "--movies"):
-        mediaScanner.media_type = MOVIES
+        mediaScanner.media_type = MediaType.MOVIE
     elif opt in ("-a", "--audio"):
-        mediaScanner.media_type = MUSIC
+        mediaScanner.media_type = MediaType.MUSIC
     elif opt in ("-d", "--dirs"):
-        mediaScanner.scan_type = DIRS
+        mediaScanner.scan_type = ScanType.DIRS
     elif opt in ("-f", "--files"):
-        mediaScanner.scan_type = FILES
+        mediaScanner.scan_type = ScanType.FILES
     elif opt in ("-R", "--recursive"):
         mediaScanner.recursive = True
     elif opt in ("-r", "--root"):
@@ -122,5 +131,4 @@ mediaScanner.scan()
 
 # Test to show what the scanner picked up
 for content in mediaScanner.media:
-    print ">> added " + content
-
+    print ">> added " + content.name
