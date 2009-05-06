@@ -99,17 +99,22 @@ def usage():
     sys.exit(0)
 
 def confirmation(mediaScanner):
-    i = 1
-    for content in mediaScanner.media:
-        print "{0}. {1}".format(i, content.name)
-        i += 1
-    print "\nFound a total of {0} file(s).\n".format(len(mediaScanner.media))
+    numFound = len(mediaScanner.media)
+    if numFound > 0:
+        i = 1
+        for content in mediaScanner.media:
+            print "{0}. {1}".format(i, content.name)
+            i += 1
+        print "\nFound a total of {0} file(s).\n".format(numFound)
 
-    doUpload = raw_input("Would you like to continue and upload the file information? (y/n): ")
-    if doUpload == 'y':
-        print "You selected to upload these files."
+        doUpload = raw_input("Would you like to continue and upload the file information? (y/n): ")
+        if doUpload == 'y':
+            print "You selected to upload the file information."
+        else:
+            print "You selected not to upload any information."
+            sys.exit(0)
     else:
-        print "You selected not to upload these files."
+        print "\nFound a total of {0} file(s).  Please refine your search options.".format(numFound)
         sys.exit(0)
 
 # Start of program
