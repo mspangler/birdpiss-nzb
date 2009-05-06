@@ -48,18 +48,16 @@ class MediaScanner:
                 self.current_extensions = self.audio_extensions
 
         if self.recursive:
-            for root in os.walk(self.path):
-                if self.scan_type == ScanType.FILES:
+            if self.scan_type == ScanType.FILES:
+                for root in os.walk(self.path):
                     for content in root[2]:
-                        absolutePath = os.path.join(root[0], content)
-                        if os.path.isfile(absolutePath):
-                            self.addFile(content, absolutePath)
-                            if self.media_type == MediaType.MUSIC:
-                                break
-                elif self.scan_type == ScanType.DIRS:
+                        self.addFile(content, os.path.join(root[0], content))
+                        if self.media_type == MediaType.MUSIC:
+                           break
+            elif self.scan_type == ScanType.DIRS:
+                for root in os.walk(self.path):
                     for content in root[1]:
-                        if os.path.isdir(os.path.join(root[0], content)):
-                            self.media.append(Content(self.media_type, content))
+                        self.media.append(Content(self.media_type, content))
         else:
             if self.scan_type == ScanType.FILES:
                 for content in os.listdir(self.path):
