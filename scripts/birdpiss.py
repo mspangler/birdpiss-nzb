@@ -82,7 +82,7 @@ class MediaScanner:
             self.media = list(self.media_set)
             self.media.sort()
         except UnicodeDecodeError:
-            print "Could not sort output due to a unicode decode error"
+            print "Error: Could not sort output due to a unicode decode error"
 
         if sys.platform == 'win32':
             stop = time.clock()
