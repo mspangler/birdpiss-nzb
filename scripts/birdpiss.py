@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 """
   Simple script that scans your media and uploads the information.
 """
@@ -106,8 +107,9 @@ class MediaScanner:
             id3r = id3reader.Reader(absolutePath)
             artist = id3r.getValue('performer')
             album = id3r.getValue('album')
-            if artist != None and album != None:
-                return artist + ' - ' + album
+            title = id3r.getValue('title')
+            if artist != None and album != None and title != None:
+                return artist + ' - ' + album + ' - ' + title
         return content
 
 # Helpful function to show how to use the script
@@ -148,7 +150,7 @@ def confirm(mediaScanner):
                 i += 1
             except UnicodeEncodeError:
                 # Some id3 tags contain invalid characters so we catch them and keep moving on
-                print "Error: UnicodeEncodeError exception was thrown " + str(content)
+                print "Error: UnicodeEncodeError exception was thrown"
                 continue
 
         print "\nFound a total of %s unique media names.\n" % numFound
