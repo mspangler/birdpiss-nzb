@@ -106,7 +106,7 @@ class MediaScanner:
 
 # Helpful function to show how to use the script
 def usage():
-    print "birdpiss version {0}".format(__version__)
+    print "birdpiss version %s" % __version__
     print ""
     print "usage: python birdpiss.py [options]"
     print ""
@@ -145,7 +145,7 @@ def confirm(mediaScanner):
                 print "UnicodeEncodeError exception was thrown " + str(content)
                 continue
 
-        print "\nFound a total of {0} file(s).\n".format(numFound)
+        print "\nFound a total of %s file(s).\n" % numFound
 
         # Ask the user if what was captured is what they want to upload
         doUpload = raw_input("Continue and upload the media information? (y/n): ")
@@ -156,7 +156,7 @@ def confirm(mediaScanner):
             print "Piss off then."
             sys.exit(0)
     else:
-        print "\nFound a total of {0} file(s).  Please refine your search options.".format(numFound)
+        print "\nFound a total of %s file(s).  Please refine your search options." % numFound
         sys.exit(0)
 
 # Silly little processing indicator to show the user work is being done
@@ -173,7 +173,7 @@ def twirl():
 # Validation method to make sure we got the required information
 def validateInput(mediaScanner, user):
     if os.path.isdir(mediaScanner.path) == False:
-        print "Invalid root directory: {0}\n".format(mediaScanner.path)
+        print "Invalid root directory: %s\n" % mediaScanner.path
         sys.exit(0)
 """ if user.username == None or user.username == '':
         print "Invalid username. Use 'python birdpiss.py --help' for usage\n"
