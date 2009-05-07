@@ -64,6 +64,11 @@ class MediaScanner:
                         if self.media_type == MediaType.MUSIC:
                             # We break here cause all we care about is the artist and album id3 info
                             # and we can get that from one file.
+                            
+                            # what if we have two albums in one folder or worse, artists...
+                            # ugh... come on people keep your shit organized. but still it's a possibility
+                            # -tosh
+                            
                             break
             elif self.scan_type == ScanType.DIRS:
                 for root in os.walk(self.path):
