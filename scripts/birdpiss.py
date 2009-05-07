@@ -94,8 +94,7 @@ class MediaScanner:
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def addFile(self, content, absolutePath):
         twirl()
-        file_type = string.lower(os.path.splitext(content)[1][1:])
-        if self.current_pattern.search(content, 1) != None:
+        if self.current_pattern.search(string.lower(content), 1) != None:
             if self.media_type != MediaType.MUSIC:
                 self.media_set.add(content)
             else:
@@ -103,7 +102,7 @@ class MediaScanner:
 
     # Grabs the Id3 information from the file
     def getId3Info(self, content, absolutePath):
-        if self.id3_pattern.search(content, 1) != None:
+        if self.id3_pattern.search(string.lower(content), 1) != None:
             id3r = id3reader.Reader(absolutePath)
             artist = id3r.getValue('performer')
             album = id3r.getValue('album')
@@ -152,7 +151,7 @@ def confirm(mediaScanner):
                 print "Error: UnicodeEncodeError exception was thrown " + str(content)
                 continue
 
-        print "\nFound a total of %s file(s).\n" % numFound
+        print "\nFound a total of %s unique media names.\n" % numFound
 
         # Ask the user if what was captured is what they want to upload
         doUpload = raw_input("Continue and upload the media information? (y/n): ")
