@@ -150,7 +150,7 @@ def confirm(mediaScanner):
 
         # Ask the user if what was captured is what they want to upload
         doUpload = raw_input("Continue and upload the media information? (y/n): ")
-        if doUpload == 'y':
+        if doUpload == 'y' or doUpload == 'Y':
             print "Would upload it but it's not built yet."
             # TODO: build then call the upload class
         else:
