@@ -121,7 +121,7 @@ def usage():
     print ""
     sys.exit(0)
 
-def confirmation(mediaScanner):
+def confirm(mediaScanner):
     numFound = len(mediaScanner.media)
     if numFound > 0:
         i = 1
@@ -154,7 +154,18 @@ def twirl():
     if __twirl_state__ == len(symbols) - 1:
         __twirl_state__ = -1
     __twirl_state__ += 1
-
+    
+def validateInput(mediaScanner, user):
+    if os.path.isdir(mediaScanner.path) == False:
+        print "Invalid root directory: {0}\n".format(mediaScanner.path)
+        sys.exit(0)
+""" if user.username == None or user.username == '':
+        print "Invalid username. Use 'python birdpiss.py --help' for usage\n"
+        sys.exit(0)
+    if user.password == None or user.password == '':
+        print "Invalid password. Use 'python birdpiss.py --help' for usage\n"
+        sys.exit(0)
+"""
 # Start of program
 try:
     opts, args = getopt.getopt(sys.argv[1:], "htmadfRr:u:p:", ["help", "tv", "movies", "audio", "dirs", "files", "recursive", "root=", "username=", "password=" ])
@@ -187,5 +198,6 @@ for opt, arg in opts:
     elif opt in ("-p", "--password"):
         user.password = arg
 
+validateInput(mediaScanner, user)
 mediaScanner.scan()
-confirmation(mediaScanner)
+confirm(mediaScanner)
