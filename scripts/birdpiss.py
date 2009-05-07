@@ -11,7 +11,6 @@ import string
 import sys
 
 __version__ = 0.1
-__twirl_state__ = 0
 
 # This class describes all the different types of media we'll be uploading.
 class MediaType:
@@ -161,14 +160,15 @@ def confirm(mediaScanner):
         sys.exit(0)
 
 # Silly little processing indicator to show the user work is being done
+twirl_state = 0
 def twirl():
-    global __twirl_state__
+    global twirl_state
     symbols = ('|', '/', '-', '\\')
-    sys.stdout.write('Scanning media... ' + symbols[__twirl_state__] + '\r')
+    sys.stdout.write('Scanning media... ' + symbols[ twirl_state ] + '\r')
     sys.stdout.flush()
-    if __twirl_state__ == len(symbols) - 1:
-        __twirl_state__ = -1
-    __twirl_state__ += 1
+    if twirl_state == len(symbols) - 1:
+        twirl_state = -1
+    twirl_state += 1
 
 # Validation method to make sure we got the required information
 def validateInput(mediaScanner, user):
@@ -218,4 +218,3 @@ for opt, arg in opts:
 validateInput(mediaScanner, user)
 mediaScanner.scan()
 confirm(mediaScanner)
-
