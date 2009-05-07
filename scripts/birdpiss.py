@@ -33,7 +33,7 @@ class User:
 # The workhorse scanner that generates the media based on the input options.
 class MediaScanner:
     def __init__(self):
-        self.media_list = []
+        self.media_set = set()
         self.media = None
         self.video_extensions = [ "avi", "mpg", "mpeg", "mkv", "m4v" ]
         self.audio_extensions = [ "mp3", "ogg" ]
@@ -66,7 +66,7 @@ class MediaScanner:
                 for root in os.walk(self.path):
                     for content in root[1]:
                         twirl()
-                        self.media_list.append(content)
+                        self.media_set.add(content)
         else:
             if self.scan_type == ScanType.FILES:
                 for content in os.listdir(self.path):
@@ -77,18 +77,18 @@ class MediaScanner:
                 for content in os.listdir(self.path):
                     if os.path.isdir(os.path.join(self.path, content)):
                         twirl()
-                        self.media_list.append(content)
+                        self.media_set.add(content)
         try:
-            self.media_list.sort()
+            self.media = list(self.media_set)
+            self.media.sort()
         except UnicodeDecodeError:
-            print "Stupid unicode error"
-        self.media = set(self.media_list)
+            print "Could not sort output due to a unicode decode error"
 
         if sys.platform == 'win32':
             stop = time.clock()
         else:
             stop = time.time()
-        print "Elapsed time: {0}".format(stop - start)
+        print "Total scanning seconds: %s\n" %(stop - start)
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def addFile(self, content, absolutePath):
@@ -97,9 +97,9 @@ class MediaScanner:
         for type in self.current_extensions:
             if file_type == type:
                 if self.media_type != MediaType.MUSIC:
-                    self.media_list.append(content)
+                    self.media_set.add(content)
                 else:
-                    self.media_list.append(self.getId3Info(content, absolutePath, type))
+                    self.media_set.add(self.getId3Info(content, absolutePath, type))
                 break
 
     # Grabs the Id3 information from the file
