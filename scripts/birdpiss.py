@@ -9,6 +9,7 @@ import os
 import re
 import string
 import sys
+import time
 
 __version__ = 0.1
 
@@ -29,16 +30,11 @@ class User:
         self.username = ''
         self.password = ''
 
-# The media content. Includes the type of media and name.
-class Content:
-    def __init__(self, mediaType, name):
-        self.mediaType = mediaType
-        self.name = name
-
 # The workhorse scanner that generates the media based on the input options.
 class MediaScanner:
     def __init__(self):
-        self.media = []
+        self.media_list = []
+        self.media = None
         self.video_extensions = [ "avi", "mpg", "mpeg", "mkv", "m4v" ]
         self.audio_extensions = [ "mp3", "ogg" ]
         self.current_extensions = []
@@ -56,25 +52,21 @@ class MediaScanner:
             elif self.media_type == MediaType.MUSIC:
                 self.current_extensions = self.audio_extensions
 
+        if sys.platform == 'win32':
+            start = time.clock()
+        else:
+            start = time.time()
+
         if self.recursive:
             if self.scan_type == ScanType.FILES:
                 for root in os.walk(self.path):
                     for content in root[2]:
                         self.addFile(content, os.path.join(root[0], content))
-                        if self.media_type == MediaType.MUSIC:
-                            # We break here cause all we care about is the artist and album id3 info
-                            # and we can get that from one file.
-                            
-                            # what if we have two albums in one folder or worse, artists...
-                            # ugh... come on people keep your shit organized. but still it's a possibility
-                            # -tosh
-                            
-                            break
             elif self.scan_type == ScanType.DIRS:
                 for root in os.walk(self.path):
                     for content in root[1]:
                         twirl()
-                        self.media.append(Content(self.media_type, content))
+                        self.media_list.append(content)
         else:
             if self.scan_type == ScanType.FILES:
                 for content in os.listdir(self.path):
@@ -85,7 +77,18 @@ class MediaScanner:
                 for content in os.listdir(self.path):
                     if os.path.isdir(os.path.join(self.path, content)):
                         twirl()
-                        self.media.append(Content(self.media_type, content))
+                        self.media_list.append(content)
+        try:
+            self.media_list.sort()
+        except UnicodeDecodeError:
+            print "Stupid unicode error"
+        self.media = set(self.media_list)
+
+        if sys.platform == 'win32':
+            stop = time.clock()
+        else:
+            stop = time.time()
+        print "Elapsed time: {0}".format(stop - start)
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def addFile(self, content, absolutePath):
@@ -94,9 +97,9 @@ class MediaScanner:
         for type in self.current_extensions:
             if file_type == type:
                 if self.media_type != MediaType.MUSIC:
-                    self.media.append(Content(self.media_type, content))
+                    self.media_list.append(content)
                 else:
-                    self.media.append(Content(self.media_type, self.getId3Info(content, absolutePath, type)))
+                    self.media_list.append(self.getId3Info(content, absolutePath, type))
                 break
 
     # Grabs the Id3 information from the file
@@ -143,7 +146,7 @@ def confirm(mediaScanner):
         i = 1
         for content in mediaScanner.media:
             try:
-                print str(i) + '. ' + content.name
+                print str(i) + '. ' + content
                 i += 1
             except UnicodeEncodeError:
                 # Some id3 tags contain invalid characters so we catch them and keep moving on
