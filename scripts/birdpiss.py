@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+  Simple script that scans your media and uploads the information.
+"""
 
 import getopt
 import id3reader
@@ -10,25 +13,30 @@ import sys
 __version__ = 0.1
 __twirl_state__ = 0
 
+# This class describes all the different types of media we'll be uploading.
 class MediaType:
     MOVIE = 0
     TV = 1
     MUSIC = 2
 
+# This class describes all the different ways to generate the media name.
 class ScanType:
     FILES = 0
     DIRS = 1
 
+# The user who is generating the media and uploading the information.
 class User:
     def __init__(self):
         self.username = ''
         self.password = ''
 
+# The media content. Includes the type of media and name.
 class Content:
     def __init__(self, mediaType, name):
         self.mediaType = mediaType
         self.name = name
 
+# The workhorse scanner that generates the media based on the input options.
 class MediaScanner:
     def __init__(self):
         self.media = []
@@ -43,6 +51,7 @@ class MediaScanner:
     # Scans the root path looking for media content
     def scan(self):
         if self.scan_type == ScanType.FILES:
+            # Determine what file extensions we'll be looking for
             if self.media_type == MediaType.TV or self.media_type == MediaType.MOVIE:
                 self.current_extensions = self.video_extensions
             elif self.media_type == MediaType.MUSIC:
@@ -54,6 +63,8 @@ class MediaScanner:
                     for content in root[2]:
                         self.addFile(content, os.path.join(root[0], content))
                         if self.media_type == MediaType.MUSIC:
+                            # We break here cause all we care about is the artist and album id3 info
+                            # and we can get that from one file.
                             break
             elif self.scan_type == ScanType.DIRS:
                 for root in os.walk(self.path):
@@ -121,31 +132,35 @@ def usage():
     print ""
     sys.exit(0)
 
+# Outputs all the captured media and confirms the upload process
 def confirm(mediaScanner):
     numFound = len(mediaScanner.media)
     if numFound > 0:
         i = 1
         for content in mediaScanner.media:
             try:
-                print "{0}. {1}".format(i, content.name)
+                print str(i) + '. ' + content.name
                 i += 1
             except UnicodeEncodeError:
+                # Some id3 tags contain invalid characters so we catch them and keep moving on
                 print "UnicodeEncodeError exception was thrown " + str(content)
                 continue
 
         print "\nFound a total of {0} file(s).\n".format(numFound)
 
-        doUpload = raw_input("Would you like to continue and upload the file information? (y/n): ")
+        # Ask the user if what was captured is what they want to upload
+        doUpload = raw_input("Continue and upload the file information? (y/n): ")
         if doUpload == 'y':
-            print "You selected to upload the file information."
+            print "Would upload it but it's not built yet."
+            # TODO: build then call the upload class
         else:
-            print "You selected not to upload any information."
+            print "Piss off then."
             sys.exit(0)
     else:
         print "\nFound a total of {0} file(s).  Please refine your search options.".format(numFound)
         sys.exit(0)
 
-# Little processing indicator to show the user work is being done
+# Silly little processing indicator to show the user work is being done
 def twirl():
     global __twirl_state__
     symbols = ('|', '/', '-', '\\')
@@ -154,7 +169,8 @@ def twirl():
     if __twirl_state__ == len(symbols) - 1:
         __twirl_state__ = -1
     __twirl_state__ += 1
-    
+
+# Validation method to make sure we got the required information
 def validateInput(mediaScanner, user):
     if os.path.isdir(mediaScanner.path) == False:
         print "Invalid root directory: {0}\n".format(mediaScanner.path)
@@ -164,9 +180,9 @@ def validateInput(mediaScanner, user):
         sys.exit(0)
     if user.password == None or user.password == '':
         print "Invalid password. Use 'python birdpiss.py --help' for usage\n"
-        sys.exit(0)
-"""
-# Start of program
+        sys.exit(0) """
+
+# Sets up the command line options
 try:
     opts, args = getopt.getopt(sys.argv[1:], "htmadfRr:u:p:", ["help", "tv", "movies", "audio", "dirs", "files", "recursive", "root=", "username=", "password=" ])
 except getopt.GetoptError:
@@ -176,6 +192,7 @@ except getopt.GetoptError:
 user = User()
 mediaScanner = MediaScanner()
 
+# Loop through the options to see what we're working with
 for opt, arg in opts:
     if opt in ("-h", "--help"):
         usage()
@@ -201,3 +218,4 @@ for opt, arg in opts:
 validateInput(mediaScanner, user)
 mediaScanner.scan()
 confirm(mediaScanner)
+
