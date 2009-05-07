@@ -149,7 +149,7 @@ def confirm(mediaScanner):
         print "\nFound a total of {0} file(s).\n".format(numFound)
 
         # Ask the user if what was captured is what they want to upload
-        doUpload = raw_input("Continue and upload the file information? (y/n): ")
+        doUpload = raw_input("Continue and upload the media information? (y/n): ")
         if doUpload == 'y':
             print "Would upload it but it's not built yet."
             # TODO: build then call the upload class
