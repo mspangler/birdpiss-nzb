@@ -35,9 +35,10 @@ class MediaScanner:
     def __init__(self):
         self.media_set = set()
         self.media = None
-        self.video_extensions = [ "avi", "mpg", "mpeg", "mkv", "m4v" ]
-        self.audio_extensions = [ "mp3", "ogg" ]
-        self.current_extensions = []
+        self.video_pattern = re.compile("avi|mpg|mpeg|mkv|m4v")
+        self.audio_pattern = re.compile("mp3|ogg")
+        self.id3_pattern = re.compile("mp3")
+        self.current_pattern = None
         self.media_type = 0
         self.scan_type = 0
         self.recursive = False
@@ -48,9 +49,9 @@ class MediaScanner:
         if self.scan_type == ScanType.FILES:
             # Determine what file extensions we'll be looking for
             if self.media_type == MediaType.TV or self.media_type == MediaType.MOVIE:
-                self.current_extensions = self.video_extensions
+                self.current_pattern = self.video_pattern
             elif self.media_type == MediaType.MUSIC:
-                self.current_extensions = self.audio_extensions
+                self.current_pattern = self.audio_pattern
 
         if sys.platform == 'win32':
             start = time.clock()
@@ -94,17 +95,15 @@ class MediaScanner:
     def addFile(self, content, absolutePath):
         twirl()
         file_type = string.lower(os.path.splitext(content)[1][1:])
-        for type in self.current_extensions:
-            if file_type == type:
-                if self.media_type != MediaType.MUSIC:
-                    self.media_set.add(content)
-                else:
-                    self.media_set.add(self.getId3Info(content, absolutePath, type))
-                break
+        if self.current_pattern.search(content, 1) != None:
+            if self.media_type != MediaType.MUSIC:
+                self.media_set.add(content)
+            else:
+                self.media_set.add(self.getId3Info(content, absolutePath))
 
     # Grabs the Id3 information from the file
-    def getId3Info(self, content, absolutePath, type):
-        if absolutePath != None and type == 'mp3':
+    def getId3Info(self, content, absolutePath):
+        if self.id3_pattern.search(content, 1) != None:
             id3r = id3reader.Reader(absolutePath)
             artist = id3r.getValue('performer')
             album = id3r.getValue('album')
@@ -150,7 +149,7 @@ def confirm(mediaScanner):
                 i += 1
             except UnicodeEncodeError:
                 # Some id3 tags contain invalid characters so we catch them and keep moving on
-                print "UnicodeEncodeError exception was thrown " + str(content)
+                print "Error: UnicodeEncodeError exception was thrown " + str(content)
                 continue
 
         print "\nFound a total of %s file(s).\n" % numFound
