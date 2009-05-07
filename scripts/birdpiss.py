@@ -34,8 +34,7 @@ class User:
 # The workhorse scanner that generates the media based on the input options.
 class MediaScanner:
     def __init__(self):
-        self.media_set = set()
-        self.media = None
+        self.media = dict()
         self.video_pattern = re.compile("avi|mpg|mpeg|mkv|m4v")
         self.audio_pattern = re.compile("mp3|ogg")
         self.id3_pattern = re.compile("mp3")
@@ -68,7 +67,7 @@ class MediaScanner:
                 for root in os.walk(self.path):
                     for content in root[1]:
                         twirl()
-                        self.media_set.add(content)
+                        self.media[os.path.join(root[0], content)] = content
         else:
             if self.scan_type == ScanType.FILES:
                 for content in os.listdir(self.path):
@@ -77,14 +76,10 @@ class MediaScanner:
                         self.addFile(content, absolutePath)
             elif self.scan_type == ScanType.DIRS:
                 for content in os.listdir(self.path):
-                    if os.path.isdir(os.path.join(self.path, content)):
+                    absolutePath = os.path.join(self.path, content)
+                    if os.path.isdir(absolutePath):
                         twirl()
-                        self.media_set.add(content)
-        try:
-            self.media = list(self.media_set)
-            self.media.sort()
-        except UnicodeDecodeError:
-            print "Error: Could not sort output due to a unicode decode error"
+                        self.media[absolutePath] = content
 
         if sys.platform == 'win32':
             stop = time.clock()
@@ -97,9 +92,9 @@ class MediaScanner:
         twirl()
         if self.current_pattern.search(string.lower(content), 1) != None:
             if self.media_type != MediaType.MUSIC:
-                self.media_set.add(content)
+                self.media[absolutePath] = content
             else:
-                self.media_set.add(self.getId3Info(content, absolutePath))
+                self.media[absolutePath] = self.getId3Info(content, absolutePath)
 
     # Grabs the Id3 information from the file
     def getId3Info(self, content, absolutePath):
@@ -144,7 +139,10 @@ def confirm(mediaScanner):
     numFound = len(mediaScanner.media)
     if numFound > 0:
         i = 1
-        for content in mediaScanner.media:
+        keys = mediaScanner.media.keys()
+        keys.sort()
+        media = map(mediaScanner.media.get, keys)
+        for content in media:
             try:
                 print str(i) + '. ' + content
                 i += 1
