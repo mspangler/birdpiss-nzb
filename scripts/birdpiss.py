@@ -105,10 +105,10 @@ class Scanner:
             if self.media_type != MediaType.MUSIC:
                 self.media[absolutePath] = content
             else:
-                self.media[absolutePath] = self.getId3Info(content, absolutePath)
+                self.media[absolutePath] = self.getAudioTagInfo(content, absolutePath)
 
-    # Grabs the Id3 information from the file
-    def getId3Info(self, content, absolutePath):
+    # Grabs the audio tag information from the file
+    def getAudioTagInfo(self, content, absolutePath):
         if self.id3_pattern.search(content) != None:
             try:
                 id3r = id3reader.Reader(absolutePath)
@@ -128,11 +128,12 @@ class MediaFile:
         self.media = media
         self.name = None
 
+    # Create a temporary file on the user's machine for the file upload
     def create(self):        
         fd, self.name = tempfile.mkstemp(suffix='.csv', prefix='birdpiss-', text=True)
         f = os.fdopen(fd, 'w')
 
-        # Sort media
+        # Sorts by file path
         keys = self.media.keys()
         keys.sort()
 
@@ -146,6 +147,7 @@ class MediaFile:
 
         print 'Created temp file: ' + self.name
 
+    # Deletes the temporary file for the user's machine
     def delete(self):
         os.remove(self.name)
         print 'Removed temp file: ' + self.name
@@ -169,7 +171,7 @@ def usage():
     print "-p, --password   specify your password"
     print ""
     print "Examples:"
-    print "         python birdpiss.py -afr /home/user/music -u username -p password"
+    print "         python birdpiss.py -aRr /home/user/music -u username -p password"
     print "         python birdpiss.py -mfRr /home/user/movies -u username -p password"
     print '         python birdpiss.py -tdr "/home/user/tv shows" -u username -p password'
     print ""
@@ -221,14 +223,12 @@ def twirl():
 # Validation method to make sure we got the required information
 def validateInput(scanner, user):
     if os.path.isdir(scanner.path) == False:
-        print "Error: Invalid root directory: %s\n" % scanner.path
-        sys.exit(0)
+        print "Error: Invalid root directory: %s\n" % scanner.path        
 """ if user.username == None or user.username == '':
         print "Error: Invalid username. Use 'python birdpiss.py --help' for usage\n"
-        sys.exit(0)
     if user.password == None or user.password == '':
-        print "Error: Invalid password. Use 'python birdpiss.py --help' for usage\n"
-        sys.exit(0) """
+        print "Error: Invalid password. Use 'python birdpiss.py --help' for usage\n" """
+    sys.exit(0)
 
 # Sets up the command line options
 try:
