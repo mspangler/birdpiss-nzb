@@ -223,12 +223,12 @@ def twirl():
 # Validation method to make sure we got the required information
 def validateInput(scanner, user):
     if os.path.isdir(scanner.path) == False:
-        print "Error: Invalid root directory: %s\n" % scanner.path        
+        print "Error: Invalid root directory: %s\n" % scanner.path
+        sys.exit(0)
 """ if user.username == None or user.username == '':
         print "Error: Invalid username. Use 'python birdpiss.py --help' for usage\n"
     if user.password == None or user.password == '':
-        print "Error: Invalid password. Use 'python birdpiss.py --help' for usage\n" """
-    sys.exit(0)
+        print "Error: Invalid password. Use 'python birdpiss.py --help' for usage\n" """    
 
 # Sets up the command line options
 try:
