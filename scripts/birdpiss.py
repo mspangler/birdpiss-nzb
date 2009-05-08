@@ -9,6 +9,7 @@ import id3reader
 import os
 import re
 import sys
+import tempfile
 import time
 
 # Globals
@@ -31,21 +32,21 @@ class ScanType:
 # The user who is generating the media and uploading the information.
 class User:
     def __init__(self):
-        self.username = ''
-        self.password = ''
+        self.username = None
+        self.password = None
 
 # The workhorse scanner that generates the media based on the input options.
-class MediaScanner:
+class Scanner:
     def __init__(self):
         self.media = dict()
-        self.video_pattern = re.compile("avi|mpg|mpeg|mkv|m4v", re.IGNORECASE)
-        self.audio_pattern = re.compile("mp3|ogg", re.IGNORECASE)
-        self.id3_pattern = re.compile("mp3", re.IGNORECASE)
+        self.video_pattern = re.compile(".avi|.mpg|.mpeg|.mkv|.m4v", re.IGNORECASE)
+        self.audio_pattern = re.compile(".mp3|.m3u|.ogg", re.IGNORECASE)
+        self.id3_pattern = re.compile(".mp3", re.IGNORECASE)
         self.current_pattern = None
         self.media_type = 0
         self.scan_type = 0
         self.recursive = False
-        self.path = ''
+        self.path = None
 
     # Scans the root path looking for media content
     def scan(self):
@@ -58,11 +59,13 @@ class MediaScanner:
             elif self.media_type == MediaType.MUSIC:
                 self.current_pattern = self.audio_pattern
 
+        # Start the timer so we can measure the scanning performance
         if sys.platform == 'win32':
             start_scan = time.clock()
         else:
             start_scan = time.time()
 
+        # Scan for the media
         if self.recursive:
             if self.scan_type == ScanType.FILES:
                 for root in os.walk(self.path):
@@ -86,25 +89,27 @@ class MediaScanner:
                         twirl()
                         self.media[absolutePath] = content
 
+        # Stop the the timer
         if sys.platform == 'win32':
             stop_scan = time.clock()
         else:
             stop_scan = time.time()
+
+        # Clear the 'Scanning media...' output message
         print "                   "
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def addFile(self, content, absolutePath):
         twirl()
-        file_extension = os.path.splitext(content)[1][1:]
-        if self.current_pattern.match(file_extension) != None:
+        if self.current_pattern.search(content) != None:
             if self.media_type != MediaType.MUSIC:
                 self.media[absolutePath] = content
             else:
-                self.media[absolutePath] = self.getId3Info(content, absolutePath, file_extension)
+                self.media[absolutePath] = self.getId3Info(content, absolutePath)
 
     # Grabs the Id3 information from the file
-    def getId3Info(self, content, absolutePath, file_extension):
-        if self.id3_pattern.match(file_extension) != None:
+    def getId3Info(self, content, absolutePath):
+        if self.id3_pattern.search(content) != None:
             try:
                 id3r = id3reader.Reader(absolutePath)
                 artist = id3r.getValue('performer')
@@ -113,9 +118,37 @@ class MediaScanner:
                 if artist != None and album != None and title != None:
                     return artist + ' - ' + album + ' - ' + title
             except:
-                print "Warn: Unexpected error occured while getting Id3 info from file:\n      %s - Will use filename instead." % absolutePath
+                print "Warn: Unexpected error occurred while getting Id3 info from file:\n      %s - Will use filename instead." % repr(absolutePath)
                 return content
         return content
+
+# Handles the creation and removal of our media file that will be posted to the website
+class MediaFile:
+    def __init__(self, media):
+        self.media = media
+        self.name = None
+
+    def create(self):        
+        fd, self.name = tempfile.mkstemp(suffix='.csv', prefix='birdpiss-', text=True)
+        f = os.fdopen(fd, 'w')
+
+        # Sort media
+        keys = self.media.keys()
+        keys.sort()
+
+        for key in keys:
+            try:
+                f.write(key + ',' + self.media[key] + '\n')
+            except:
+                print "Warn: Unexpected error occurred on file:\n      %s" % repr(key)
+                continue
+        f.close()
+
+        print 'Created temp file: ' + self.name
+
+    def delete(self):
+        os.remove(self.name)
+        print 'Removed temp file: ' + self.name
 
 # Helpful function to show how to use the script
 def usage():
@@ -145,21 +178,20 @@ def usage():
     sys.exit(0)
 
 # Outputs all the captured media and confirms the upload process
-def confirm(mediaScanner):
+def confirm(scanner):
     global start_scan, stop_scan
-    numFound = len(mediaScanner.media)
+    numFound = len(scanner.media)
     if numFound > 0:
         i = 1
-        keys = mediaScanner.media.keys()
+        keys = scanner.media.keys()
         keys.sort()
-        values = map(mediaScanner.media.get, keys)
+        values = map(scanner.media.get, keys)
         for media in values:
             try:
                 print str(i) + '. ' + media
                 i += 1
-            except UnicodeEncodeError:
-                # Some id3 tags contain invalid characters so we catch them and keep moving on
-                print "Warn: UnicodeEncodeError exception was thrown"
+            except:
+                print "Warn: Unexpected error occurred on media title:\n      %s" % repr(media)
                 continue
 
         print "\nTotal scanning seconds: %s" %(stop_scan - start_scan)
@@ -168,14 +200,13 @@ def confirm(mediaScanner):
         # Ask the user if what was captured is what they want to upload
         doUpload = raw_input("Continue and upload the media information? (y/n): ")
         if doUpload == 'y' or doUpload == 'Y':
-            print "Would upload it but it's not built yet."
-            # TODO: build then call the upload class
+            return True
         else:
             print "Piss off then."
-            sys.exit(0)
+            return False
     else:
         print "Found a total of 0 media titles.  Please refine your search options or use the --help switch."
-        sys.exit(0)
+        return False
 
 # Silly little processing indicator to show the user work is being done
 def twirl():
@@ -188,15 +219,15 @@ def twirl():
     twirl_state += 1
 
 # Validation method to make sure we got the required information
-def validateInput(mediaScanner, user):
-    if os.path.isdir(mediaScanner.path) == False:
-        print "Invalid root directory: %s\n" % mediaScanner.path
+def validateInput(scanner, user):
+    if os.path.isdir(scanner.path) == False:
+        print "Error: Invalid root directory: %s\n" % scanner.path
         sys.exit(0)
 """ if user.username == None or user.username == '':
-        print "Invalid username. Use 'python birdpiss.py --help' for usage\n"
+        print "Error: Invalid username. Use 'python birdpiss.py --help' for usage\n"
         sys.exit(0)
     if user.password == None or user.password == '':
-        print "Invalid password. Use 'python birdpiss.py --help' for usage\n"
+        print "Error: Invalid password. Use 'python birdpiss.py --help' for usage\n"
         sys.exit(0) """
 
 # Sets up the command line options
@@ -207,31 +238,38 @@ except getopt.GetoptError:
     usage()
 
 user = User()
-mediaScanner = MediaScanner()
+scanner = Scanner()
 
 # Loop through the options to see what we're working with
 for opt, arg in opts:
     if opt in ("-h", "--help"):
         usage()
     elif opt in ("-t", "--tv"):
-        mediaScanner.media_type = MediaType.TV
+        scanner.media_type = MediaType.TV
     elif opt in ("-m", "--movies"):
-        mediaScanner.media_type = MediaType.MOVIE
+        scanner.media_type = MediaType.MOVIE
     elif opt in ("-a", "--audio"):
-        mediaScanner.media_type = MediaType.MUSIC
+        scanner.media_type = MediaType.MUSIC
     elif opt in ("-d", "--dirs"):
-        mediaScanner.scan_type = ScanType.DIRS
+        scanner.scan_type = ScanType.DIRS
     elif opt in ("-f", "--files"):
-        mediaScanner.scan_type = ScanType.FILES
+        scanner.scan_type = ScanType.FILES
     elif opt in ("-R", "--recursive"):
-        mediaScanner.recursive = True
+        scanner.recursive = True
     elif opt in ("-r", "--root"):
-        mediaScanner.path = arg
+        scanner.path = arg
     elif opt in ("-u", "--username"):
         user.username = arg
     elif opt in ("-p", "--password"):
         user.password = arg
 
-validateInput(mediaScanner, user)
-mediaScanner.scan()
-confirm(mediaScanner)
+validateInput(scanner, user)
+scanner.scan()
+
+# Validate that the user wants to go forward with the captured media
+if confirm(scanner):
+    media_file = MediaFile(scanner.media)
+    media_file.create()
+#    media_file.delete()
+else:
+    sys.exit(0)
