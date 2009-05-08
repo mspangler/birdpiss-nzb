@@ -12,7 +12,11 @@ import string
 import sys
 import time
 
+# Globals
 __version__ = 0.1
+start_scan = 0
+stop_scan = 0
+twirl_state = 0
 
 # This class describes all the different types of media we'll be uploading.
 class MediaType:
@@ -46,6 +50,8 @@ class MediaScanner:
 
     # Scans the root path looking for media content
     def scan(self):
+        global start_scan, stop_scan
+
         if self.scan_type == ScanType.FILES:
             # Determine what file extensions we'll be looking for
             if self.media_type == MediaType.TV or self.media_type == MediaType.MOVIE:
@@ -54,9 +60,9 @@ class MediaScanner:
                 self.current_pattern = self.audio_pattern
 
         if sys.platform == 'win32':
-            start = time.clock()
+            start_scan = time.clock()
         else:
-            start = time.time()
+            start_scan = time.time()
 
         if self.recursive:
             if self.scan_type == ScanType.FILES:
@@ -82,10 +88,10 @@ class MediaScanner:
                         self.media[absolutePath] = content
 
         if sys.platform == 'win32':
-            stop = time.clock()
+            stop_scan = time.clock()
         else:
-            stop = time.time()
-        print "Total scanning seconds: %s\n" %(stop - start)
+            stop_scan = time.time()
+        print "                   "
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def addFile(self, content, absolutePath):
@@ -99,12 +105,16 @@ class MediaScanner:
     # Grabs the Id3 information from the file
     def getId3Info(self, content, absolutePath):
         if self.id3_pattern.search(string.lower(content), 1) != None:
-            id3r = id3reader.Reader(absolutePath)
-            artist = id3r.getValue('performer')
-            album = id3r.getValue('album')
-            title = id3r.getValue('title')
-            if artist != None and album != None and title != None:
-                return artist + ' - ' + album + ' - ' + title
+            try:
+                id3r = id3reader.Reader(absolutePath)
+                artist = id3r.getValue('performer')
+                album = id3r.getValue('album')
+                title = id3r.getValue('title')
+                if artist != None and album != None and title != None:
+                    return artist + ' - ' + album + ' - ' + title
+            except:
+                print "Warn: Unexpected error occured while getting Id3 info from file:\n      %s - Will use filename instead." % absolutePath
+                return content
         return content
 
 # Helpful function to show how to use the script
@@ -136,6 +146,7 @@ def usage():
 
 # Outputs all the captured media and confirms the upload process
 def confirm(mediaScanner):
+    global start_scan, stop_scan
     numFound = len(mediaScanner.media)
     if numFound > 0:
         i = 1
@@ -148,10 +159,11 @@ def confirm(mediaScanner):
                 i += 1
             except UnicodeEncodeError:
                 # Some id3 tags contain invalid characters so we catch them and keep moving on
-                print "Error: UnicodeEncodeError exception was thrown"
+                print "Warn: UnicodeEncodeError exception was thrown"
                 continue
 
-        print "\nFound a total of %s unique media names.\n" % numFound
+        print "\nTotal scanning seconds: %s" %(stop_scan - start_scan)
+        print "Found a total of %s unique media titles.\n" % numFound
 
         # Ask the user if what was captured is what they want to upload
         doUpload = raw_input("Continue and upload the media information? (y/n): ")
@@ -162,11 +174,10 @@ def confirm(mediaScanner):
             print "Piss off then."
             sys.exit(0)
     else:
-        print "\nFound a total of %s file(s).  Please refine your search options." % numFound
+        print "Found a total of 0 media titles.  Please refine your search options or use the --help switch."
         sys.exit(0)
 
 # Silly little processing indicator to show the user work is being done
-twirl_state = 0
 def twirl():
     global twirl_state
     symbols = ('|', '/', '-', '\\')
@@ -192,7 +203,7 @@ def validateInput(mediaScanner, user):
 try:
     opts, args = getopt.getopt(sys.argv[1:], "htmadfRr:u:p:", ["help", "tv", "movies", "audio", "dirs", "files", "recursive", "root=", "username=", "password=" ])
 except getopt.GetoptError:
-    print "USAGE ERROR: Please enter valid options\n"
+    print "Error: Please enter valid options\n"
     usage()
 
 user = User()
