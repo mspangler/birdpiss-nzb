@@ -8,7 +8,6 @@ import getopt
 import id3reader
 import os
 import re
-import string
 import sys
 import time
 
@@ -39,9 +38,9 @@ class User:
 class MediaScanner:
     def __init__(self):
         self.media = dict()
-        self.video_pattern = re.compile("avi|mpg|mpeg|mkv|m4v")
-        self.audio_pattern = re.compile("mp3|ogg")
-        self.id3_pattern = re.compile("mp3")
+        self.video_pattern = re.compile("avi|mpg|mpeg|mkv|m4v", re.IGNORECASE)
+        self.audio_pattern = re.compile("mp3|ogg", re.IGNORECASE)
+        self.id3_pattern = re.compile("mp3", re.IGNORECASE)
         self.current_pattern = None
         self.media_type = 0
         self.scan_type = 0
@@ -96,15 +95,16 @@ class MediaScanner:
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def addFile(self, content, absolutePath):
         twirl()
-        if self.current_pattern.search(string.lower(content), 1) != None:
+        file_extension = os.path.splitext(content)[1][1:]
+        if self.current_pattern.match(file_extension) != None:
             if self.media_type != MediaType.MUSIC:
                 self.media[absolutePath] = content
             else:
-                self.media[absolutePath] = self.getId3Info(content, absolutePath)
+                self.media[absolutePath] = self.getId3Info(content, absolutePath, file_extension)
 
     # Grabs the Id3 information from the file
-    def getId3Info(self, content, absolutePath):
-        if self.id3_pattern.search(string.lower(content), 1) != None:
+    def getId3Info(self, content, absolutePath, file_extension):
+        if self.id3_pattern.match(file_extension) != None:
             try:
                 id3r = id3reader.Reader(absolutePath)
                 artist = id3r.getValue('performer')
@@ -152,10 +152,10 @@ def confirm(mediaScanner):
         i = 1
         keys = mediaScanner.media.keys()
         keys.sort()
-        media = map(mediaScanner.media.get, keys)
-        for content in media:
+        values = map(mediaScanner.media.get, keys)
+        for media in values:
             try:
-                print str(i) + '. ' + content
+                print str(i) + '. ' + media
                 i += 1
             except UnicodeEncodeError:
                 # Some id3 tags contain invalid characters so we catch them and keep moving on
