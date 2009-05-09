@@ -117,8 +117,8 @@ class Scanner:
                 title = id3r.getValue('title')
                 if artist != None and album != None and title != None:
                     return artist + ' - ' + album + ' - ' + title
-            except:
-                print "Warn: Unexpected error occurred while getting Id3 info from file:\n      %s - Will use filename instead." % repr(absolutePath)
+            except Exception as ex:
+                print "\033[1;31mError: Unexpected error occurred while getting Id3 info.  Will try and use filename instead.\n       File: %r\n       Exception: %r\033[1;m" % (absolutePath, ex)
                 return content
         return content
 
@@ -127,6 +127,7 @@ class MediaFile:
     def __init__(self, media):
         self.media = media
         self.name = None
+        self.hasErrors = False
 
     # Create a temporary file on the user's machine for the file upload
     def create(self):        
@@ -139,9 +140,10 @@ class MediaFile:
 
         for key in keys:
             try:
-                f.write(key + ',' + self.media[key] + '\n')
-            except:
-                print "Warn: Unexpected error occurred on file:\n      %s" % repr(key)
+                f.write(key + ',' + self.media[key].encode('utf8') + '\n')
+            except Exception as ex:
+                self.hasErrors = True
+                print "\033[1;31mError: Unexpected error occurred.\n       File: %r\n       Exception: %r\033[1;m\n" % (key, ex)
                 continue
         f.close()
 
@@ -192,8 +194,8 @@ def confirm(scanner):
             try:
                 print str(i) + '. ' + media
                 i += 1
-            except:
-                print "Warn: Unexpected error occurred on media title:\n      %s" % repr(media)
+            except Exception as ex:
+                print "\033[1;31mError: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r\033[1;m" % (key, ex)
                 continue
 
         print "\nTotal scanning seconds: %s" %(stop_scan - start_scan)
@@ -214,7 +216,7 @@ def confirm(scanner):
 def twirl():
     global twirl_state
     symbols = ('|', '/', '-', '\\')
-    sys.stdout.write('Scanning media... ' + symbols[ twirl_state ] + '\r')
+    sys.stdout.write('Scanning media... ' + '\033[1;32m' + symbols[ twirl_state ] + '\033[1;m\r')
     sys.stdout.flush()
     if twirl_state == len(symbols) - 1:
         twirl_state = -1
@@ -223,18 +225,18 @@ def twirl():
 # Validation method to make sure we got the required information
 def validateInput(scanner, user):
     if os.path.isdir(scanner.path) == False:
-        print "Error: Invalid root directory: %s\n" % scanner.path
+        print "\033[1;31mError: Invalid root directory: %s\033[1;m\n" % scanner.path
         sys.exit(0)
 """ if user.username == None or user.username == '':
-        print "Error: Invalid username. Use 'python birdpiss.py --help' for usage\n"
+        print "\033[1;31mError: Invalid username. Use 'python birdpiss.py --help' for usage\033[1;m\n"
     if user.password == None or user.password == '':
-        print "Error: Invalid password. Use 'python birdpiss.py --help' for usage\n" """    
+        print "\033[1;31mError: Invalid password. Use 'python birdpiss.py --help' for usage\033[1;m\n" """
 
 # Sets up the command line options
 try:
     opts, args = getopt.getopt(sys.argv[1:], "htmadfRr:u:p:", ["help", "tv", "movies", "audio", "dirs", "files", "recursive", "root=", "username=", "password=" ])
 except getopt.GetoptError:
-    print "Error: Please enter valid options\n"
+    print "\033[1;31mError: Please enter valid options\033[1;m\n"
     usage()
 
 user = User()
@@ -269,7 +271,17 @@ scanner.scan()
 # Validate that the user wants to go forward with the captured media
 if confirm(scanner):
     media_file = MediaFile(scanner.media)
-    media_file.create()
-#    media_file.delete()
+    media_file.create()    
+
+    if media_file.hasErrors == False:
+        print "upload"
+    else:
+        # If errors occurred during the file creation process verify with the user if we should continue
+        doCreate = raw_input("\nDue to errors not all media will be uploaded.  Continue? (y/n): ")
+        if doCreate == 'y' or doCreate == 'Y':
+            print "upload"
+        else:
+            media_file.delete()
+            sys.exit(0)
 else:
     sys.exit(0)
