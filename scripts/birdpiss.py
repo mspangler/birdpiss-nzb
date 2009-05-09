@@ -130,7 +130,7 @@ class MediaFile:
         self.hasErrors = False
 
     # Create a temporary file on the user's machine for the file upload
-    def create(self):        
+    def create(self):
         fd, self.name = tempfile.mkstemp(suffix='.csv', prefix='birdpiss-', text=True)
         f = os.fdopen(fd, 'w')
 
@@ -147,12 +147,24 @@ class MediaFile:
                 continue
         f.close()
 
-        print 'Created temp file: ' + self.name
-
     # Deletes the temporary file for the user's machine
     def delete(self):
         os.remove(self.name)
         print 'Removed temp file: ' + self.name
+
+# Handles the upload or posting of the media file and information
+class Uploader:
+    def __init__(self, media_file_path):
+        self.media_file_path = media_file_path
+
+    def upload(self):
+        print 'Uploading media file: %s' % self.media_file_path 
+        print 'Media upload was successful.'
+
+# Common function that will post the media information
+def post(media_file_path):
+    uploader = Uploader(media_file_path)
+    uploader.upload()
 
 # Helpful function to show how to use the script
 def usage():
@@ -271,17 +283,14 @@ scanner.scan()
 # Validate that the user wants to go forward with the captured media
 if confirm(scanner):
     media_file = MediaFile(scanner.media)
-    media_file.create()    
+    media_file.create()
 
     if media_file.hasErrors == False:
-        print "upload"
+        post(media_file.name)
     else:
         # If errors occurred during the file creation process verify with the user if we should continue
         doCreate = raw_input("\nDue to errors not all media will be uploaded.  Continue? (y/n): ")
         if doCreate == 'y' or doCreate == 'Y':
-            print "upload"
-        else:
-            media_file.delete()
-            sys.exit(0)
-else:
-    sys.exit(0)
+            post(media_file.name)
+    media_file.delete()
+sys.exit(0)
