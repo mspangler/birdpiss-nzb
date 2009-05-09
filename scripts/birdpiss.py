@@ -143,27 +143,40 @@ class MediaFile:
                 f.write(key + ',' + self.media[key].encode('utf8') + '\n')
             except Exception as ex:
                 self.hasErrors = True
-                print "\033[1;31mError: Unexpected error occurred.\n       File: %r\n       Exception: %r\033[1;m\n" % (key, ex)
+                print "\033[1;31mError: Unexpected error occurred.\n       File: %r\n       Exception: %r\033[1;m" % (key, ex)
                 continue
         f.close()
 
     # Deletes the temporary file for the user's machine
     def delete(self):
         os.remove(self.name)
-        print 'Removed temp file: ' + self.name
+        print 'Removed media file: ' + self.name
 
 # Handles the upload or posting of the media file and information
 class Uploader:
-    def __init__(self, media_file_path):
-        self.media_file_path = media_file_path
+    def __init__(self, user, media_type, media_file):
+        self.user = user
+        self.media_type = media_type
+        self.media_file = media_file
 
     def upload(self):
-        print 'Uploading media file: %s' % self.media_file_path 
+        media = self.getMediaType()
+        print 'Uploading ' + media + ' media file: %s' % self.media_file
         print 'Media upload was successful.'
+        
+    def getMediaType(self):
+        media = ''
+        if self.media_type == MediaType.MOVIE:
+            media = 'movies'
+        elif self.media_type == MediaType.TV:
+            media = 'tv'
+        elif self.media_type == MediaType.MUSIC:
+            media = 'music'
+        return media
 
 # Common function that will post the media information
-def post(media_file_path):
-    uploader = Uploader(media_file_path)
+def post(user, media_type, media_file):
+    uploader = Uploader(user, media_type, media_file)
     uploader.upload()
 
 # Helpful function to show how to use the script
@@ -286,11 +299,14 @@ if confirm(scanner):
     media_file.create()
 
     if media_file.hasErrors == False:
-        post(media_file.name)
+        post(user, scanner.media_type, media_file.name)
     else:
         # If errors occurred during the file creation process verify with the user if we should continue
         doCreate = raw_input("\nDue to errors not all media will be uploaded.  Continue? (y/n): ")
         if doCreate == 'y' or doCreate == 'Y':
-            post(media_file.name)
+            post(user, scanner.media_type, media_file.name)
+
     media_file.delete()
+
 sys.exit(0)
+
