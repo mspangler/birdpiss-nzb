@@ -5,7 +5,9 @@
 """
 
 import getopt
+import httplib
 import id3reader
+import mimetypes
 import os
 import re
 import sys
@@ -20,9 +22,9 @@ twirl_state = 0
 
 # This class describes all the different types of media we'll be uploading.
 class MediaType:
-    MOVIE = 0
-    TV = 1
-    MUSIC = 2
+    MOVIE = 'movies'
+    TV = 'tv'
+    MUSIC = 'music'
 
 # This class describes all the different ways to generate the media name.
 class ScanType:
@@ -43,7 +45,7 @@ class Scanner:
         self.audio_pattern = re.compile(".mp3|.m3u|.ogg", re.IGNORECASE)
         self.id3_pattern = re.compile(".mp3", re.IGNORECASE)
         self.current_pattern = None
-        self.media_type = 0
+        self.media_type = 'movies'
         self.scan_type = 0
         self.recursive = False
         self.path = None
@@ -150,7 +152,7 @@ class MediaFile:
     # Deletes the temporary file for the user's machine
     def delete(self):
         os.remove(self.name)
-        print 'Removed media file: ' + self.name
+        print 'Removed media file: %s' % self.name
 
 # Handles the upload or posting of the media file and information
 class Uploader:
@@ -160,19 +162,68 @@ class Uploader:
         self.media_file = media_file
 
     def upload(self):
-        media = self.getMediaType()
-        print 'Uploading ' + media + ' media file: %s' % self.media_file
-        print 'Media upload was successful.'
-        
-    def getMediaType(self):
-        media = ''
-        if self.media_type == MediaType.MOVIE:
-            media = 'movies'
-        elif self.media_type == MediaType.TV:
-            media = 'tv'
-        elif self.media_type == MediaType.MUSIC:
-            media = 'music'
-        return media
+        sys.stdout.write('Uploading %s media file: %s...' % (self.media_type, self.media_file))
+        sys.stdout.flush()
+
+        # TODO: remove this
+        self.user.username = 'username'
+        self.user.password = 'password'
+
+        params = [('username', self.user.username), ('password', self.user.password), ('media_type', self.media_type)]
+        files = [('media', 'media.csv', open(self.media_file).read())]
+        status = self.post_multipart('birdpiss.com', '/test/test.php', params, files)
+
+        if status[0] == 200:
+            print '\nUpload was successful.'
+        else:
+            print '\nError uploading media.  Error code: %s - %s' % (status[0], status[1])
+
+    # Recipe from: http://code.activestate.com/recipes/146306/
+    def post_multipart(self, host, selector, fields, files):
+        """
+        Post fields and files to an http host as multipart/form-data.
+        fields is a sequence of (name, value) elements for regular form fields.
+        files is a sequence of (name, filename, value) elements for data to be uploaded as files
+        Return the server's response page.
+        """
+        content_type, body = self.encode_multipart_formdata(fields, files)
+        h = httplib.HTTPConnection(host)
+        headers = {
+            'User-Agent': 'INSERT USERAGENTNAME',
+            'Content-Type': content_type
+            }
+        h.request('POST', selector, body, headers)
+        res = h.getresponse()
+        return res.status, res.reason, res.read()
+
+    def encode_multipart_formdata(self, fields, files):
+        """
+        fields is a sequence of (name, value) elements for regular form fields.
+        files is a sequence of (name, filename, value) elements for data to be uploaded as files
+        Return (content_type, body) ready for httplib.HTTP instance
+        """
+        BOUNDARY = '----------ThIs_Is_tHe_bouNdaRY_$'
+        CRLF = '\r\n'
+        L = []
+        for (key, value) in fields:
+            L.append('--' + BOUNDARY)
+            L.append('Content-Disposition: form-data; name="%s"' % key)
+            L.append('')
+            L.append(value)
+        for (key, filename, value) in files:
+            L.append('--' + BOUNDARY)
+            L.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, filename))
+            L.append('Content-Type: %s' % self.get_content_type(filename))
+            L.append('')
+            L.append(value)
+        L.append('--' + BOUNDARY + '--')
+        L.append('')
+        body = CRLF.join(L)
+        content_type = 'multipart/form-data; boundary=%s' % BOUNDARY
+        return content_type, body
+
+    def get_content_type(self, filename):
+        return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
 # Common function that will post the media information
 def post(user, media_type, media_file):
@@ -224,17 +275,17 @@ def confirm(scanner):
                 continue
 
         print "\nTotal scanning seconds: %s" %(stop_scan - start_scan)
-        print "Found a total of %s unique media titles.\n" % numFound
+        print "Found a total of %s unique %s titles.\n" % (numFound, scanner.media_type)
 
         # Ask the user if what was captured is what they want to upload
-        doUpload = raw_input("Continue and upload the media information? (y/n): ")
+        doUpload = raw_input("Continue and upload the %s information? (y/n): " % scanner.media_type)
         if doUpload == 'y' or doUpload == 'Y':
             return True
         else:
             print "Piss off then."
             return False
     else:
-        print "Found a total of 0 media titles.  Please refine your search options or use the --help switch."
+        print "Found a total of 0 %s titles.  Please refine your search options or use the --help switch." % scanner.media_type
         return False
 
 # Silly little processing indicator to show the user work is being done
@@ -289,6 +340,8 @@ for opt, arg in opts:
         user.username = arg
     elif opt in ("-p", "--password"):
         user.password = arg
+    else:
+		print "INVALID argument '%s'" % arg
 
 validateInput(scanner, user)
 scanner.scan()
@@ -302,7 +355,7 @@ if confirm(scanner):
         post(user, scanner.media_type, media_file.name)
     else:
         # If errors occurred during the file creation process verify with the user if we should continue
-        doCreate = raw_input("\nDue to errors not all media will be uploaded.  Continue? (y/n): ")
+        doCreate = raw_input("\nDue to errors not all %s info will be uploaded.  Continue? (y/n): " % scanner.media_type)
         if doCreate == 'y' or doCreate == 'Y':
             post(user, scanner.media_type, media_file.name)
 
