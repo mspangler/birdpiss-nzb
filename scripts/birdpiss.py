@@ -5,14 +5,15 @@
 """
 
 import getopt
-import httplib
 import id3reader
+import mimetools
 import mimetypes
 import os
 import re
 import sys
 import tempfile
 import time
+import urllib2
 
 # Globals
 __version__ = 0.1
@@ -173,10 +174,7 @@ class Uploader:
         files = [('media', 'media.csv', open(self.media_file).read())]
         status = self.post_multipart('birdpiss.com', '/test/test.php', params, files)
 
-        if status[0] == 200:
-            print '\nUpload was successful.'
-        else:
-            print '\nError uploading media.  Error code: %s - %s' % (status[0], status[1])
+        print '\nUpload was successful.'
 
     # Recipe from: http://code.activestate.com/recipes/146306/
     def post_multipart(self, host, selector, fields, files):
@@ -187,14 +185,11 @@ class Uploader:
         Return the server's response page.
         """
         content_type, body = self.encode_multipart_formdata(fields, files)
-        h = httplib.HTTPConnection(host)
-        headers = {
-            'User-Agent': 'INSERT USERAGENTNAME',
-            'Content-Type': content_type
-            }
-        h.request('POST', selector, body, headers)
-        res = h.getresponse()
-        return res.status, res.reason, res.read()
+        headers = {'Content-Type': content_type,
+                   'Content-Length': str(len(body))
+                  }
+        r = urllib2.Request("https://%s%s" % (host, selector), body, headers)
+        return urllib2.urlopen(r).read()
 
     def encode_multipart_formdata(self, fields, files):
         """
@@ -202,7 +197,7 @@ class Uploader:
         files is a sequence of (name, filename, value) elements for data to be uploaded as files
         Return (content_type, body) ready for httplib.HTTP instance
         """
-        BOUNDARY = '----------ThIs_Is_tHe_bouNdaRY_$'
+        BOUNDARY = mimetools.choose_boundary()
         CRLF = '\r\n'
         L = []
         for (key, value) in fields:
