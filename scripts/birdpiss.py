@@ -121,7 +121,7 @@ class Scanner:
                 if artist != None and album != None and title != None:
                     return artist + ' - ' + album + ' - ' + title
             except Exception as ex:
-                print "\033[1;31mError: Unexpected error occurred while getting Id3 info.  Will try and use filename instead.\n       File: %r\n       Exception: %r\033[1;m" % (absolutePath, ex)
+                print "Error: Unexpected error occurred while getting Id3 info.  Will try and use filename instead.\n       File: %r\n       Exception: %r" % (absolutePath, ex)
                 return content
         return content
 
@@ -146,7 +146,7 @@ class MediaFile:
                 f.write(key + ',' + self.media[key].encode('utf8') + '\n')
             except Exception as ex:
                 self.hasErrors = True
-                print "\033[1;31mError: Unexpected error occurred.\n       File: %r\n       Exception: %r\033[1;m" % (key, ex)
+                print "Error: Unexpected error occurred.\n       File: %r\n       Exception: %r" % (key, ex)
                 continue
         f.close()
 
@@ -171,13 +171,13 @@ class Uploader:
 
         params = [('username', self.user.username), ('password', self.user.password), ('media_type', self.media_type)]
         files = [('media', 'media.csv', open(self.media_file).read())]
-        success = self.post_multipart('birdpiss.com', '/test/test.php', params, files)
+        success = self.post_multipart(params, files)
 
         if success:
             print '\nUpload was successful.'
 
     # Recipe from: http://code.activestate.com/recipes/146306/
-    def post_multipart(self, host, selector, fields, files):
+    def post_multipart(self, fields, files):
         """
         Post fields and files to an http host as multipart/form-data.
         fields is a sequence of (name, value) elements for regular form fields.
@@ -188,20 +188,20 @@ class Uploader:
         headers = {'Content-Type': content_type,
                    'Content-Length': str(len(body))
                   }
-        r = urllib2.Request("https://%s%s" % (host, selector), body, headers)
+        r = urllib2.Request("http://birdpiss.com/test/test.php", body, headers)
         try:
             urllib2.urlopen(r)
             return True
-        except URLError, e:
-            if hasattr(e, 'reason'):
-                print "Error: Failed to reach the server."
-                print "Reason: %s" % e.reason
-            elif hasattr(e, 'code'):
-                print "Error: The server couldn't fulfill the request."
-                print "Error Code: %s" % e.code
+        except Exception as ex:
+            if hasattr(ex, 'reason'):
+                print "\nError: Failed to reach the server."
+                print "Reason: %s" % ex.reason
+            elif hasattr(ex, 'code'):
+                print "\nError: The server couldn't fulfill the request."
+                print "Error Code: %s" % ex.code
             else:
-                print "Error: Unexpected error occurred during file upload."
-                print "Exception: %s" % e
+                print "\nError: Unexpected error occurred during file upload."
+                print "Exception: %s" % ex
             return False
 
     def encode_multipart_formdata(self, fields, files):
@@ -279,7 +279,7 @@ def confirm(scanner):
                 print str(i) + '. ' + media
                 i += 1
             except Exception as ex:
-                print "\033[1;31mError: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r\033[1;m" % (key, ex)
+                print "Error: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r" % (key, ex)
                 continue
 
         print "\nTotal scanning seconds: %s" %(stop_scan - start_scan)
@@ -300,7 +300,7 @@ def confirm(scanner):
 def twirl():
     global twirl_state
     symbols = ('|', '/', '-', '\\')
-    sys.stdout.write('Scanning media... ' + '\033[1;31m' + symbols[ twirl_state ] + '\033[1;m\r')
+    sys.stdout.write('Scanning media... ' + symbols[ twirl_state ] + '\r')
     sys.stdout.flush()
     if twirl_state == len(symbols) - 1:
         twirl_state = -1
@@ -309,18 +309,18 @@ def twirl():
 # Validation method to make sure we got the required information
 def validateInput(scanner, user):
     if os.path.isdir(scanner.path) == False:
-        print "\033[1;31mError: Invalid root directory: %s\033[1;m\n" % scanner.path
+        print "Error: Invalid root directory: %s\n" % scanner.path
         sys.exit(0)
 """ if user.username == None or user.username == '':
-        print "\033[1;31mError: Invalid username. Use 'python birdpiss.py --help' for usage\033[1;m\n"
+        print "Error: Invalid username. Use 'python birdpiss.py --help' for usage\n"
     if user.password == None or user.password == '':
-        print "\033[1;31mError: Invalid password. Use 'python birdpiss.py --help' for usage\033[1;m\n" """
+        print "Error: Invalid password. Use 'python birdpiss.py --help' for usage\n" """
 
 # Sets up the command line options
 try:
     opts, args = getopt.getopt(sys.argv[1:], "htmadfRr:u:p:", ["help", "tv", "movies", "audio", "dirs", "files", "recursive", "root=", "username=", "password=" ])
 except getopt.GetoptError:
-    print "\033[1;31mError: Please enter valid options\033[1;m\n"
+    print "Error: Please enter valid options\n"
     usage()
 
 user = User()
