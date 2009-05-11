@@ -73,7 +73,7 @@ class Scanner:
             if self.scan_type == ScanType.FILES:
                 for root in os.walk(self.path):
                     for content in root[2]:
-                        self.addFile(content, os.path.join(root[0], content))
+                        self.add_file(content, os.path.join(root[0], content))
             elif self.scan_type == ScanType.DIRS:
                 for root in os.walk(self.path):
                     for content in root[1]:
@@ -84,7 +84,7 @@ class Scanner:
                 for content in os.listdir(self.path):
                     absolutePath = os.path.join(self.path, content)
                     if os.path.isfile(absolutePath):
-                        self.addFile(content, absolutePath)
+                        self.add_file(content, absolutePath)
             elif self.scan_type == ScanType.DIRS:
                 for content in os.listdir(self.path):
                     absolutePath = os.path.join(self.path, content)
@@ -102,16 +102,16 @@ class Scanner:
         print "                   "
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
-    def addFile(self, content, absolutePath):
+    def add_file(self, content, absolutePath):
         twirl()
         if self.current_pattern.search(content) != None:
             if self.media_type != MediaType.MUSIC:
                 self.media[absolutePath] = content
             else:
-                self.media[absolutePath] = self.getAudioTagInfo(content, absolutePath)
+                self.media[absolutePath] = self.get_audio_tag_info(content, absolutePath)
 
     # Grabs the audio tag information from the file
-    def getAudioTagInfo(self, content, absolutePath):
+    def get_audio_tag_info(self, content, absolutePath):
         if self.id3_pattern.search(content) != None:
             try:
                 id3r = id3reader.Reader(absolutePath)
@@ -160,6 +160,7 @@ class Uploader:
         self.user = user
         self.media_type = media_type
         self.media_file = media_file
+        self.url = 'birdpiss.com/test/test.php'
 
     def upload(self):
         sys.stdout.write('Uploading %s media...' % self.media_type)
@@ -187,22 +188,29 @@ class Uploader:
         content_type, body = self.encode_multipart_formdata(fields, files)
         headers = {'Content-Type': content_type,
                    'Content-Length': str(len(body))
-                  }
-        r = urllib2.Request("http://birdpiss.com/test/test.php", body, headers)
+                  }        
+        r = urllib2.Request("https://%s" % self.url, body, headers)
         try:
-            urllib2.urlopen(r)
-            return True
-        except Exception as ex:
-            if hasattr(ex, 'reason'):
-                print "\nError: Failed to reach the server."
-                print "Reason: %s" % ex.reason
-            elif hasattr(ex, 'code'):
-                print "\nError: The server couldn't fulfill the request."
-                print "Error Code: %s" % ex.code
-            else:
-                print "\nError: Unexpected error occurred during file upload."
-                print "Exception: %s" % ex
-            return False
+            response = urllib2.urlopen(r).read()
+            return self.get_status(response)
+        except Exception as https:
+            # Might be behind proxy so try http
+            print "\nSecure mode failed.  You could be behind a proxy.  Trying unsecure mode..."
+            r = urllib2.Request("http://%s" % self.url, body, headers)
+            try:
+                response = urllib2.urlopen(r).read()
+                return self.get_status(response)
+            except Exception as http:
+                if hasattr(http, 'reason'):
+                    print "\nError: Failed to reach the server."
+                    print "Reason: %s" % http.reason
+                elif hasattr(http, 'code'):
+                    print "\nError: The server couldn't fulfill the request."
+                    print "Error Code: %s" % http.code
+                else:
+                    print "\nError: Unexpected error occurred during file upload."
+                    print "Exception: %s" % http
+                return False
 
     def encode_multipart_formdata(self, fields, files):
         """
@@ -232,6 +240,11 @@ class Uploader:
 
     def get_content_type(self, filename):
         return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+
+    def get_status(self, response):
+        if response == 'yo':
+            return True
+        return False
 
 # Common function that will post the media information
 def post(user, media_type, media_file):
@@ -307,7 +320,7 @@ def twirl():
     twirl_state += 1
 
 # Validation method to make sure we got the required information
-def validateInput(scanner, user):
+def validate_input(scanner, user):
     if os.path.isdir(scanner.path) == False:
         print "Error: Invalid root directory: %s\n" % scanner.path
         sys.exit(0)
@@ -351,7 +364,7 @@ for opt, arg in opts:
     else:
 		print "INVALID argument '%s'" % arg
 
-validateInput(scanner, user)
+validate_input(scanner, user)
 scanner.scan()
 
 # Validate that the user wants to go forward with the captured media
