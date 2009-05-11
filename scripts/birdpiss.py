@@ -19,7 +19,6 @@ import urllib2
 __version__ = 1.0
 start_scan = 0
 stop_scan = 0
-twirl_state = 0
 
 # This class describes all the different types of media we'll be uploading.
 class MediaType:
@@ -41,6 +40,7 @@ class User:
 # The workhorse scanner that generates the media based on the input options.
 class Scanner:
     def __init__(self):
+        self.twirl_state = 0
         self.media = dict()
         self.video_pattern = re.compile(".avi|.mpg|.mpeg|.mkv|.m4v", re.IGNORECASE)
         self.audio_pattern = re.compile(".mp3|.m3u|.ogg", re.IGNORECASE)
@@ -77,7 +77,7 @@ class Scanner:
             elif self.scan_type == ScanType.DIRS:
                 for root in os.walk(self.path):
                     for content in root[1]:
-                        twirl()
+                        self.twirl()
                         self.media[os.path.join(root[0], content)] = content
         else:
             if self.scan_type == ScanType.FILES:
@@ -89,7 +89,7 @@ class Scanner:
                 for content in os.listdir(self.path):
                     absolutePath = os.path.join(self.path, content)
                     if os.path.isdir(absolutePath):
-                        twirl()
+                        self.twirl()
                         self.media[absolutePath] = content
 
         # Stop the the timer
@@ -103,7 +103,7 @@ class Scanner:
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def add_file(self, content, absolutePath):
-        twirl()
+        self.twirl()
         if self.current_pattern.search(content) != None:
             if self.media_type != MediaType.MUSIC:
                 self.media[absolutePath] = content
@@ -124,6 +124,15 @@ class Scanner:
                 print "Error: Unexpected error occurred while getting Id3 info.  Will try and use filename instead.\n       File: %r\n       Exception: %r" % (absolutePath, ex)
                 return content
         return content
+
+    # Silly little processing indicator to show the user work is being done
+    def twirl(self):
+        symbols = ('|', '/', '-', '\\')
+        sys.stdout.write('Scanning media... ' + symbols[ self.twirl_state ] + '\r')
+        sys.stdout.flush()
+        if self.twirl_state == len(symbols) - 1:
+            self.twirl_state = -1
+        self.twirl_state += 1
 
 # Handles the creation and removal of our media file that will be posted to the website
 class MediaFile:
@@ -188,7 +197,7 @@ class Uploader:
         content_type, body = self.encode_multipart_formdata(fields, files)
         headers = {'Content-Type': content_type,
                    'Content-Length': str(len(body))
-                  }        
+                  }
         r = urllib2.Request("https://%s" % self.url, body, headers)
         try:
             response = urllib2.urlopen(r).read()
@@ -309,16 +318,6 @@ def confirm(scanner):
         print "Found a total of 0 %s titles.  Please refine your search options or use the --help switch." % scanner.media_type
         return False
 
-# Silly little processing indicator to show the user work is being done
-def twirl():
-    global twirl_state
-    symbols = ('|', '/', '-', '\\')
-    sys.stdout.write('Scanning media... ' + symbols[ twirl_state ] + '\r')
-    sys.stdout.flush()
-    if twirl_state == len(symbols) - 1:
-        twirl_state = -1
-    twirl_state += 1
-
 # Validation method to make sure we got the required information
 def validate_input(scanner, user):
     if os.path.isdir(scanner.path) == False:
@@ -362,7 +361,7 @@ for opt, arg in opts:
     elif opt in ("-p", "--password"):
         user.password = arg
     else:
-		print "INVALID argument '%s'" % arg
+	print "INVALID argument '%s'" % arg
 
 validate_input(scanner, user)
 scanner.scan()
