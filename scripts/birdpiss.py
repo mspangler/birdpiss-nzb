@@ -183,6 +183,8 @@ class Uploader:
 
         if success:
             print '\nUpload was successful.'
+        else:
+            print '\nUpload failed.'
 
     # Recipe from: http://code.activestate.com/recipes/146306/
     def post_multipart(self, fields, files):
@@ -202,7 +204,8 @@ class Uploader:
             return self.get_status(response)
         except Exception as https:
             # Might be behind proxy so try http
-            print "\nSecure mode failed.  You could be behind a proxy.  Trying unsecure mode..."
+            sys.stdout.write('\nSecure mode failed.  You could be behind a proxy.  Trying unsecure mode...')
+            sys.stdout.flush()
             r = urllib2.Request("http://%s" % self.url, body, headers)
             try:
                 response = urllib2.urlopen(r).read()
@@ -249,7 +252,7 @@ class Uploader:
         return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
     def get_status(self, response):
-        if response == 'yo':
+        if response == 'success':
             return True
         return False
 
