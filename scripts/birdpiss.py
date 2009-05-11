@@ -15,10 +15,7 @@ import tempfile
 import time
 import urllib2
 
-# Globals
 __version__ = 1.0
-start_scan = 0
-stop_scan = 0
 
 # This class describes all the different types of media we'll be uploading.
 class MediaType:
@@ -41,6 +38,8 @@ class User:
 class Scanner:
     def __init__(self):
         self.twirl_state = 0
+        self.start_scan = 0.0
+        self.stop_scan = 0.0
         self.media = dict()
         self.video_pattern = re.compile(".avi|.mpg|.mpeg|.mkv|.m4v", re.IGNORECASE)
         self.audio_pattern = re.compile(".mp3|.m3u|.ogg", re.IGNORECASE)
@@ -53,7 +52,6 @@ class Scanner:
 
     # Scans the root path looking for media content
     def scan(self):
-        global start_scan, stop_scan
 
         if self.scan_type == ScanType.FILES:
             # Determine what file extensions we'll be looking for
@@ -64,9 +62,9 @@ class Scanner:
 
         # Start the timer so we can measure the scanning performance
         if sys.platform == 'win32':
-            start_scan = time.clock()
+            self.start_scan = time.clock()
         else:
-            start_scan = time.time()
+            self.start_scan = time.time()
 
         # Scan for the media
         if self.recursive:
@@ -94,9 +92,9 @@ class Scanner:
 
         # Stop the the timer
         if sys.platform == 'win32':
-            stop_scan = time.clock()
+            self.stop_scan = time.clock()
         else:
-            stop_scan = time.time()
+            self.stop_scan = time.time()
 
         # Clear the 'Scanning media...' output message
         print "                   "
@@ -289,7 +287,6 @@ def usage():
 
 # Outputs all the captured media and confirms the upload process
 def confirm(scanner):
-    global start_scan, stop_scan
     numFound = len(scanner.media)
     if numFound > 0:
         i = 1
@@ -304,7 +301,7 @@ def confirm(scanner):
                 print "Error: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r" % (key, ex)
                 continue
 
-        print "\nTotal scanning seconds: %s" %(stop_scan - start_scan)
+        print "\nTotal scanning seconds: %s" %(scanner.stop_scan - scanner.start_scan)
         print "Found a total of %s unique %s titles.\n" % (numFound, scanner.media_type)
 
         # Ask the user if what was captured is what they want to upload
