@@ -178,7 +178,7 @@ class Uploader:
         self.user.password = 'password'
 
         params = [('username', self.user.username), ('password', self.user.password), ('media_type', self.media_type)]
-        files = [('media', 'media.csv', open(self.media_file).read())]
+        files = [('media_file', 'media.csv', open(self.media_file).read())]
         success = self.post_multipart(params, files)
 
         if success:
