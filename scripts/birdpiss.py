@@ -16,7 +16,7 @@ import time
 import urllib2
 
 # Globals
-__version__ = 0.1
+__version__ = 1.0
 start_scan = 0
 stop_scan = 0
 twirl_state = 0
@@ -153,7 +153,6 @@ class MediaFile:
     # Deletes the temporary file for the user's machine
     def delete(self):
         os.remove(self.name)
-        print 'Removed media file: %s' % self.name
 
 # Handles the upload or posting of the media file and information
 class Uploader:
@@ -163,7 +162,7 @@ class Uploader:
         self.media_file = media_file
 
     def upload(self):
-        sys.stdout.write('Uploading %s media file: %s...' % (self.media_type, self.media_file))
+        sys.stdout.write('Uploading %s media...' % self.media_type)
         sys.stdout.flush()
 
         # TODO: remove this
@@ -172,9 +171,10 @@ class Uploader:
 
         params = [('username', self.user.username), ('password', self.user.password), ('media_type', self.media_type)]
         files = [('media', 'media.csv', open(self.media_file).read())]
-        status = self.post_multipart('birdpiss.com', '/test/test.php', params, files)
+        success = self.post_multipart('birdpiss.com', '/test/test.php', params, files)
 
-        print '\nUpload was successful.'
+        if success:
+            print '\nUpload was successful.'
 
     # Recipe from: http://code.activestate.com/recipes/146306/
     def post_multipart(self, host, selector, fields, files):
@@ -189,7 +189,20 @@ class Uploader:
                    'Content-Length': str(len(body))
                   }
         r = urllib2.Request("https://%s%s" % (host, selector), body, headers)
-        return urllib2.urlopen(r).read()
+        try:
+            urllib2.urlopen(r)
+            return True
+        except URLError, e:
+            if hasattr(e, 'reason'):
+                print "Error: Failed to reach the server."
+                print "Reason: %s" % e.reason
+            elif hasattr(e, 'code'):
+                print "Error: The server couldn't fulfill the request."
+                print "Error Code: %s" % e.code
+            else:
+                print "Error: Unexpected error occurred during file upload."
+                print "Exception: %s" % e
+            return False
 
     def encode_multipart_formdata(self, fields, files):
         """
@@ -287,7 +300,7 @@ def confirm(scanner):
 def twirl():
     global twirl_state
     symbols = ('|', '/', '-', '\\')
-    sys.stdout.write('Scanning media... ' + '\033[1;32m' + symbols[ twirl_state ] + '\033[1;m\r')
+    sys.stdout.write('Scanning media... ' + '\033[1;31m' + symbols[ twirl_state ] + '\033[1;m\r')
     sys.stdout.flush()
     if twirl_state == len(symbols) - 1:
         twirl_state = -1
