@@ -19,6 +19,7 @@
 
 import getopt
 import id3reader
+import locale
 import mimetools
 import mimetypes
 import os
@@ -307,8 +308,9 @@ def confirm(scanner):
                 print 'Error: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r' % (key, ex)
                 continue
 
-        print '\nTotal scanning seconds: %s' %(scanner.stop_scan - scanner.start_scan)
-        print 'Found a total of %s unique %s titles.\n' % (numFound, scanner.media_type)
+        print '\nTotal scanning seconds: %f' %(scanner.stop_scan - scanner.start_scan)
+        locale.setlocale(locale.LC_ALL, '')
+        print 'Found a total of ' + locale.format('%i', numFound, 1) + ' unique %s titles.\n' % scanner.media_type
 
         # Ask the user if what was captured is what they want to upload
         doUpload = raw_input('Continue and upload the %s information? (y/n): ' % scanner.media_type)
