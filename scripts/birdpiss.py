@@ -1,8 +1,21 @@
 #!/usr/bin/env python
-
-"""
-  Simple script that scans your media and uploads the information.
-"""
+#
+# Simple script that scans your media and uploads the information.
+#
+# Copyright (C) 2009 mspangler@gmail.com
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import getopt
 import id3reader
@@ -41,9 +54,9 @@ class Scanner:
         self.start_scan = 0.0
         self.stop_scan = 0.0
         self.media = dict()
-        self.video_pattern = re.compile(".avi|.mpg|.mpeg|.mkv|.m4v", re.IGNORECASE)
-        self.audio_pattern = re.compile(".mp3|.m3u|.ogg", re.IGNORECASE)
-        self.id3_pattern = re.compile(".mp3", re.IGNORECASE)
+        self.video_pattern = re.compile('.avi|.mpg|.mpeg|.mkv|.m4v', re.IGNORECASE)
+        self.audio_pattern = re.compile('.mp3|.m3u|.ogg', re.IGNORECASE)
+        self.id3_pattern = re.compile('.mp3', re.IGNORECASE)
         self.current_pattern = None
         self.media_type = 'movies'
         self.scan_type = 0
@@ -97,7 +110,7 @@ class Scanner:
             self.stop_scan = time.time()
 
         # Clear the 'Scanning media...' output message
-        print "                   "
+        print '                   '
 
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def add_file(self, content, absolutePath):
@@ -119,7 +132,8 @@ class Scanner:
                 if artist != None and album != None and title != None:
                     return artist + ' - ' + album + ' - ' + title
             except Exception as ex:
-                print "Error: Unexpected error occurred while getting Id3 info.  Will try and use filename instead.\n       File: %r\n       Exception: %r" % (absolutePath, ex)
+                print 'Error: Unexpected error occurred while getting Id3 info. - Will try and use filename instead.'
+                print '       File: %r\n       Exception: %r' % (absolutePath, ex)
                 return content
         return content
 
@@ -153,7 +167,7 @@ class MediaFile:
                 f.write(key + ',' + self.media[key].encode('utf8') + '\n')
             except Exception as ex:
                 self.hasErrors = True
-                print "Error: Unexpected error occurred.\n       File: %r\n       Exception: %r" % (key, ex)
+                print 'Error: Unexpected error occurred.\n       File: %r\n       Exception: %r' % (key, ex)
                 continue
         f.close()
 
@@ -188,17 +202,11 @@ class Uploader:
 
     # Recipe from: http://code.activestate.com/recipes/146306/
     def post_multipart(self, fields, files):
-        """
-        Post fields and files to an http host as multipart/form-data.
-        fields is a sequence of (name, value) elements for regular form fields.
-        files is a sequence of (name, filename, value) elements for data to be uploaded as files
-        Return the server's response page.
-        """
         content_type, body = self.encode_multipart_formdata(fields, files)
         headers = {'Content-Type': content_type,
                    'Content-Length': str(len(body))
                   }
-        r = urllib2.Request("https://%s" % self.url, body, headers)
+        r = urllib2.Request('https://%s' % self.url, body, headers)
         try:
             response = urllib2.urlopen(r).read()
             return self.get_status(response)
@@ -206,28 +214,23 @@ class Uploader:
             # Might be behind proxy so try http
             sys.stdout.write('\nSecure mode failed.  You could be behind a proxy.  Trying unsecure mode...')
             sys.stdout.flush()
-            r = urllib2.Request("http://%s" % self.url, body, headers)
+            r = urllib2.Request('http://%s' % self.url, body, headers)
             try:
                 response = urllib2.urlopen(r).read()
                 return self.get_status(response)
             except Exception as http:
                 if hasattr(http, 'reason'):
-                    print "\nError: Failed to reach the server."
-                    print "Reason: %s" % http.reason
+                    print '\nError: Failed to reach the server.'
+                    print 'Reason: %s' % http.reason
                 elif hasattr(http, 'code'):
                     print "\nError: The server couldn't fulfill the request."
-                    print "Error Code: %s" % http.code
+                    print 'Error Code: %s' % http.code
                 else:
-                    print "\nError: Unexpected error occurred during file upload."
-                    print "Exception: %s" % http
+                    print '\nError: Unexpected error occurred during file upload.'
+                    print 'Exception: %s' % http
                 return False
 
     def encode_multipart_formdata(self, fields, files):
-        """
-        fields is a sequence of (name, value) elements for regular form fields.
-        files is a sequence of (name, filename, value) elements for data to be uploaded as files
-        Return (content_type, body) ready for httplib.HTTP instance
-        """
         BOUNDARY = mimetools.choose_boundary()
         CRLF = '\r\n'
         L = []
@@ -263,29 +266,29 @@ def post(user, media_type, media_file):
 
 # Helpful function to show how to use the script
 def usage():
-    print "birdpiss version %s" % __version__
-    print ""
-    print "usage: python birdpiss.py [options]"
-    print ""
-    print "options:"
-    print "-h, --help       view help and usage"
-    print "-t, --tv         scan for tv show files"
-    print "-m, --movies     scan for movie files"
-    print "-a, --audio      scan for audio files"
-    print "-d, --dirs       scan only directories - will use directory name for media name"
-    print "-f, --files      scan only files - will use filename for media name"
-    print "-R, --recursive  recursively search for content under the root path"
-    print "-r, --root       specify the root path"
-    print "-u, --user       specify your username"
-    print "-p, --password   specify your password"
-    print ""
-    print "Examples:"
-    print "         python birdpiss.py -aRr /home/user/music -u username -p password"
-    print "         python birdpiss.py -mfRr /home/user/movies -u username -p password"
+    print 'birdpiss version %s' % __version__
+    print ''
+    print 'usage: python birdpiss.py [options]'
+    print ''
+    print 'options:'
+    print '-h, --help       view help and usage'
+    print '-t, --tv         scan for tv show files'
+    print '-m, --movies     scan for movie files'
+    print '-a, --audio      scan for audio files'
+    print '-d, --dirs       scan only directories - will use directory name for media name'
+    print '-f, --files      scan only files - will use filename for media name'
+    print '-R, --recursive  recursively search for content under the root path'
+    print '-r, --root       specify the root path'
+    print '-u, --user       specify your username'
+    print '-p, --password   specify your password'
+    print ''
+    print 'Examples:'
+    print '         python birdpiss.py -aRr /home/user/music -u username -p password'
+    print '         python birdpiss.py -mfRr /home/user/movies -u username -p password'
     print '         python birdpiss.py -tdr "/home/user/tv shows" -u username -p password'
-    print ""
-    print "Source available at http://github.com/mspangler/birdpiss-nzb/tree/master"
-    print ""
+    print ''
+    print 'Source available at http://github.com/mspangler/birdpiss-nzb/tree/master'
+    print ''
     sys.exit(0)
 
 # Outputs all the captured media and confirms the upload process
@@ -301,38 +304,40 @@ def confirm(scanner):
                 print str(i) + '. ' + media
                 i += 1
             except Exception as ex:
-                print "Error: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r" % (key, ex)
+                print 'Error: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r' % (key, ex)
                 continue
 
-        print "\nTotal scanning seconds: %s" %(scanner.stop_scan - scanner.start_scan)
-        print "Found a total of %s unique %s titles.\n" % (numFound, scanner.media_type)
+        print '\nTotal scanning seconds: %s' %(scanner.stop_scan - scanner.start_scan)
+        print 'Found a total of %s unique %s titles.\n' % (numFound, scanner.media_type)
 
         # Ask the user if what was captured is what they want to upload
-        doUpload = raw_input("Continue and upload the %s information? (y/n): " % scanner.media_type)
+        doUpload = raw_input('Continue and upload the %s information? (y/n): ' % scanner.media_type)
         if doUpload == 'y' or doUpload == 'Y':
             return True
         else:
-            print "Piss off then."
+            print 'Piss off then.'
             return False
     else:
-        print "Found a total of 0 %s titles.  Please refine your search options or use the --help switch." % scanner.media_type
+        print 'Found a total of 0 %s titles.  Please refine your search options or use the --help switch.' % scanner.media_type
         return False
 
 # Validation method to make sure we got the required information
 def validate_input(scanner, user):
     if os.path.isdir(scanner.path) == False:
-        print "Error: Invalid root directory: %s\n" % scanner.path
+        print 'Error: Invalid root directory: %s\n' % scanner.path
         sys.exit(0)
 """ if user.username == None or user.username == '':
-        print "Error: Invalid username. Use 'python birdpiss.py --help' for usage\n"
+        print 'Error: Invalid username. Use "python birdpiss.py --help" for usage\n'
     if user.password == None or user.password == '':
-        print "Error: Invalid password. Use 'python birdpiss.py --help' for usage\n" """
+        print 'Error: Invalid password. Use "python birdpiss.py --help" for usage\n' """
 
 # Sets up the command line options
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "htmadfRr:u:p:", ["help", "tv", "movies", "audio", "dirs", "files", "recursive", "root=", "username=", "password=" ])
+    opts, args = getopt.getopt(sys.argv[1:],\
+                               'htmadfRr:u:p:',\
+                               ['help', 'tv', 'movies', 'audio', 'dirs', 'files', 'recursive', 'root=', 'username=', 'password=' ])
 except getopt.GetoptError:
-    print "Error: Please enter valid options\n"
+    print 'Error: Please enter valid options\n'
     usage()
 
 user = User()
@@ -340,28 +345,28 @@ scanner = Scanner()
 
 # Loop through the options to see what we're working with
 for opt, arg in opts:
-    if opt in ("-h", "--help"):
+    if opt in ('-h', '--help'):
         usage()
-    elif opt in ("-t", "--tv"):
+    elif opt in ('-t', '--tv'):
         scanner.media_type = MediaType.TV
-    elif opt in ("-m", "--movies"):
+    elif opt in ('-m', '--movies'):
         scanner.media_type = MediaType.MOVIE
-    elif opt in ("-a", "--audio"):
+    elif opt in ('-a', '--audio'):
         scanner.media_type = MediaType.MUSIC
-    elif opt in ("-d", "--dirs"):
+    elif opt in ('-d', '--dirs'):
         scanner.scan_type = ScanType.DIRS
-    elif opt in ("-f", "--files"):
+    elif opt in ('-f', '--files'):
         scanner.scan_type = ScanType.FILES
-    elif opt in ("-R", "--recursive"):
+    elif opt in ('-R', '--recursive'):
         scanner.recursive = True
-    elif opt in ("-r", "--root"):
+    elif opt in ('-r', '--root'):
         scanner.path = arg
-    elif opt in ("-u", "--username"):
+    elif opt in ('-u', '--username'):
         user.username = arg
-    elif opt in ("-p", "--password"):
+    elif opt in ('-p', '--password'):
         user.password = arg
     else:
-	print "INVALID argument '%s'" % arg
+	    print 'INVALID argument "%s"' % arg
 
 validate_input(scanner, user)
 scanner.scan()
@@ -375,7 +380,7 @@ if confirm(scanner):
         post(user, scanner.media_type, media_file.name)
     else:
         # If errors occurred during the file creation process verify with the user if we should continue
-        doCreate = raw_input("\nDue to errors not all %s info will be uploaded.  Continue? (y/n): " % scanner.media_type)
+        doCreate = raw_input('\nDue to errors not all %s info will be uploaded.  Continue? (y/n): ' % scanner.media_type)
         if doCreate == 'y' or doCreate == 'Y':
             post(user, scanner.media_type, media_file.name)
 
