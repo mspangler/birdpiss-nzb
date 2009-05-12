@@ -55,7 +55,7 @@ class Scanner:
         self.stop_scan = 0.0
         self.media = dict()
         self.video_pattern = re.compile('.avi|.mpg|.mpeg|.mkv|.m4v', re.IGNORECASE)
-        self.audio_pattern = re.compile('.mp3|.m3u|.ogg', re.IGNORECASE)
+        self.audio_pattern = re.compile('.mp3|.m3u|.ogg|.flac', re.IGNORECASE)
         self.id3_pattern = re.compile('.mp3', re.IGNORECASE)
         self.current_pattern = None
         self.media_type = 'movies'
