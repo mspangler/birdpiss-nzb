@@ -58,7 +58,7 @@ class Poster:
         try:
             response = urllib2.urlopen(r).read()
             return self.get_status(response)
-        except Exception, (ErrorNumber, ErrorMessage):
+        except Exception:
             # Might be behind proxy so try http
             sys.stdout.write('\nSecure mode failed.  You could be behind a proxy.  Trying unsecure mode...')
             sys.stdout.flush()
@@ -66,16 +66,8 @@ class Poster:
             try:
                 response = urllib2.urlopen(r).read()
                 return self.get_status(response)
-            except Exception, (ErrorNumber, ErrorMessage):
-                if hasattr(http, 'reason'):
-                    print '\nError: Failed to reach the server.'
-                    print 'Reason: %s' % http.reason
-                elif hasattr(http, 'code'):
-                    print "\nError: The server couldn't fulfill the request."
-                    print 'Error Code: %s' % http.code
-                else:
-                    print '\nError: Unexpected error occurred during file upload.'
-                    print 'Exception: %s' % http
+            except Exception, HTTPErrorMessage:
+                print '\nError: %s' % HTTPErrorMessage
                 return False
 
     def encode_multipart_formdata(self, fields, files):
