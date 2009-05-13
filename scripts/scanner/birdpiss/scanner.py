@@ -180,6 +180,6 @@ class Scanner:
                 print 'Piss off then.'
                 return False
         else:
-            print 'Found a total of 0 %s titles.  Please refine your search options or use the --help switch.' % scanner.media_type
+            print 'Found a total of 0 %s titles.  Please refine your search options or use the --help switch.' % self.media_type
             return False
 
