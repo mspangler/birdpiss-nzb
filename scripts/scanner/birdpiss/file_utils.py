@@ -35,7 +35,7 @@ class MediaFile:
         for key in keys:
             try:
                 f.write(key + ',' + self.media[key].encode('utf8') + '\n')
-            except Exception, (ErrorNumber, ErrorMessage):
+            except Exception, ErrorMessage:
                 self.hasErrors = True
                 print 'Error: Unexpected error occurred.\n       File: %r\n       Exception: %r' % (key, ErrorMessage)
                 continue

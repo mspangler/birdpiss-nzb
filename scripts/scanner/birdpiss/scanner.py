@@ -114,7 +114,7 @@ class Scanner:
             try:
                 audio = MP3(absolutePath, ID3=EasyID3)
                 return self.get_tag(audio, content)
-            except Exception, (ErrorNumber, ErrorMessage):
+            except Exception, ErrorMessage:
                 print 'Warn: Unexpected error occurred while getting ID3 info. - Will try and use filename instead.'
                 print '      File: %r\n      Exception: %r' % (absolutePath, ErrorMessage)
                 return content
@@ -122,7 +122,7 @@ class Scanner:
             try:
                 audio = FLAC(absolutePath)
                 return self.get_tag(audio, content)
-            except Exception, (ErrorNumber, ErrorMessage):
+            except Exception, ErrorMessage:
                 print 'Warn: Unexpected error occurred while getting FLAC info. - Will try and use filename instead.'
                 print '      File: %r\n      Exception: %r' % (absolutePath, ErrorMessage)
                 return content
@@ -130,7 +130,7 @@ class Scanner:
             try:
                 audio = OggVorbis(absolutePath)
                 return self.get_tag(audio, content)
-            except Exception, (ErrorNumber, ErrorMessage):
+            except Exception, ErrorMessage:
                 print 'Warn: Unexpected error occurred while getting Ogg info. - Will try and use filename instead.'
                 print '      File: %r\n      Exception: %r' % (absolutePath, ErrorMessage)
                 return content
@@ -164,7 +164,7 @@ class Scanner:
                 try:
                     print str(i) + '. ' + media
                     i += 1
-                except Exception, (ErrorNumber, ErrorMessage):
+                except Exception, ErrorMessage:
                     print 'Error: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r' % (key, ErrorMessage)
                     continue
 
