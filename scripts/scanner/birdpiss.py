@@ -104,7 +104,12 @@ for opt, arg in opts:
         print 'INVALID argument "%s"' % arg
 
 validate_input(scanner, user)
-scanner.scan()
+
+try:
+    scanner.scan()
+except KeyboardInterrupt:
+    print '                 '
+    sys.exit(0)
 
 # Validate that the user wants to go forward with the captured media
 if scanner.confirm():
