@@ -22,10 +22,11 @@ class MediaFile:
         self.media = media
         self.name = None
         self.hasErrors = False
+        self.delimiter = '|'
 
     # Create a temporary file on the user's machine for the file upload
     def create(self):
-        fd, self.name = tempfile.mkstemp(suffix='.csv', prefix='birdpiss-', text=True)
+        fd, self.name = tempfile.mkstemp(suffix='.txt', prefix='birdpiss-', text=True)
         f = os.fdopen(fd, 'w')
 
         # Sorts by file path
@@ -34,7 +35,7 @@ class MediaFile:
 
         for key in keys:
             try:
-                f.write(key + ',' + self.media[key].encode('utf8') + '\n')
+                f.write(key + self.delimiter + self.media[key].encode('utf8') + '\n')
             except Exception, ErrorMessage:
                 self.hasErrors = True
                 print 'Error: Unexpected error occurred.\n       File: %r\n       Exception: %r' % (key, ErrorMessage)
