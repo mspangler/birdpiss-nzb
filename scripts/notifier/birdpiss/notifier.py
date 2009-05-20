@@ -19,8 +19,6 @@
 
 import MimeWriter
 import cStringIO
-import logging
-import logging.handlers
 import mimetools
 import smtplib
 import urllib
