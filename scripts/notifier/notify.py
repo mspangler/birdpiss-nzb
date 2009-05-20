@@ -67,6 +67,7 @@ class DbQueue:
                             log.info('Updated media as being sent - %s' % content)
                         else:
                             log_error('Media could not be sent - %s' % content)
+                        break
         finally:
             cursor.close()
             db_handle.close()
