@@ -34,6 +34,12 @@ class MediaType:
 class ScanType:
     FILES = 0
     DIRS = 1
+    
+class Media:
+    def __init__(self, path, name, size):
+        self.path = path
+        self.name = name
+        self.size = size
 
 class Scanner:
     def __init__(self):
@@ -75,7 +81,7 @@ class Scanner:
                 for root in os.walk(self.path):
                     for content in root[1]:
                         self.twirl()
-                        self.media[os.path.join(root[0], content)] = content
+                        self.add(os.path.join(root[0], content), content)
         else:
             if self.scan_type == ScanType.FILES:
                 for content in os.listdir(self.path):
@@ -87,7 +93,7 @@ class Scanner:
                     absolutePath = os.path.join(self.path, content)
                     if os.path.isdir(absolutePath):
                         self.twirl()
-                        self.media[absolutePath] = content
+                        self.add(absolutePath, content)
 
         # Stop the the timer
         if sys.platform == 'win32':
@@ -98,15 +104,22 @@ class Scanner:
         # Clear the 'Scanning media...' output message
         print '                   '
 
+    def add(self, path, name):
+        try:
+            self.media[path] = Media(path, name, str(os.path.getsize(path)))
+        except Exception, ErrorMessage:
+            print 'Error: Could not add the following file.'
+            print '       File: %r\n       Exception: %r' % (path, ErrorMessage)
+
     # Makes sure the file is of a type we're aware of and adds it to the media list
     def add_file(self, content, absolutePath):
         self.twirl()
         extension = os.path.splitext(content)[1]
         if self.current_pattern.search(extension) != None:
             if self.media_type != MediaType.MUSIC:
-                self.media[absolutePath] = content
+                self.add(absolutePath, content)
             else:
-                self.media[absolutePath] = self.get_audio_tag_info(content, absolutePath, extension)
+                self.add(absolutePath, self.get_audio_tag_info(content, absolutePath, extension))
 
     # Grabs the audio tag information from the file
     def get_audio_tag_info(self, content, absolutePath, extension):
@@ -162,7 +175,7 @@ class Scanner:
             values = map(self.media.get, keys)
             for media in values:
                 try:
-                    print str(i) + '. ' + media
+                    print str(i) + '. ' + media.name
                     i += 1
                 except Exception, ErrorMessage:
                     print 'Error: Unexpected error occurred on media title.\n       File: %r\n       Exception: %r' % (key, ErrorMessage)
@@ -173,7 +186,7 @@ class Scanner:
             print 'Found a total of ' + locale.format('%i', numFound, 1) + ' unique %s titles.\n' % self.media_type
 
             # Ask the user if what was captured is what they want to upload
-            doUpload = raw_input('Continue and upload the %s information? (y/n): ' % self.media_type)
+            doUpload = raw_input('Continue and upload the %s information [y/n]? ' % self.media_type)
             if doUpload == 'y' or doUpload == 'Y':
                 return True
             else:

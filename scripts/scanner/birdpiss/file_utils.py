@@ -35,7 +35,8 @@ class MediaFile:
 
         for key in keys:
             try:
-                f.write(key + self.delimiter + self.media[key].encode('utf8') + '\n')
+                user_media = self.media[key]
+                f.write(user_media.path + self.delimiter + user_media.name.encode('utf8') + self.delimiter + user_media.size + '\n')
             except Exception, ErrorMessage:
                 self.hasErrors = True
                 print 'Error: Unexpected error occurred.\n       File: %r\n       Exception: %r' % (key, ErrorMessage)

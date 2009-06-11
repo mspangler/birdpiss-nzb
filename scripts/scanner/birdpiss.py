@@ -120,7 +120,7 @@ if scanner.confirm():
         update(user, scanner.media_type, media_file.name)
     else:
         # If errors occurred during the file creation process verify with the user if we should continue
-        doCreate = raw_input('\nDue to errors not all %s info will be uploaded.  Continue? (y/n): ' % scanner.media_type)
+        doCreate = raw_input('\nDue to errors not all %s info will be uploaded.  Continue [y/n]? ' % scanner.media_type)
         if doCreate == 'y' or doCreate == 'Y':
             update(user, scanner.media_type, media_file.name)
 
