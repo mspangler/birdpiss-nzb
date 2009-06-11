@@ -54,7 +54,7 @@ def usage():
 # Validation method to make sure we got the required information
 def validate_input(scanner, user):
     if scanner.path == None or os.path.isdir(scanner.path) == False:
-        print 'Error: Invalid root directory: %s\n' % scanner.path
+        print 'Error: Invalid root directory: %s\nUse "python birdpiss.py --help" for usage\n' % scanner.path
         sys.exit(0)
 """ if user.username == None or user.username == '':
         print 'Error: Invalid username. Use "python birdpiss.py --help" for usage\n'
