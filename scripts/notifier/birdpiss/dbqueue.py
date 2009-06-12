@@ -61,7 +61,7 @@ class DbQueue:
                                 self.logger.log_error('Media could not be sent - %s' % content)
                             break
                         else:
-                            self.logger.log.info('File is not finished uploading. Media Size: %s - Upload Size: %s' % (record['Size'], file_size))
+                            self.logger.log.info('File is not finished uploading. File Size: %s - Upload Size: %s' % (record['Size'], file_size))
         finally:
             cursor.close()
             db_handle.close()
