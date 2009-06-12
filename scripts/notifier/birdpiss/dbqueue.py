@@ -54,6 +54,7 @@ class DbQueue:
                     if filename == record['MediaName'] and file_size == record['Size']:
                         self.logger.log.info('Found media: %s' % content)
                         if (notifier.notify(record['Requester'], record['MediaName'], extension)):
+                            cursor.execute('UPDATE db_queue SET Notified = 1 WHERE Id = ' + record['Id'])
                             self.logger.log.info('Updated media as being sent - %s' % content)
                         else:
                             self.logger.log_error('Media could not be sent - %s' % content)
