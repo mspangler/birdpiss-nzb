@@ -51,14 +51,17 @@ class DbQueue:
                 for content in os.listdir(self.upload_dir):
                     filename, extension = os.path.splitext(content)
                     file_size = os.path.getsize(content)
-                    if filename.lower() == record['MediaName'].lower() and file_size == record['Size']:
+                    if filename.lower() == record['MediaName'].lower():
                         self.logger.log.info('Found media: %s' % content)
-                        if (notifier.notify(record['Requester'], record['MediaName'], extension)):
-                            cursor.execute('UPDATE db_queue SET Notified = 1 WHERE Id = ' + record['Id'])
-                            self.logger.log.info('Updated media as being sent - %s' % content)
+                        if str(file_size) == record['Size']:
+                            if (notifier.notify(record['Requester'], record['MediaName'], extension)):
+                                cursor.execute('UPDATE db_queue SET Notified = 1 WHERE Id = ' + record['Id'])
+                                self.logger.log.info('Updated media as being sent - %s' % content)
+                            else:
+                                self.logger.log_error('Media could not be sent - %s' % content)
+                            break
                         else:
-                            self.logger.log_error('Media could not be sent - %s' % content)
-                        break
+                            self.logger.log.info('File is not finished uploading. Media Size: %s - Upload Size: %s' % (record['Size'], file_size))
         finally:
             cursor.close()
             db_handle.close()
