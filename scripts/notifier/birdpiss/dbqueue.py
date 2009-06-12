@@ -50,7 +50,7 @@ class DbQueue:
             for record in result:
                 for content in os.listdir(self.upload_dir):
                     filename, extension = os.path.splitext(content)
-                    file_size = os.path.getsize(record['MediaPath']))
+                    file_size = os.path.getsize(content)
                     if filename == record['MediaName'] and file_size == record['Size']:
                         self.logger.log.info('Found media: %s' % content)
                         if (notifier.notify(record['Requester'], record['MediaName'], extension)):
