@@ -42,7 +42,7 @@ class BpLogger:
 
         # Create formatter and file handler
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-        fh = logging.handlers.SMTPHandler('localhost', 'notifyError@birdpiss.com', 'mspangler@gmail.com', 'Notify Error Occurred')
+        fh = logging.handlers.SMTPHandler('localhost', 'notifyError@media.birdpiss.com', 'mspangler@gmail.com', 'Notify Error Occurred')
 
         # Set formatter to file handler and set handler to logger
         fh.setFormatter(formatter)
