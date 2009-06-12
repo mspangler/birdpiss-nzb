@@ -22,7 +22,7 @@ import os
 __version__ = 1.0
 
 # Directory where the media is
-upload_dir = 'C:\yo'
+upload_dir = '/home/birdpiss/birdpiss.com/test/uploads'
 
 # Delete everything reachable from the upload_dir directory
 for root, dirs, files in os.walk(upload_dir, topdown=False):
