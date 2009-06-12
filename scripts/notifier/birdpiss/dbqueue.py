@@ -41,7 +41,7 @@ class DbQueue:
 
         cursor = db_handle.cursor(MySQLdb.cursors.DictCursor)
 
-        cursor.execute('SELECT Id, MediaPath, MediaName, Requester, Notified FROM db_queue WHERE Notified = 0')
+        cursor.execute('SELECT Id, MediaPath, MediaName, Size, Requester, Notified FROM db_queue WHERE Notified = 0')
         result = cursor.fetchall()
 
         notifier = Notifier()
@@ -50,7 +50,8 @@ class DbQueue:
             for record in result:
                 for content in os.listdir(self.upload_dir):
                     filename, extension = os.path.splitext(content)
-                    if filename == record['MediaName']:
+                    file_size = os.path.getsize(record['MediaPath']))
+                    if filename == record['MediaName'] and file_size == record['Size']:
                         self.logger.log.info('Found media: %s' % content)
                         if (notifier.notify(record['Requester'], record['MediaName'], extension)):
                             self.logger.log.info('Updated media as being sent - %s' % content)

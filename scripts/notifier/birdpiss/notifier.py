@@ -30,7 +30,7 @@ class Notifier:
         self.host = 'localhost'
         self.server = smtplib.SMTP(self.host)
         self.subject = 'Birdpiss Media Notifier'
-        self.fromAddress = 'noreply@birdpiss.com'
+        self.fromAddress = 'noreply@media.birdpiss.com'
 
     def notify(self, address, media_name, extension):
         self.logger.log.info('Sending notification to %s for media - %s' % (address, media_name + extension))
