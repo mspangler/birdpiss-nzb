@@ -40,12 +40,11 @@ def usage():
     print '-R, --recursive  recursively search for content under the root path'
     print '-r, --root       specify the root path'
     print '-u, --user       specify your username'
-    print '-p, --password   specify your password'
     print ''
     print 'Examples:'
-    print '         python birdpiss.py -aRr /home/user/music -u username -p password'
-    print '         python birdpiss.py -mfRr /home/user/movies -u username -p password'
-    print '         python birdpiss.py -tdr "/home/user/tv shows" -u username -p password'
+    print '         python birdpiss.py -aRr /home/user/music -u username'
+    print '         python birdpiss.py -mfRr /home/user/movies -u username'
+    print '         python birdpiss.py -tdr "/home/user/tv shows" -u username'
     print ''
     print 'Source available at http://github.com/mspangler/birdpiss-nzb/tree/master'
     print ''
@@ -56,9 +55,10 @@ def validate_input(scanner, user):
     if scanner.path == None or os.path.isdir(scanner.path) == False:
         print 'Error: Invalid root directory: %s\nUse "python birdpiss.py --help" for usage\n' % scanner.path
         sys.exit(0)
-""" if user.username == None or user.username == '':
+    if user.username == None or user.username == '':
         print 'Error: Invalid username. Use "python birdpiss.py --help" for usage\n'
-    if user.password == None or user.password == '':
+        sys.exit(0)
+"""    if user.password == None or user.password == '':
         print 'Error: Invalid password. Use "python birdpiss.py --help" for usage\n' """
 
 # Common function that will post the media information

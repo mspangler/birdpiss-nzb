@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import json
 import mimetools
 import mimetypes
 import sys
@@ -29,17 +30,13 @@ class Poster:
         self.user = user
         self.media_type = media_type
         self.media_file = media_file
-        self.url = 'birdpiss.com/test/test.php'
+        self.url = '127.0.0.1:8000/upload_media/'
 
     def post(self):
         sys.stdout.write('Uploading %s media...' % self.media_type)
         sys.stdout.flush()
 
-        # TODO: remove this
-        self.user.username = 'username'
-        self.user.password = 'password'
-
-        params = [('username', self.user.username), ('password', self.user.password), ('media_type', self.media_type)]
+        params = [('username', self.user.username), ('media_type', self.media_type)]
         files = [('media_file', 'media.txt', open(self.media_file).read())]
         success = self.post_multipart(params, files)
 
@@ -54,7 +51,7 @@ class Poster:
         headers = {'Content-Type': content_type,
                    'Content-Length': str(len(body))
                   }
-        r = urllib2.Request('https://%s' % self.url, body, headers)
+        r = urllib2.Request('http://%s' % self.url, body, headers)
         try:
             response = urllib2.urlopen(r).read()
             return self.get_status(response)
@@ -95,7 +92,7 @@ class Poster:
         return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
     def get_status(self, response):
-        if response == 'success':
+        if response == "{ 'response' : 'success' }":
             return True
         return False
 

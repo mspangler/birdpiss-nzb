@@ -43,7 +43,7 @@ class MediaFile:
                 continue
         f.close()
 
-    # Deletes the temporary file for the user's machine
+    # Deletes the temporary file from the user's machine
     def delete(self):
         os.remove(self.name)
 
