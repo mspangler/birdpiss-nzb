@@ -59,7 +59,7 @@ class Poster:
             # Might be behind proxy so try http
             sys.stdout.write('\nSecure mode failed.  You could be behind a proxy.  Trying unsecure mode...')
             sys.stdout.flush()
-            r = urllib2.Request('http://%s' % self.url, body, headers)
+            r = urllib2.Request('https://%s' % self.url, body, headers)
             try:
                 response = urllib2.urlopen(r).read()
                 return self.get_status(response)
